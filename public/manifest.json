@@ -1,0 +1,9 @@
+{
+  "short_name": "Jo Blaszak Portfolio",
+  "name": "Jo Blaszak - Portfolio",
+  "icons": [],
+  "start_url": ".",
+  "display": "standalone",
+  "theme_color": "#000000",
+  "background_color": "#000000"
+}
