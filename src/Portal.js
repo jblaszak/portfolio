@@ -56,6 +56,7 @@ export default function Portal({ portalPosition }) {
 
   return (
     <group onClick={handleClick}>
+      {/* TODO: Convert to instanced meshes for performance */}
       {springs.map(({ opacity, position }, index) => {
         return (
           <a.mesh position={position} key={index}>

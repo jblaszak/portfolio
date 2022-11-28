@@ -1,0 +1,46 @@
+.navigation {
+  margin: auto;
+  display: flex;
+  padding: 1rem;
+  justify-content: space-between;
+  max-width: 500px;
+  white-space: nowrap;
+  align-items: center;
+  pointer-events: auto;
+}
+
+.navItems {
+  display: flex;
+  margin: 0;
+  gap: 1rem;
+  list-style: none;
+  padding-left: 0;
+  white-space: nowrap;
+}
+
+.navItems > li,
+.profileLink {
+  color: white;
+  cursor: pointer;
+  opacity: 0.8;
+  transition: 0.25s all;
+}
+
+.profileLink:any-link {
+  color: white;
+  text-decoration: none;
+}
+
+.navItems > li:hover,
+.profileLink:hover {
+  opacity: 1;
+  /* transform: scale(1.1); */
+}
+
+.navItems > li:last-child {
+  /* padding-left: 1rem; */
+}
+
+.active {
+  opacity: 1;
+}
