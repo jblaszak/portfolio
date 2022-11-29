@@ -16,29 +16,23 @@
   list-style: none;
   padding-left: 0;
   white-space: nowrap;
+  font-size: 1.25rem;
+  font-weight: 900;
 }
 
-.navItems > li,
-.profileLink {
-  color: white;
+.navItems > li {
+  color: var(--font-color);
   cursor: pointer;
-  opacity: 0.8;
+  opacity: 0.7;
   transition: 0.25s all;
 }
 
-.profileLink:any-link {
-  color: white;
-  text-decoration: none;
-}
-
-.navItems > li:hover,
-.profileLink:hover {
+.navItems > li:hover {
   opacity: 1;
-  /* transform: scale(1.1); */
 }
 
 .navItems > li:last-child {
-  /* padding-left: 1rem; */
+  padding-left: 2rem;
 }
 
 .active {

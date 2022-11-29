@@ -12,7 +12,7 @@ export default function Scene() {
   useHelper(directionalLight, THREE.DirectionalLightHelper, 1);
   return (
     <>
-      {/* <color attach="background" args={["#06092c"]} /> */}
+      <color attach="background" args={["white"]} />
       {/* <pointLight position={[-20, 10, 25]} /> */}
       <AccumulativeShadows position={[0, 0.001, 0]} opacity={0.5}>
         <RandomizedLight
@@ -24,7 +24,7 @@ export default function Scene() {
           bias={0.01}
         />
       </AccumulativeShadows>
-      <ambientLight intensity={0.6} />
+      <ambientLight intensity={1} />
       {/* <Portal portalPosition={[0, 0.5, 0]} />
       <Portal portalPosition={[0, 0.5, -20]} />
       <Portal portalPosition={[0, 0.5, -40]} />

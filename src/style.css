@@ -1,5 +1,16 @@
 @import url("https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;0,900;1,700&display=swap");
 
+:root {
+  --font-color: black;
+}
+
+*,
+::before,
+::after {
+  box-sizing: border-box;
+  margin: 0;
+}
+
 html,
 body,
 #root {
@@ -11,11 +22,10 @@ body,
   font-family: "Playfair Display", serif;
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
-  background: black;
 }
 
 .scene {
-  color: white;
+  color: var(--font-color);
 }
 
 .interface {
@@ -28,7 +38,7 @@ body,
   /* font-family: "Roboto", sans-serif; */
 
   font-size: 14px;
-  color: white;
+  color: var(--font-color);
 }
 
 @media (min-width: 600px) {
