@@ -11,9 +11,13 @@ import Interface from "./Interface/Interface";
 const root = ReactDOM.createRoot(document.getElementById("root"));
 root.render(
   <>
-    <Canvas shadows camera={{ position: new THREE.Vector3(0, 5, 10) }}>
+    <Canvas
+      shadows
+      camera={{ position: new THREE.Vector3(0.0, 4.4, 6.3) }}
+      onCreated={(state) => state.camera.lookAt(new THREE.Vector3(0.0, 2.6, -8.3))}
+    >
       <Perf position="bottom-left" />
-      <OrbitControls makedefault />
+      {/* <OrbitControls makedefault /> */}
       <Scene />
     </Canvas>
     <Interface />

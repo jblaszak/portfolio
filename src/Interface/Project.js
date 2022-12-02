@@ -1,18 +1,18 @@
 import classes from "./Project.module.css";
 
-export default function Project({ title, date, description, tech, siteLink, codeLink }) {
+export default function Project({ title, date, description, tech, siteLink, codeLink, video }) {
   return (
     <section className={classes.project1}>
       <h2>{title}</h2>
       <p className={classes.date}>{date}</p>
-      <p className={classes.description}></p>
+      <p className={classes.description}>{description}</p>
       <p className={classes.tech}>
-        <span>Tech: </span>
-        {tech}
+        Tech: <span>{tech}</span>
       </p>
       <div className={classes.links}>
-        <a href={siteLink}>Visit Site</a>
-        <a href={codeLink}>See Code</a>
+        {siteLink && <a href={siteLink}>Visit Site</a>}
+        {codeLink && <a href={codeLink}>See Code</a>}
+        {video && <a href="blank">Load video!</a>}
       </div>
     </section>
   );
