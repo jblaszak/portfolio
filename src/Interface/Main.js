@@ -67,6 +67,7 @@ export default function Main() {
             />
           ))}
         </article>
+        <article className={classes.contact}>Contact :3</article>
       </main>
     </>
   );

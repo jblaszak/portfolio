@@ -3,7 +3,8 @@ main {
   top: 0;
   left: 0;
   display: grid;
-  grid-template-columns: repeat(10, 50vw);
+  /* main, 4 projects, contact = 6 full screens */
+  grid-template-columns: repeat(12, 50vw);
   grid-template-rows: 100vh;
   align-items: center;
 }
@@ -30,18 +31,26 @@ main {
   margin-top: 1rem;
 }
 
-.project1 {
-  grid-column: 4;
+.projects {
+  grid-column: 3/11;
+  display: grid;
+  grid-template-areas: "blank firstProject blank secondProject blank thirdProject blank fourthProject";
+  grid-template-columns: repeat(8, 50vw);
 }
 
-.project2 {
-  grid-column: 6;
+.projects:nth-child(1) {
+  grid-area: "firstProject";
 }
-
-.project3 {
-  grid-column: 8;
+.projects:nth-child(2) {
+  grid-area: "secondProject";
+}
+.projects:nth-child(3) {
+  grid-area: "thirdProject";
+}
+.projects:nth-child(4) {
+  grid-area: "fourthProject";
 }
 
 .contact {
-  grid-column: 9/10;
+  grid-column: 11/12;
 }

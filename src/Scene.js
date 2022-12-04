@@ -11,6 +11,7 @@ import { useRef } from "react";
 import Floor from "./Floor";
 import GlassPortal from "./GlassPortal";
 import Portal from "./Portal";
+import Main from "./Interface/Main";
 
 import * as THREE from "three";
 import "./style.css";
@@ -56,6 +57,9 @@ export default function Scene() {
           {/* <gridHelper args={[50, 50, "#4D089A", "#4D089A"]} position={[0, 0, 0]} /> */}
           <GlassPortal position={[0, 0, 0]} rotation={[0, Math.PI / 6, 0]} />
           <Floor />
+        </Scroll>
+        <Scroll html>
+          <Main />
         </Scroll>
       </ScrollControls>
     </>
