@@ -8,8 +8,14 @@ export default function Glass({ position, scale }) {
       castShadow
       scale={scale}
       position={position}
-      onPointerEnter={(e) => (e.stopPropagation(), setHovered(true))}
-      onPointerLeave={(e) => (e.stopPropagation(), setHovered(false))}
+      onPointerEnter={(e) => {
+        e.stopPropagation();
+        setHovered(true);
+      }}
+      onPointerLeave={(e) => {
+        e.stopPropagation();
+        setHovered(false);
+      }}
     >
       <boxGeometry args={[4, 6, 0.2]} />;
       <meshStandardMaterial
