@@ -6,6 +6,7 @@ import * as THREE from "three";
 import Scene from "./Scene";
 import { Perf } from "r3f-perf";
 import Interface from "./Interface/Interface";
+import { ScrollControls } from "@react-three/drei";
 
 const root = ReactDOM.createRoot(document.getElementById("root"));
 root.render(
@@ -18,7 +19,9 @@ root.render(
       }}
     >
       <Perf position="bottom-left" />
-      <Scene />
+      <ScrollControls horizontal damping={4} pages={6}>
+        <Scene />
+      </ScrollControls>
     </Canvas>
     <Interface />
   </>

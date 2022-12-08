@@ -35,23 +35,23 @@ main {
 .projects {
   grid-column: 3/11;
   display: grid;
-  grid-template-areas: "blank firstProject blank secondProject blank thirdProject blank fourthProject";
+  grid-template-areas: "space1 project1 space2 project2 space3 project3 space4 project4";
   grid-template-columns: repeat(8, 50vw);
 }
 
-.projects:nth-child(1) {
-  grid-area: "firstProject";
+.projects section:nth-child(1) {
+  grid-area: project1;
 }
-.projects:nth-child(2) {
-  grid-area: "secondProject";
+.projects section:nth-child(2) {
+  grid-area: project2;
 }
-.projects:nth-child(3) {
-  grid-area: "thirdProject";
+.projects section:nth-child(3) {
+  grid-area: project3;
 }
-.projects:nth-child(4) {
-  grid-area: "fourthProject";
+.projects section:nth-child(4) {
+  grid-area: project4;
 }
 
 .contact {
-  grid-column: 11/12;
+  grid-column: 11/13;
 }
