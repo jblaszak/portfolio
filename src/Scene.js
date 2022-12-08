@@ -1,7 +1,17 @@
-import { Scroll, ScrollControls } from "@react-three/drei";
+import {
+  Scroll,
+  ScrollControls,
+  AccumulativeShadows,
+  RandomizedLight,
+  OrbitControls,
+  softShadows,
+  BakeShadows,
+} from "@react-three/drei";
+
 import Floor from "./Floor";
 import GlassPortal from "./GlassPortal";
 import Main from "./Interface/Main";
+
 import "./style.css";
 
 // import { useControls } from "leva";
@@ -26,17 +36,24 @@ export default function Scene() {
 
   return (
     <>
+      {/* <OrbitControls makeDefault /> */}
       <ScrollControls horizontal damping={4} pages={4}>
         <color attach="background" args={["white"]} />
         <ambientLight intensity={1} />
         <Scroll>
           <GlassPortal position={[0, 0, 0]} rotation={[0, Math.PI / 6, 0]} />
+          <GlassPortal position={[15, 0, 0]} rotation={[0, Math.PI / 6, 0]} />
+          <GlassPortal position={[30, 0, 0]} rotation={[0, Math.PI / 6, 0]} />
+          <GlassPortal position={[45, 0, 0]} rotation={[0, Math.PI / 6, 0]} />
         </Scroll>
         <Floor />
         <Scroll html>
           <Main />
         </Scroll>
       </ScrollControls>
+      {/* <BakeShadows /> */}
     </>
   );
 }
+
+softShadows();
