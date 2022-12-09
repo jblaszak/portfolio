@@ -1,14 +1,12 @@
 // import { RandomizedLight } from "@react-three/drei";
 import Glass from "./Glass";
-import { BakeShadows, useHelper } from "@react-three/drei";
-import * as THREE from "three";
 import { useEffect, useRef } from "react";
+import * as THREE from "three";
 import { useControls } from "leva";
 
 export default function GlassPortal({ position, rotation }) {
   const lightRef = useRef();
   const portalRef = useRef();
-  useHelper(lightRef, THREE.DirectionalLightHelper, 1);
 
   // const { near, far, top, right, bottom, left } = useControls("camera", {
   //   near: {
