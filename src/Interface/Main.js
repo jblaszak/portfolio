@@ -1,7 +1,7 @@
 import classes from "./Main.module.css";
 import Project from "./Project";
 
-export default function Main() {
+export default function Main({ handleScroll }) {
   const projects = [
     {
       title: "Perfect Pixels Club",

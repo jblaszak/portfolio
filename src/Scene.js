@@ -1,4 +1,8 @@
 import { Scroll, softShadows, useScroll } from "@react-three/drei";
+import { useFrame, useThree } from "@react-three/fiber";
+import { CanvasContext } from "./CanvasContext";
+import { useContext, useEffect } from "react";
+import * as THREE from "three";
 
 import Floor from "./Floor";
 import GlassPortal from "./GlassPortal";
@@ -6,11 +10,16 @@ import Main from "./Interface/Main";
 
 import "./style.css";
 
-import { useFrame } from "@react-three/fiber";
-import * as THREE from "three";
-
 export default function Scene() {
+  const { width, height } = useThree((state) => state.size);
+  const { setWidth, setHeight, setScrollElement } = useContext(CanvasContext);
   const data = useScroll();
+
+  useEffect(() => {
+    setWidth(width);
+    setHeight(height);
+    setScrollElement(data.el);
+  });
   // const cameraInitialPosition =
   // const { cameraPosition, lookAtPosition } = useControls("camera", {
   //   cameraPosition: { value: [0.0, 4.4, 6.3], step: 0.1 },
@@ -20,13 +29,11 @@ export default function Scene() {
   useFrame((state, delta) => {
     state.camera.position.copy(new THREE.Vector3(data.offset * 110, 4.4, 6.3));
     state.camera.lookAt(new THREE.Vector3(0.0 + data.offset * 110, 2.6, -8.3));
-    // console.log(state.camera);
   });
 
   return (
     <>
       {/* <OrbitControls makeDefault /> */}
-
       <color attach="background" args={["white"]} />
       <ambientLight intensity={1} />
       <GlassPortal position={[23, 0, 0]} rotation={[0, Math.PI / 6, 0]} />
@@ -37,7 +44,6 @@ export default function Scene() {
       <Scroll html>
         <Main />
       </Scroll>
-      {/* </ScrollControls> */}
     </>
   );
 }
