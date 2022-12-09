@@ -27,8 +27,9 @@ export default function Scene() {
   // });
 
   useFrame((state, delta) => {
-    state.camera.position.copy(new THREE.Vector3(data.offset * 110, 4.4, 6.3));
-    state.camera.lookAt(new THREE.Vector3(0.0 + data.offset * 110, 2.6, -8.3));
+    const maxWidth = 125;
+    state.camera.position.copy(new THREE.Vector3(data.offset * maxWidth, 4.4, 6.3));
+    state.camera.lookAt(new THREE.Vector3(0.0 + data.offset * maxWidth, 2.6, -8.3));
   });
 
   return (
@@ -37,9 +38,9 @@ export default function Scene() {
       <color attach="background" args={["white"]} />
       <ambientLight intensity={1} />
       <GlassPortal position={[23, 0, 0]} rotation={[0, Math.PI / 6, 0]} />
-      <GlassPortal position={[41.5, 0, 0]} rotation={[0, Math.PI / 6, 0]} />
-      <GlassPortal position={[63, 0, 0]} rotation={[0, Math.PI / 6, 0]} />
-      <GlassPortal position={[84.5, 0, 0]} rotation={[0, Math.PI / 6, 0]} />
+      <GlassPortal position={[48, 0, 0]} rotation={[0, Math.PI / 6, 0]} />
+      <GlassPortal position={[73, 0, 0]} rotation={[0, Math.PI / 6, 0]} />
+      <GlassPortal position={[98, 0, 0]} rotation={[0, Math.PI / 6, 0]} />
       <Floor />
       <Scroll html>
         <Main />

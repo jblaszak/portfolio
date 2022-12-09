@@ -2,7 +2,7 @@ import classes from "./Project.module.css";
 
 export default function Project({ title, date, description, tech, siteLink, codeLink, video }) {
   return (
-    <section className={classes.project1}>
+    <section className={classes.project}>
       <h2>{title}</h2>
       <p className={classes.date}>{date}</p>
       <p className={classes.description}>{description}</p>

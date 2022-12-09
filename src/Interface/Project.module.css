@@ -1,0 +1,75 @@
+.project {
+  margin-left: 3rem;
+  pointer-events: auto;
+}
+
+h2 {
+  display: inline;
+  position: relative;
+  font-size: 2.5rem;
+  width: fit-content;
+  margin-bottom: 4rem;
+}
+
+h2::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  bottom: -2px;
+  width: 100%;
+  background-color: black;
+  height: 2px;
+}
+
+.date {
+  display: inline;
+  margin-left: 1.5rem;
+  font-size: 1.5rem;
+}
+
+.description {
+  font-size: 1.5rem;
+  margin: 2rem 0 0.5rem 0;
+}
+
+.tech {
+  font-size: 1.5rem;
+  font-weight: 900;
+  margin-bottom: 1.5rem;
+}
+
+.tech span {
+  font-weight: 700;
+}
+
+.description,
+.tech {
+  max-width: 35ch;
+}
+
+.links {
+  display: grid;
+  width: fit-content;
+  grid-template-columns: repeat(3, 1fr);
+  grid-gap: 1rem;
+}
+
+.links a:any-link {
+  width: fit-content;
+  text-decoration: none;
+  font-family: "Roboto", sans-serif;
+  color: black;
+  background-color: white;
+  font-size: 1.5rem;
+  font-weight: 700;
+  border-radius: 1.5rem;
+  border: 2px solid black;
+  padding: 0.5rem 1.2rem 0.5rem 1.2rem;
+  transition: color 0.25s, background-color 0.25s;
+  cursor: pointer;
+}
+
+.links a:any-link:hover {
+  background-color: black;
+  color: white;
+}
