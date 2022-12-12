@@ -4,9 +4,11 @@ export const CanvasContext = createContext({
   width: null,
   height: null,
   scrollElement: null,
+  activeProject: null,
   setWidth: null,
   setHeight: null,
   setScrollElement: null,
+  setActiveProject: null,
 });
 
 export default function CanvasContextProvider({ children }) {
@@ -20,9 +22,9 @@ export default function CanvasContextProvider({ children }) {
         width,
         height,
         scrollElement,
-        setWidth,
-        setHeight,
-        setScrollElement,
+        setWidth: (width) => setWidth(width),
+        setHeight: (height) => setHeight(height),
+        setScrollElement: (scrollElement) => setScrollElement(scrollElement),
       }}
     >
       {children}

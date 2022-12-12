@@ -1,6 +1,11 @@
 .project {
+  scroll-snap-align: start;
   margin-left: 3rem;
   pointer-events: auto;
+}
+
+.project.active h2 {
+  color: red;
 }
 
 h2 {

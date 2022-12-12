@@ -1,7 +1,7 @@
-import classes from "./Main.module.css";
 import Project from "./Project";
+import classes from "./Main.module.css";
 
-export default function Main({ handleScroll }) {
+export default function Main({ activeProject }) {
   const projects = [
     {
       title: "Perfect Pixels Club",
@@ -54,9 +54,10 @@ export default function Main({ handleScroll }) {
           <p>See some of my projects =></p>
         </header>
         <article className={classes.projects}>
-          {projects.map((p) => (
+          {projects.map((p, i) => (
             <Project
               key={p.title}
+              active={i + 1 === activeProject}
               title={p.title}
               date={p.date}
               description={p.description}
