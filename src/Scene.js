@@ -17,10 +17,10 @@ export default function Scene() {
   const [activeProject, setActiveProject] = useState(null);
 
   const projectArray = [
-    { num: 1, min: width, max: width * 1.25 },
-    { num: 2, min: width * 2, max: width * 2.25 },
-    { num: 3, min: width * 3, max: width * 3.25 },
-    { num: 4, min: width * 4, max: width * 4.25 },
+    { min: width * 0.9, max: width * 1.25 },
+    { min: width * 1.9, max: width * 2.25 },
+    { min: width * 2.9, max: width * 3.25 },
+    { min: width * 3.9, max: width * 4.25 },
   ];
 
   useEffect(() => {
@@ -36,8 +36,8 @@ export default function Scene() {
   // });
 
   function getActiveProject(pos) {
-    for (const project of projectArray) {
-      if (pos > project.min && pos < project.max) return project.num;
+    for (let i = 0; i < projectArray.length; i++) {
+      if (pos > projectArray[i].min && pos < projectArray[i].max) return i + 1;
     }
     return null;
   }
@@ -68,4 +68,4 @@ export default function Scene() {
   );
 }
 
-softShadows();
+// softShadows();

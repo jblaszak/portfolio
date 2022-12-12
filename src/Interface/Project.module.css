@@ -1,33 +1,51 @@
 .project {
-  scroll-snap-align: start;
+  /* display: grid; */
+  position: relative;
   margin-left: 3rem;
   pointer-events: auto;
+  overflow: hidden;
+  /* transition: opacity 0.5s linear; */
 }
 
-.project.active h2 {
-  color: red;
+.project > * {
+  transition: 0.5s cubic-bezier(0.61, 1, 0.88, 1);
+  opacity: 0;
+}
+
+.project.active > * {
+  transform: matrix(1, 0, 0, 1, 0, 0);
+  opacity: 1;
 }
 
 h2 {
-  display: inline;
+  transition-delay: 0s;
+  transform: matrix(1, 0, 0, 1, 0, -100);
+  display: inline-block;
   position: relative;
   font-size: 2.5rem;
   width: fit-content;
-  margin-bottom: 4rem;
 }
 
 h2::after {
+  transition: width 0.5s cubic-bezier(0.61, 1, 0.88, 1);
+  transition-delay: 0.8s;
   content: "";
   position: absolute;
   left: 0;
   bottom: -2px;
-  width: 100%;
+  width: 0%;
   background-color: black;
   height: 3px;
 }
 
+.project.active h2::after {
+  width: 100%;
+}
+
 .date {
-  display: inline;
+  transition-delay: 0.25s;
+  transform: matrix(1, 0, 0, 1, 100, 0);
+  display: inline-block;
   margin-left: 1.5rem;
   font-size: 1.5rem;
 }
@@ -50,9 +68,13 @@ h2::after {
 .description,
 .tech {
   max-width: 35ch;
+  transition-delay: 0.4s;
+  transform: matrix(1, 0, 0, 1, -500, 0);
 }
 
 .links {
+  transition-delay: 0.6s;
+  transform: matrix(1, 0, 0, 1, 0, 200);
   display: grid;
   width: fit-content;
   grid-template-columns: repeat(3, 1fr);
