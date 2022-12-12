@@ -62,7 +62,7 @@ export default function Scene() {
       <GlassPortal position={[98, 0, 0]} rotation={[0, Math.PI / 6, 0]} />
       <Floor />
       <Scroll html>
-        <Main activeProject={activeProject} />
+        <Main activeProject={activeProject} width={width} scrollElement={data.el} />
       </Scroll>
     </>
   );

@@ -6,7 +6,6 @@ import * as THREE from "three";
 import Scene from "./Scene";
 import { Perf } from "r3f-perf";
 import Interface from "./Interface/Interface";
-import Main from "./Interface/Main";
 import { ScrollControls } from "@react-three/drei";
 import CanvasContextProvider from "./CanvasContext";
 
@@ -28,6 +27,5 @@ root.render(
       </Canvas>
       <Interface />
     </CanvasContextProvider>
-    {/* <Main /> */}
   </>
 );

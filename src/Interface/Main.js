@@ -1,7 +1,7 @@
 import Project from "./Project";
 import classes from "./Main.module.css";
 
-export default function Main({ activeProject }) {
+export default function Main({ activeProject, scrollElement, width }) {
   const projects = [
     {
       title: "Perfect Pixels Club",
@@ -43,6 +43,10 @@ export default function Main({ activeProject }) {
     },
   ];
 
+  function scrollToFirstProject() {
+    scrollElement.scrollTo({ left: width, behaviour: "smooth" });
+  }
+
   return (
     <>
       <main>
@@ -51,7 +55,9 @@ export default function Main({ activeProject }) {
             Jo Blaszak <span>Full Stack Web Developer</span>
           </h1>
           <p>I craft the future using web technologies.</p>
-          <p>See some of my projects =></p>
+          <button aria-label="View My Work" onClick={(e) => scrollToFirstProject()}>
+            View My Work
+          </button>
         </header>
         <article className={classes.projects}>
           {projects.map((p, i) => (
