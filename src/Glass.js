@@ -19,7 +19,7 @@ export default function Glass({ position, scale }) {
         setHovered(false);
       }}
     >
-      <boxGeometry args={[4, 6, 0.2]} />;
+      <boxGeometry args={[4, 6, 0.2]} />
       <a.meshStandardMaterial roughness={1} transparent opacity={0.6} color={color} />
     </mesh>
   );

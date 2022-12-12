@@ -68,4 +68,4 @@ export default function Scene() {
   );
 }
 
-// softShadows();
+softShadows();
