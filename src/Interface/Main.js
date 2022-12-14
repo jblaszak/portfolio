@@ -74,7 +74,21 @@ export default function Main({ activeProject, scrollElement, width }) {
             />
           ))}
         </article>
-        <article className={classes.contact}>Contact :3</article>
+        <footer className={classes.contact}>
+          <p>I'm currently open to opportunities!</p>
+          <p>
+            If you would like to discuss my work or connect with me you may do so{" "}
+            <span>
+              <a href="mailto:jblaszak@gmail.com" aria-label="Send Jo Blaszak an email">
+                via e-mail
+              </a>{" "}
+              or{" "}
+              <a href="https://www.linkedin.com/in/joblaszak/" aria-label="Visit my linkedIn page">
+                via LinkedIn
+              </a>
+            </span>
+          </p>
+        </footer>
       </main>
     </>
   );

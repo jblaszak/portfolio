@@ -80,23 +80,3 @@ h2::after {
   grid-template-columns: repeat(3, 1fr);
   grid-gap: 1rem;
 }
-
-.links a:any-link {
-  width: fit-content;
-  text-decoration: none;
-  font-family: "Roboto", sans-serif;
-  color: black;
-  background-color: white;
-  font-size: 1.5rem;
-  font-weight: 700;
-  border-radius: 1.5rem;
-  border: 2px solid black;
-  padding: 0.5rem 1.2rem 0.5rem 1.2rem;
-  transition: color 0.35s, background-color 0.35s;
-  cursor: pointer;
-}
-
-.links a:any-link:hover {
-  background-color: black;
-  color: white;
-}
