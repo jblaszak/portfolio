@@ -10,7 +10,7 @@ export default function Navigation() {
   }
 
   return (
-    <header>
+    <header className={classes.navContainer}>
       <nav className={classes.navigation}>
         <ul className={classes.navItems}>
           <li onClick={(e) => scrollToSection(1)}>Project 1</li>

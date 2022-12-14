@@ -5,7 +5,7 @@ import { Canvas } from "@react-three/fiber";
 import * as THREE from "three";
 import Scene from "./Scene";
 import { Perf } from "r3f-perf";
-import Interface from "./Interface/Interface";
+import Navigation from "./Interface/Navigation";
 import { ScrollControls } from "@react-three/drei";
 import CanvasContextProvider from "./CanvasContext";
 
@@ -25,7 +25,7 @@ root.render(
           <Scene />
         </ScrollControls>
       </Canvas>
-      <Interface />
+      <Navigation />
     </CanvasContextProvider>
   </>
 );

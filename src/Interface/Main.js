@@ -23,10 +23,10 @@ export default function Main({ activeProject, scrollElement, width }) {
       video: "",
     },
     {
-      title: "Qoor Starship",
+      title: "Qoor Starship/Nexus",
       date: "2019",
       description:
-        "Prototype for monitoring/scheduling service for AI/Machine Learning and Crypto Mining workloads.",
+        "Prototype for monitoring/scheduling service for AI/Machine Learning and Crypto Mining workloads. Required running machines so is no longer operational.",
       tech: "HTML, CSS, Node.js, React, Socket.io",
       siteLink: "",
       codeLink: "",
