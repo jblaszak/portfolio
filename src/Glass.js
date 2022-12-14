@@ -20,7 +20,9 @@ export default function Glass({ position, scale }) {
       }}
     >
       <boxGeometry args={[4, 6, 0.2]} />
-      <a.meshStandardMaterial roughness={1} transparent opacity={0.6} color={color} />
+      {/* THIS MATERIAL CAUSES INITIAL LAG SPIKE WHEN FIRST ENTERING SCREEN */}
+      {/* <a.meshStandardMaterial roughness={1} transparent opacity={0.6} color={color} /> */}
+      <a.meshBasicMaterial roughness={1} transparent opacity={0.4} color={color} />
     </mesh>
   );
 }
