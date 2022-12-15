@@ -1,18 +1,33 @@
-import React from "react";
+import React, { useContext } from "react";
 import ReactDOM from "react-dom/client";
-import "./style.css";
+import { ScrollControls, useContextBridge } from "@react-three/drei";
 import { Canvas } from "@react-three/fiber";
-import * as THREE from "three";
-import Scene from "./Scene";
 import { Perf } from "r3f-perf";
+import Scene from "./Scene";
 import Navigation from "./Interface/Navigation";
-import { ScrollControls } from "@react-three/drei";
-import CanvasContextProvider from "./CanvasContext";
+import VideoModal from "./Interface/VideoModal";
+import { CanvasContextProvider, CanvasContext } from "./CanvasContext";
+import { VideoContextProvider, VideoContext } from "./VideoContext";
+import * as THREE from "three";
+import "./style.css";
 
 const root = ReactDOM.createRoot(document.getElementById("root"));
 root.render(
   <>
     <CanvasContextProvider>
+      <VideoContextProvider>
+        <App />
+      </VideoContextProvider>
+    </CanvasContextProvider>
+  </>
+);
+
+function App() {
+  const vidContext = useContext(VideoContext);
+  const ContextBridge = useContextBridge(VideoContext, CanvasContext);
+
+  return (
+    <>
       <Canvas
         shadows
         camera={{ position: new THREE.Vector3(0.0, 4.4, 6.3) }}
@@ -20,12 +35,15 @@ root.render(
           state.camera.lookAt(new THREE.Vector3(0.0, 2.6, -8.3));
         }}
       >
-        <Perf position="bottom-left" />
-        <ScrollControls horizontal damping={4} pages={6}>
-          <Scene />
-        </ScrollControls>
+        <ContextBridge>
+          <Perf position="bottom-left" />
+          <ScrollControls horizontal damping={4} pages={6}>
+            <Scene />
+          </ScrollControls>
+        </ContextBridge>
       </Canvas>
       <Navigation />
-    </CanvasContextProvider>
-  </>
-);
+      {vidContext.video && <VideoModal video={vidContext.video} />}
+    </>
+  );
+}

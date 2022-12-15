@@ -30,7 +30,7 @@ export default function Main({ activeProject, scrollElement, width }) {
       tech: "HTML, CSS, Node.js, React, Socket.io",
       siteLink: "",
       codeLink: "",
-      video: "",
+      video: "something",
     },
     {
       title: "Qoor Website",

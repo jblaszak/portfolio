@@ -4,14 +4,12 @@ export const CanvasContext = createContext({
   width: null,
   height: null,
   scrollElement: null,
-  activeProject: null,
   setWidth: null,
   setHeight: null,
   setScrollElement: null,
-  setActiveProject: null,
 });
 
-export default function CanvasContextProvider({ children }) {
+export function CanvasContextProvider({ children }) {
   const [width, setWidth] = useState(null);
   const [height, setHeight] = useState(null);
   const [scrollElement, setScrollElement] = useState(null);

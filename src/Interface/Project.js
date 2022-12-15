@@ -1,3 +1,6 @@
+import { useContext } from "react";
+import { VideoContext } from "../VideoContext";
+
 import classes from "./Project.module.css";
 
 export default function Project({
@@ -10,6 +13,9 @@ export default function Project({
   codeLink,
   video,
 }) {
+  const videoContext = useContext(VideoContext);
+  console.log(videoContext);
+
   return (
     <section className={`${classes.project}${active ? ` ${classes.active}` : ""}`}>
       <h2>{title}</h2>
@@ -21,7 +27,7 @@ export default function Project({
       <div className={classes.links}>
         {siteLink && <a href={siteLink}>Visit Site</a>}
         {codeLink && <a href={codeLink}>See Code</a>}
-        {video && <a href="blank">Load video!</a>}
+        {video && <button onClick={() => videoContext.setVideo(video)}>Load video!</button>}
       </div>
     </section>
   );

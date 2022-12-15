@@ -1,6 +1,7 @@
 import { Scroll, softShadows, useScroll } from "@react-three/drei";
 import { useFrame, useThree } from "@react-three/fiber";
 import { CanvasContext } from "./CanvasContext";
+import { VideoContextProvider } from "./VideoContext";
 import { useContext, useEffect, useState } from "react";
 import * as THREE from "three";
 
@@ -62,7 +63,9 @@ export default function Scene() {
       <GlassPortal position={[98, 0, 0]} rotation={[0, Math.PI / 6, 0]} />
       <Floor />
       <Scroll html>
-        <Main activeProject={activeProject} width={width} scrollElement={data.el} />
+        <VideoContextProvider>
+          <Main activeProject={activeProject} width={width} scrollElement={data.el} />
+        </VideoContextProvider>
       </Scroll>
     </>
   );
