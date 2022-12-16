@@ -12,9 +12,10 @@ export default function Project({
   siteLink,
   codeLink,
   video,
+  videoCaption,
+  videoAriaLabel,
 }) {
   const videoContext = useContext(VideoContext);
-  console.log(videoContext);
 
   return (
     <section className={`${classes.project}${active ? ` ${classes.active}` : ""}`}>
@@ -25,9 +26,27 @@ export default function Project({
         Tech: <span>{tech}</span>
       </p>
       <div className={classes.links}>
-        {siteLink && <a href={siteLink}>Visit Site</a>}
-        {codeLink && <a href={codeLink}>See Code</a>}
-        {video && <button onClick={() => videoContext.setVideo(video)}>Load video!</button>}
+        {siteLink && (
+          <a href={siteLink} target="_blank" rel="noopener noreferrer">
+            Visit Site
+          </a>
+        )}
+        {codeLink && (
+          <a href={codeLink} target="_blank" rel="noopener noreferrer">
+            See Code
+          </a>
+        )}
+        {video && (
+          <button
+            aria-label={videoAriaLabel}
+            onClick={() => {
+              videoContext.setVideo((prev) => video);
+              videoContext.setVideoCaption((prev) => videoCaption);
+            }}
+          >
+            View Video
+          </button>
+        )}
       </div>
     </section>
   );

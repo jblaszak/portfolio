@@ -1,4 +1,4 @@
-import React, { useContext } from "react";
+import React from "react";
 import ReactDOM from "react-dom/client";
 import { ScrollControls, useContextBridge } from "@react-three/drei";
 import { Canvas } from "@react-three/fiber";
@@ -23,7 +23,6 @@ root.render(
 );
 
 function App() {
-  const vidContext = useContext(VideoContext);
   const ContextBridge = useContextBridge(VideoContext, CanvasContext);
 
   return (
@@ -43,7 +42,7 @@ function App() {
         </ContextBridge>
       </Canvas>
       <Navigation />
-      {vidContext.video && <VideoModal video={vidContext.video} />}
+      <VideoModal />
     </>
   );
 }

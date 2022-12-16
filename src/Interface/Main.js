@@ -1,5 +1,6 @@
 import Project from "./Project";
 import classes from "./Main.module.css";
+import starshipVideo from "../assets/starship-nexus-demo.mp4";
 
 export default function Main({ activeProject, scrollElement, width }) {
   const projects = [
@@ -10,7 +11,6 @@ export default function Main({ activeProject, scrollElement, width }) {
       tech: "HTML, CSS, React, Canvas",
       siteLink: "https://www.perfectpixelsclub.com",
       codeLink: "https://github.com/jblaszak/perfect-pixels-club",
-      video: "",
     },
     {
       title: "Crypto Flex Pixels",
@@ -20,7 +20,6 @@ export default function Main({ activeProject, scrollElement, width }) {
       tech: "HTML, CSS, React, Redux, Canvas, Solidity",
       siteLink: "https://www.cryptoflexpixels.com",
       codeLink: "https://github.com/jblaszak/crypto-pixels",
-      video: "",
     },
     {
       title: "Qoor Starship/Nexus",
@@ -28,9 +27,10 @@ export default function Main({ activeProject, scrollElement, width }) {
       description:
         "Prototype for monitoring/scheduling service for AI/Machine Learning and Crypto Mining workloads. Required running machines so is no longer operational.",
       tech: "HTML, CSS, Node.js, React, Socket.io",
-      siteLink: "",
-      codeLink: "",
-      video: "something",
+      video: starshipVideo,
+      videoCaption:
+        "This project required a number of machines communicating with one another to simulate monitoring and accessing a machine in a datacenter. It was created for the purpose of conveying the concept to investors and is no longer operational.",
+      videoAriaLabel: "View a video of the Qoor Starship/Nexus Project",
     },
     {
       title: "Qoor Website",
@@ -38,8 +38,6 @@ export default function Main({ activeProject, scrollElement, width }) {
       description: "Company site for pre-seed startup. Code is private.",
       tech: "HTML, CSS, React",
       siteLink: "https://qoor.io/",
-      codeLink: "",
-      video: "",
     },
   ];
 
@@ -68,9 +66,10 @@ export default function Main({ activeProject, scrollElement, width }) {
               date={p.date}
               description={p.description}
               tech={p.tech}
-              siteLink={p.siteLink}
-              codeLink={p.codeLink}
-              video={p.video}
+              siteLink={p.siteLink || null}
+              codeLink={p.codeLink || null}
+              video={p.video || null}
+              videoCaption={p.videoCaption || null}
             />
           ))}
         </article>
@@ -79,11 +78,21 @@ export default function Main({ activeProject, scrollElement, width }) {
           <p>
             If you would like to discuss my work or connect with me you may do so{" "}
             <span>
-              <a href="mailto:jblaszak@gmail.com" aria-label="Send Jo Blaszak an email">
+              <a
+                href="mailto:jblaszak@gmail.com"
+                aria-label="Send Jo Blaszak an email"
+                target="_blank"
+                rel="noopener noreferrer"
+              >
                 via e-mail
               </a>{" "}
               or{" "}
-              <a href="https://www.linkedin.com/in/joblaszak/" aria-label="Visit my linkedIn page">
+              <a
+                href="https://www.linkedin.com/in/joblaszak/"
+                aria-label="Visit my linkedIn page"
+                target="_blank"
+                rel="noopener noreferrer"
+              >
                 via LinkedIn
               </a>
             </span>
