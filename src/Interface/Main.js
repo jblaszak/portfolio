@@ -9,7 +9,7 @@ export default function Main({ activeProject, scrollElement, width }) {
       date: "2022",
       description: "A collections page for planned NFT projects.",
       tech: "HTML, CSS, React, Canvas",
-      siteLink: "https://www.perfectpixelsclub.com",
+      siteLink: "https://www.perfectpixels.club",
       codeLink: "https://github.com/jblaszak/perfect-pixels-club",
     },
     {

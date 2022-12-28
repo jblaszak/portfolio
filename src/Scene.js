@@ -10,6 +10,7 @@ import GlassPortal from "./GlassPortal";
 import Main from "./Interface/Main";
 
 import "./style.css";
+import Particles from "./Particles";
 
 export default function Scene() {
   const { width, height } = useThree((state) => state.size);
@@ -55,9 +56,9 @@ export default function Scene() {
 
   return (
     <>
-      {/* <OrbitControls makeDefault /> */}
       <color attach="background" args={["white"]} />
       <ambientLight intensity={1} />
+      <Particles position={[23, 3, 0]} rotation={[0, Math.PI / 6, 0]} />
       <GlassPortal position={[23, 0, 0]} rotation={[0, Math.PI / 6, 0]} />
       <GlassPortal position={[48, 0, 0]} rotation={[0, Math.PI / 6, 0]} />
       <GlassPortal position={[73, 0, 0]} rotation={[0, Math.PI / 6, 0]} />

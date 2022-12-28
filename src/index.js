@@ -1,6 +1,6 @@
 import React from "react";
 import ReactDOM from "react-dom/client";
-import { ScrollControls, useContextBridge } from "@react-three/drei";
+import { OrbitControls, ScrollControls, useContextBridge } from "@react-three/drei";
 import { Canvas } from "@react-three/fiber";
 import { Perf } from "r3f-perf";
 import Scene from "./Scene";
@@ -34,6 +34,7 @@ function App() {
           state.camera.lookAt(new THREE.Vector3(0.0, 2.6, -8.3));
         }}
       >
+        <OrbitControls makeDefault />
         <ContextBridge>
           <Perf position="bottom-left" />
           <ScrollControls horizontal damping={4} pages={6}>
