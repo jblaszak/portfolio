@@ -1,8 +1,28 @@
 import * as THREE from "three";
-import { useLoader } from "@react-three/fiber";
+import { shaderMaterial } from "@react-three/drei";
+import { extend, useFrame, useLoader } from "@react-three/fiber";
 import ppc from "./assets/ppc_small.png";
 import ParticlesVertexShader from "./shaders/ParticlesVertexShader";
 import ParticlesFragmentShader from "./shaders/ParticlesFragmentShader";
+import { useRef } from "react";
+import { useControls } from "leva";
+
+const ParticleMaterial = shaderMaterial(
+  {
+    uTime: 1.0,
+    uRandom: 1.0,
+    uDepth: 0.0,
+    uSize: 1.25,
+    uScale: 0.0225,
+    uOpacity: 1.0,
+    uTextureSize: null,
+    uTexture: null,
+  },
+  ParticlesVertexShader,
+  ParticlesFragmentShader
+);
+
+extend({ ParticleMaterial });
 
 export default function Particles({ position, rotation }) {
   const [texture] = useLoader(THREE.TextureLoader, [ppc]);
@@ -23,20 +43,68 @@ export default function Particles({ position, rotation }) {
     angles[i] = Math.random() * Math.PI;
   }
 
-  const uniforms = {
-    uTime: { value: 0 },
-    uRandom: { value: 1.0 },
-    uDepth: { value: 1.0 },
-    uSize: { value: 1.0 },
-    uScale: { value: 0.01 },
-    uTextureSize: { value: new THREE.Vector2(textureWidth, textureHeight) },
-    uTexture: { value: texture },
-  };
+  const meshRef = useRef();
+
+  const { uTime, uRandom, uDepth, uSize, uScale, uOpacity } = useControls("uniforms", {
+    uTime: {
+      value: 1.0,
+      min: 0.0,
+      max: 10.0,
+      step: 0.1,
+    },
+    uRandom: {
+      value: 5.0,
+      min: 0.0,
+      max: 1000.0,
+      step: 1,
+    },
+    uDepth: {
+      value: 0.0,
+      min: 0.0,
+      max: 10.0,
+      step: 0.1,
+    },
+    uSize: {
+      value: 1.5,
+      min: 0.0,
+      max: 10.0,
+      step: 0.1,
+    },
+    uScale: {
+      value: 0.0225,
+      min: 0.0,
+      max: 10.0,
+      step: 0.1,
+    },
+    uOpacity: {
+      value: 1.0,
+      min: 0.0,
+      max: 1.0,
+      step: 0.1,
+    },
+  });
 
   const geo = new THREE.InstancedBufferGeometry().copy(new THREE.PlaneBufferGeometry(1, 1, 1, 1));
 
+  useFrame((state, delta) => {
+    meshRef.current.material.uniforms.uTime.value = uTime;
+    meshRef.current.material.uniforms.uRandom.value = uRandom;
+    meshRef.current.material.uniforms.uDepth.value = uDepth;
+    meshRef.current.material.uniforms.uSize.value = uSize;
+    meshRef.current.material.uniforms.uScale.value = uScale;
+    meshRef.current.material.uniforms.uOpacity.value = uOpacity;
+    meshRef.current.material.uniforms.uTextureSize.value = new THREE.Vector2(
+      textureWidth,
+      textureHeight
+    );
+    meshRef.current.material.uniforms.uTexture.value = texture;
+    // meshRef.current.material.uniforms.uRandom.value = uRandom;
+    // meshRef.current.material.uniformsNeedUpdate = true;
+    // console.log(meshRef.current.material.uniforms.uRandom.value);
+  });
+
   return (
-    <mesh position={position} rotation={rotation}>
+    <mesh ref={meshRef} position={position} rotation={rotation}>
       <instancedBufferGeometry
         index={geo.index}
         attributes-position={geo.attributes.position}
@@ -46,13 +114,7 @@ export default function Particles({ position, rotation }) {
         <instancedBufferAttribute attach="attributes-angle" args={[angles, 1]} />
         <instancedBufferAttribute attach="attributes-offset" args={[offsets, 3]} />
       </instancedBufferGeometry>
-      <rawShaderMaterial
-        uniforms={uniforms}
-        vertexShader={ParticlesVertexShader}
-        fragmentShader={ParticlesFragmentShader}
-        depthTest={false}
-        transparent={true}
-      />
+      <particleMaterial depthTest={false} transparent={true} />
     </mesh>
   );
 }
