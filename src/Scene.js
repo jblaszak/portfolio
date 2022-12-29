@@ -4,6 +4,7 @@ import { CanvasContext } from "./CanvasContext";
 import { VideoContext } from "./VideoContext";
 import { useContext, useEffect, useState } from "react";
 import * as THREE from "three";
+import ppc from "./assets/ppc_small.png";
 
 import Floor from "./Floor";
 import GlassPortal from "./GlassPortal";
@@ -19,11 +20,13 @@ export default function Scene() {
   const data = useScroll();
   const [activeProject, setActiveProject] = useState(null);
 
+  const rotation = [0, Math.PI / 6, 0];
+
   const projectArray = [
-    { min: width * 0.9, max: width * 1.25 },
-    { min: width * 1.9, max: width * 2.25 },
-    { min: width * 2.9, max: width * 3.25 },
-    { min: width * 3.9, max: width * 4.25 },
+    { min: width * 0.9, max: width * 1.15 },
+    { min: width * 1.9, max: width * 2.15 },
+    { min: width * 2.9, max: width * 3.15 },
+    { min: width * 3.9, max: width * 4.15 },
   ];
 
   useEffect(() => {
@@ -51,18 +54,25 @@ export default function Scene() {
     state.camera.lookAt(new THREE.Vector3(0.0 + data.offset * maxWidth, 2.6, -8.3));
 
     const active = getActiveProject(data.el.scrollLeft);
-    if (active !== activeProject) setActiveProject(active);
+    if (active !== activeProject) {
+      setActiveProject(active);
+    }
   });
 
   return (
     <>
       <color attach="background" args={["white"]} />
       <ambientLight intensity={1} />
-      <Particles position={[23.1, 3, 0.1]} rotation={[0, Math.PI / 6, 0]} />
-      <GlassPortal position={[23, 0, 0]} rotation={[0, Math.PI / 6, 0]} />
-      <GlassPortal position={[48, 0, 0]} rotation={[0, Math.PI / 6, 0]} />
-      <GlassPortal position={[73, 0, 0]} rotation={[0, Math.PI / 6, 0]} />
-      <GlassPortal position={[98, 0, 0]} rotation={[0, Math.PI / 6, 0]} />
+      <Particles
+        position={[23.1, 3, 0.1]}
+        rotation={rotation}
+        image={ppc}
+        active={activeProject === 1}
+      />
+      <GlassPortal position={[23, 0, 0]} rotation={rotation} />
+      <GlassPortal position={[48, 0, 0]} rotation={rotation} />
+      <GlassPortal position={[73, 0, 0]} rotation={rotation} />
+      <GlassPortal position={[98, 0, 0]} rotation={rotation} />
       <Floor />
       <Scroll html>
         <ContextBridge>

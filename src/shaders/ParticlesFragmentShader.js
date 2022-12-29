@@ -1,5 +1,6 @@
 const ParticlesFragmentShader = /* glsl */ `precision highp float;
 uniform sampler2D uTexture;
+uniform float uOpacity;
 
 varying vec2 vPUv;
 varying vec2 vUv;
@@ -18,7 +19,7 @@ void main() {
 	float t = smoothstep(0.0, border, dist);
 
 	// final color
-	color.a = t;
+	color.a = t*uOpacity;
 
 	gl_FragColor = color;
 }`;
