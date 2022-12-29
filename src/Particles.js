@@ -5,14 +5,14 @@ import ParticlesVertexShader from "./shaders/ParticlesVertexShader";
 import ParticlesFragmentShader from "./shaders/ParticlesFragmentShader";
 import { useSpring, a } from "@react-spring/three";
 import { useRef } from "react";
-import { useControls } from "leva";
+// import { useControls } from "leva";
 
 const ParticleMaterial = shaderMaterial(
   {
-    uRandom: 1.0,
-    uSize: 2.0,
-    uScale: 0.0225,
-    uOpacity: 1.0,
+    uRandom: null,
+    uSize: null,
+    uScale: null,
+    uOpacity: null,
     uTextureSize: null,
     uTexture: null,
   },
@@ -22,8 +22,7 @@ const ParticleMaterial = shaderMaterial(
 
 extend({ ParticleMaterial });
 
-export default function Particles({ position, rotation, image, active }) {
-  const [texture] = useLoader(THREE.TextureLoader, [image]);
+export default function Particles({ position, texture, image, active }) {
   const textureWidth = texture.source.data.width;
   const textureHeight = texture.source.data.height;
   const numParticles = textureWidth * textureHeight;
@@ -72,7 +71,7 @@ export default function Particles({ position, rotation, image, active }) {
       friction: 120,
       tension: 400,
     },
-    uRandom: active ? 0.0 : 100.0,
+    uRandom: active ? 0.0 : 300.0,
     uOpacity: active ? 1.0 : 0.0,
   });
 
@@ -86,11 +85,13 @@ export default function Particles({ position, rotation, image, active }) {
         <particleMaterial
           depthTest={false}
           transparent={true}
+          flatShading={true}
+          toneMapped={false}
           ref={materialRef}
           attach="material"
           uRandom={props.uRandom}
           uOpacity={props.uOpacity}
-          uSize={2.0}
+          uSize={3.0}
           uScale={0.0225}
           uTextureSize={new THREE.Vector2(textureWidth, textureHeight)}
           uTexture={texture}
@@ -99,17 +100,24 @@ export default function Particles({ position, rotation, image, active }) {
     });
 
     return (
-      <mesh ref={meshRef} position={position} rotation={rotation}>
-        <instancedBufferGeometry
-          index={geo.index}
-          attributes-position={geo.attributes.position}
-          attributes-uv={geo.attributes.uv}
-        >
-          <instancedBufferAttribute attach="attributes-pindex" args={[indices, 1]} />
-          <instancedBufferAttribute attach="attributes-offset" args={[offsets, 3]} />
-        </instancedBufferGeometry>
-        <FinalMaterial uRandom={uRandom} uOpacity={uOpacity} />
-      </mesh>
+      <group position={position}>
+        <mesh ref={meshRef}>
+          <instancedBufferGeometry
+            index={geo.index}
+            attributes-position={geo.attributes.position}
+            attributes-uv={geo.attributes.uv}
+          >
+            <instancedBufferAttribute attach="attributes-pindex" args={[indices, 1]} />
+            <instancedBufferAttribute attach="attributes-offset" args={[offsets, 3]} />
+          </instancedBufferGeometry>
+          <FinalMaterial uRandom={uRandom} uOpacity={uOpacity} />
+        </mesh>
+        <mesh position={[0, 0.02, 0]} scale={[0.91, 0.94, 0.92]}>
+          <planeGeometry args={[4, 6]} />
+          {/* <meshBasicMaterial /> */}
+          <meshBasicMaterial map={image} />
+        </mesh>
+      </group>
     );
   };
 

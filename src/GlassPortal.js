@@ -4,7 +4,7 @@ import { useEffect, useRef } from "react";
 import * as THREE from "three";
 import { useControls } from "leva";
 
-export default function GlassPortal({ position, rotation }) {
+export default function GlassPortal({ position, image }) {
   const lightRef = useRef();
   const portalRef = useRef();
 
@@ -75,6 +75,9 @@ export default function GlassPortal({ position, rotation }) {
     lightRef.current.target = portalRef.current;
   }, []);
 
+  const scaleFactor = 0.95;
+  const planeSize = [4, 6, 0.2];
+
   return (
     <>
       <group ref={portalRef} position={position}>
@@ -99,11 +102,9 @@ export default function GlassPortal({ position, rotation }) {
           // shadow-camera-bottom={bottom}
           // shadow-camera-left={left}
         />
-        <group rotation={rotation}>
-          <Glass position={[0, 3, -0.4]} scale={[1.21, 1.136, 1]} />
-          <Glass position={[0, 3, -0.2]} scale={[1.1, 1.066, 1]} />
-          <Glass position={[0, 3, 0]} scale={1} />
-        </group>
+        <Glass position={[0, 3, -0.4]} scale={[1.21, 1.136, 1]} planeSize={planeSize} />
+        <Glass position={[0, 3, -0.2]} scale={[1.1, 1.066, 1]} planeSize={planeSize} />
+        <Glass position={[0, 3, 0]} scale={1} planeSize={planeSize} />
       </group>
       {/* <BakeShadows /> */}
     </>

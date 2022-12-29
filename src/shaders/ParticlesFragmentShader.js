@@ -22,6 +22,9 @@ void main() {
 	color.a = t*uOpacity;
 
 	gl_FragColor = color;
+
+    #include <tonemapping_fragment>
+    #include <encodings_fragment>
 }`;
 
 export default ParticlesFragmentShader;

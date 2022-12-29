@@ -1,5 +1,4 @@
 const ParticlesVertexShader = /* glsl */ `precision highp float;
-
 	attribute float pindex;
 	attribute vec3 offset;
 	// attribute float angle;
@@ -13,7 +12,6 @@ const ParticlesVertexShader = /* glsl */ `precision highp float;
 
 	varying vec2 vPUv;
 	varying vec2 vUv;
-
 
 	// //WEBGL-NOISE FROM https://github.com/stegu/webgl-noise
 	// //Description : Array and textureless GLSL 2D simplex noise function. Author : Ian McEwan, Ashima Arts. Maintainer : stegu Lastmod : 20110822 (ijm) License : Copyright (C) 2011 Ashima Arts. All rights reserved. Distributed under the MIT License. See LICENSE file. https://github.com/ashima/webgl-noise https://github.com/stegu/webgl-noise      

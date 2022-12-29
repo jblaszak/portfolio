@@ -1,10 +1,11 @@
 import { Scroll, softShadows, useScroll, useContextBridge } from "@react-three/drei";
-import { useFrame, useThree } from "@react-three/fiber";
+import { useFrame, useThree, useLoader } from "@react-three/fiber";
 import { CanvasContext } from "./CanvasContext";
 import { VideoContext } from "./VideoContext";
 import { useContext, useEffect, useState } from "react";
 import * as THREE from "three";
-import ppc from "./assets/ppc_small.png";
+import ppc_small from "./assets/ppc_small.png";
+import ppc from "./assets/ppc.png";
 
 import Floor from "./Floor";
 import GlassPortal from "./GlassPortal";
@@ -14,6 +15,7 @@ import "./style.css";
 import Particles from "./Particles";
 
 export default function Scene() {
+  const [ppcTexture, ppcImage] = useLoader(THREE.TextureLoader, [ppc_small, ppc]);
   const { width, height } = useThree((state) => state.size);
   const { setWidth, setHeight, setScrollElement } = useContext(CanvasContext);
   const ContextBridge = useContextBridge(CanvasContext, VideoContext);
@@ -22,11 +24,11 @@ export default function Scene() {
 
   const rotation = [0, Math.PI / 6, 0];
 
-  const projectArray = [
-    { min: width * 0.9, max: width * 1.15 },
-    { min: width * 1.9, max: width * 2.15 },
-    { min: width * 2.9, max: width * 3.15 },
-    { min: width * 3.9, max: width * 4.15 },
+  const projects = [
+    { min: width * 0.9, max: width * 1.15, texture: ppcTexture, image: ppcImage },
+    { min: width * 1.9, max: width * 2.15, texture: ppcTexture, image: ppcImage },
+    { min: width * 2.9, max: width * 3.15, texture: ppcTexture, image: ppcImage },
+    { min: width * 3.9, max: width * 4.15, texture: ppcTexture, image: ppcImage },
   ];
 
   useEffect(() => {
@@ -42,8 +44,8 @@ export default function Scene() {
   // });
 
   function getActiveProject(pos) {
-    for (let i = 0; i < projectArray.length; i++) {
-      if (pos > projectArray[i].min && pos < projectArray[i].max) return i + 1;
+    for (let i = 0; i < projects.length; i++) {
+      if (pos > projects[i].min && pos < projects[i].max) return i + 1;
     }
     return null;
   }
@@ -63,16 +65,19 @@ export default function Scene() {
     <>
       <color attach="background" args={["white"]} />
       <ambientLight intensity={1} />
-      <Particles
-        position={[23.1, 3, 0.1]}
-        rotation={rotation}
-        image={ppc}
-        active={activeProject === 1}
-      />
-      <GlassPortal position={[23, 0, 0]} rotation={rotation} />
-      <GlassPortal position={[48, 0, 0]} rotation={rotation} />
-      <GlassPortal position={[73, 0, 0]} rotation={rotation} />
-      <GlassPortal position={[98, 0, 0]} rotation={rotation} />
+      {projects.map((project, i) => {
+        return (
+          <group key={i} position={[23 + 25 * i, 0, 0]} rotation={rotation}>
+            <Particles
+              position={[0, 3, 0.101]}
+              texture={project.texture}
+              image={project.image}
+              active={activeProject === i + 1}
+            />
+            <GlassPortal />
+          </group>
+        );
+      })}
       <Floor />
       <Scroll html>
         <ContextBridge>
