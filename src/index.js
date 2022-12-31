@@ -8,6 +8,7 @@ import Navigation from "./Interface/Navigation";
 import VideoModal from "./Interface/VideoModal";
 import { CanvasContextProvider, CanvasContext } from "./CanvasContext";
 import { VideoContextProvider, VideoContext } from "./VideoContext";
+import { ActiveProjectContextProvider, ActiveProjectContext } from "./ActiveProjectContext";
 import * as THREE from "three";
 import "./style.css";
 
@@ -15,15 +16,17 @@ const root = ReactDOM.createRoot(document.getElementById("root"));
 root.render(
   <>
     <CanvasContextProvider>
-      <VideoContextProvider>
-        <App />
-      </VideoContextProvider>
+      <ActiveProjectContextProvider>
+        <VideoContextProvider>
+          <App />
+        </VideoContextProvider>
+      </ActiveProjectContextProvider>
     </CanvasContextProvider>
   </>
 );
 
 function App() {
-  const ContextBridge = useContextBridge(VideoContext, CanvasContext);
+  const ContextBridge = useContextBridge(CanvasContext, ActiveProjectContext, VideoContext);
 
   return (
     <>

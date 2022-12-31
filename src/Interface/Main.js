@@ -1,8 +1,10 @@
+import { useContext } from "react";
+import { ActiveProjectContext } from "../ActiveProjectContext";
 import Project from "./Project";
 import classes from "./Main.module.css";
 import starshipVideo from "../assets/starship-nexus-demo.mp4";
 
-export default function Main({ activeProject, scrollElement, width }) {
+export default function Main({ scrollElement, width }) {
   const projects = [
     {
       title: "Perfect Pixels Club",
@@ -44,6 +46,8 @@ export default function Main({ activeProject, scrollElement, width }) {
   function scrollToFirstProject() {
     scrollElement.scrollTo({ left: width, behaviour: "smooth" });
   }
+
+  const { activeProject } = useContext(ActiveProjectContext);
 
   return (
     <>

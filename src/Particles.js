@@ -1,10 +1,11 @@
 import * as THREE from "three";
 import { shaderMaterial } from "@react-three/drei";
-import { extend, useFrame, useLoader } from "@react-three/fiber";
+import { extend, useFrame } from "@react-three/fiber";
 import ParticlesVertexShader from "./shaders/ParticlesVertexShader";
 import ParticlesFragmentShader from "./shaders/ParticlesFragmentShader";
-import { useSpring, a } from "@react-spring/three";
-import { useRef } from "react";
+import { useSpring, a, useSpringRef } from "@react-spring/three";
+import { useRef, useEffect, useContext } from "react";
+import { ActiveProjectContext } from "./ActiveProjectContext";
 // import { useControls } from "leva";
 
 const ParticleMaterial = shaderMaterial(
@@ -22,7 +23,8 @@ const ParticleMaterial = shaderMaterial(
 
 extend({ ParticleMaterial });
 
-export default function Particles({ position, texture, image, active }) {
+export default function Particles({ position, texture, image, index }) {
+  const { activeProject } = useContext(ActiveProjectContext);
   const textureWidth = texture.source.data.width;
   const textureHeight = texture.source.data.height;
   const numParticles = textureWidth * textureHeight;
@@ -38,44 +40,54 @@ export default function Particles({ position, texture, image, active }) {
 
   const materialRef = useRef();
 
-  //   const { uRandom, uSize, uScale, uOpacity } = useControls("uniforms", {
-  //     uRandom: {
-  //       value: 5.0,
-  //       min: 0.0,
-  //       max: 1000.0,
-  //       step: 1,
-  //     },
-  //     uSize: {
-  //       value: 2.0,
-  //       min: 0.0,
-  //       max: 10.0,
-  //       step: 0.1,
-  //     },
-  //     uScale: {
-  //       value: 0.0225,
-  //       min: 0.0,
-  //       max: 10.0,
-  //       step: 0.1,
-  //     },
-  //     uOpacity: {
-  //       value: 1.0,
-  //       min: 0.0,
-  //       max: 1.0,
-  //       step: 0.1,
-  //     },
-  //   });
+  const [springs, api] = useSpring(() => {
+    if (activeProject === index) {
+      return {
+        config: {
+          mass: 1,
+          friction: 120,
+          tension: 400,
+          duration: 2000,
+        },
+        to: [
+          {
+            uRandom: 300.0,
+            uOpacity: 0.0,
+            materialOpacity: 0.0,
+          },
+          {
+            uRandom: 0.0,
+            uOpacity: 1.0,
+            materialOpacity: 0.0,
+          },
+          {
+            uRandom: 0.0,
+            uOpacity: 0.0,
+            materialOpacity: 1.0,
+          },
+        ],
+      };
+    } else {
+      return {
+        config: {
+          mass: 1,
+          friction: 120,
+          tension: 400,
+          duration: 500,
+          precision: 0.0001,
+        },
+        to: [
+          {
+            uRandom: 300.0,
+            uOpacity: 0.0,
+            materialOpacity: 0.0,
+          },
+        ],
+      };
+    }
+  }, [activeProject]);
 
-  const { uRandom, uOpacity } = useSpring({
-    config: {
-      mass: 1,
-      friction: 120,
-      tension: 400,
-    },
-    uRandom: active ? 0.0 : 300.0,
-    uOpacity: active ? 1.0 : 0.0,
-  });
-
-  const geo = new THREE.InstancedBufferGeometry().copy(new THREE.PlaneBufferGeometry(1, 1, 1, 1));
+  const geo = new THREE.InstancedBufferGeometry().copy(new THREE.PlaneGeometry(1, 1, 1, 1));
 
   const Shader = () => {
     const meshRef = useRef();
@@ -86,7 +98,6 @@ export default function Particles({ position, texture, image, active }) {
           depthTest={false}
           transparent={true}
           flatShading={true}
-          toneMapped={false}
           ref={materialRef}
           attach="material"
           uRandom={props.uRandom}
@@ -110,12 +121,11 @@ export default function Particles({ position, texture, image, active }) {
             <instancedBufferAttribute attach="attributes-pindex" args={[indices, 1]} />
             <instancedBufferAttribute attach="attributes-offset" args={[offsets, 3]} />
           </instancedBufferGeometry>
-          <FinalMaterial uRandom={uRandom} uOpacity={uOpacity} />
+          <FinalMaterial uRandom={springs.uRandom} uOpacity={springs.uOpacity} />
         </mesh>
         <mesh position={[0, 0.02, 0]} scale={[0.91, 0.94, 0.92]}>
           <planeGeometry args={[4, 6]} />
-          {/* <meshBasicMaterial /> */}
-          <meshBasicMaterial map={image} />
+          <a.meshBasicMaterial map={image} transparent={true} opacity={springs.materialOpacity} />
         </mesh>
       </group>
     );

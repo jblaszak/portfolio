@@ -75,7 +75,6 @@ export default function GlassPortal({ position, image }) {
     lightRef.current.target = portalRef.current;
   }, []);
 
-  const scaleFactor = 0.95;
   const planeSize = [4, 6, 0.2];
 
   return (

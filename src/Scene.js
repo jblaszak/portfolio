@@ -1,5 +1,6 @@
 import { Scroll, softShadows, useScroll, useContextBridge } from "@react-three/drei";
 import { useFrame, useThree, useLoader } from "@react-three/fiber";
+import { ActiveProject, ActiveProjectContext } from "./ActiveProjectContext";
 import { CanvasContext } from "./CanvasContext";
 import { VideoContext } from "./VideoContext";
 import { useContext, useEffect, useState } from "react";
@@ -18,9 +19,9 @@ export default function Scene() {
   const [ppcTexture, ppcImage] = useLoader(THREE.TextureLoader, [ppc_small, ppc]);
   const { width, height } = useThree((state) => state.size);
   const { setWidth, setHeight, setScrollElement } = useContext(CanvasContext);
-  const ContextBridge = useContextBridge(CanvasContext, VideoContext);
+  const ContextBridge = useContextBridge(CanvasContext, VideoContext, ActiveProjectContext);
   const data = useScroll();
-  const [activeProject, setActiveProject] = useState(null);
+  const { activeProject, setActiveProject } = useContext(ActiveProjectContext);
 
   const rotation = [0, Math.PI / 6, 0];
 
@@ -72,7 +73,7 @@ export default function Scene() {
               position={[0, 3, 0.101]}
               texture={project.texture}
               image={project.image}
-              active={activeProject === i + 1}
+              index={i + 1}
             />
             <GlassPortal />
           </group>
@@ -81,7 +82,7 @@ export default function Scene() {
       <Floor />
       <Scroll html>
         <ContextBridge>
-          <Main activeProject={activeProject} width={width} scrollElement={data.el} />
+          <Main width={width} scrollElement={data.el} />
         </ContextBridge>
       </Scroll>
     </>
