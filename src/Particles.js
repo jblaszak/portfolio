@@ -1,9 +1,9 @@
 import * as THREE from "three";
 import { shaderMaterial } from "@react-three/drei";
-import { extend, useFrame } from "@react-three/fiber";
+import { extend } from "@react-three/fiber";
 import ParticlesVertexShader from "./shaders/ParticlesVertexShader";
 import ParticlesFragmentShader from "./shaders/ParticlesFragmentShader";
-import { useSpring, a, useSpringRef } from "@react-spring/three";
+import { useSpring, a } from "@react-spring/three";
 import { useRef, useEffect, useContext } from "react";
 import { ActiveProjectContext } from "./ActiveProjectContext";
 // import { useControls } from "leva";
@@ -40,6 +40,11 @@ export default function Particles({ position, texture, image, index }) {
 
   const materialRef = useRef();
 
+  const prevActiveProjectRef = useRef();
+  useEffect(() => {
+    prevActiveProjectRef.current = activeProject;
+  }, [activeProject]);
+
   const [springs, api] = useSpring(() => {
     if (activeProject === index) {
       return {
@@ -67,7 +72,8 @@ export default function Particles({ position, texture, image, index }) {
           },
         ],
       };
-    } else {
+    } else if (prevActiveProjectRef.current === index) {
+      console.log("PREVIOUS PROJECT");
       return {
         config: {
           mass: 1,
@@ -83,6 +89,12 @@ export default function Particles({ position, texture, image, index }) {
             materialOpacity: 0.0,
           },
         ],
+      };
+    } else {
+      return {
+        uRandom: 300.0,
+        uOpacity: 0.0,
+        materialOpacity: 0.0,
       };
     }
   }, [activeProject]);
