@@ -1,8 +1,8 @@
 // import { RandomizedLight } from "@react-three/drei";
 import Glass from "./Glass";
 import { useEffect, useRef } from "react";
-import * as THREE from "three";
-import { useControls } from "leva";
+// import * as THREE from "three";
+// import { useControls } from "leva";
 
 export default function GlassPortal({ position, image }) {
   const lightRef = useRef();

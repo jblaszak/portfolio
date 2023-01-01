@@ -45,7 +45,7 @@ export default function Particles({ position, texture, image, index }) {
     prevActiveProjectRef.current = activeProject;
   }, [activeProject]);
 
-  const [springs, api] = useSpring(() => {
+  const [springs] = useSpring(() => {
     if (activeProject === index) {
       return {
         config: {

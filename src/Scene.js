@@ -1,9 +1,9 @@
 import { Scroll, softShadows, useScroll, useContextBridge } from "@react-three/drei";
 import { useFrame, useThree, useLoader } from "@react-three/fiber";
-import { ActiveProject, ActiveProjectContext } from "./ActiveProjectContext";
+import { ActiveProjectContext } from "./ActiveProjectContext";
 import { CanvasContext } from "./CanvasContext";
 import { VideoContext } from "./VideoContext";
-import { useContext, useEffect, useState } from "react";
+import { useContext, useEffect } from "react";
 import * as THREE from "three";
 import ppc_small from "./assets/ppc_small.png";
 import ppc from "./assets/ppc.png";
@@ -17,8 +17,8 @@ import Particles from "./Particles";
 
 export default function Scene() {
   const [ppcTexture, ppcImage] = useLoader(THREE.TextureLoader, [ppc_small, ppc]);
-  const { width, height } = useThree((state) => state.size);
-  const { setWidth, setHeight, setScrollElement } = useContext(CanvasContext);
+  const { width } = useThree((state) => state.size);
+  const { setWidth, setScrollElement } = useContext(CanvasContext);
   const ContextBridge = useContextBridge(CanvasContext, VideoContext, ActiveProjectContext);
   const data = useScroll();
   const { activeProject, setActiveProject } = useContext(ActiveProjectContext);
@@ -34,9 +34,8 @@ export default function Scene() {
 
   useEffect(() => {
     setWidth(width);
-    setHeight(height);
     setScrollElement(data.el);
-  }, [width, height]);
+  }, [width, data.el, setWidth, setScrollElement]);
 
   // const cameraInitialPosition =
   // const { cameraPosition, lookAtPosition } = useControls("camera", {

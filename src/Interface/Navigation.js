@@ -4,7 +4,7 @@ import { ActiveProjectContext } from "../ActiveProjectContext";
 import classes from "./Navigation.module.css";
 
 export default function Navigation() {
-  const { width, height, scrollElement } = useContext(CanvasContext);
+  const { width, scrollElement } = useContext(CanvasContext);
   const { activeProject } = useContext(ActiveProjectContext);
 
   function scrollToSection(section) {
@@ -12,8 +12,6 @@ export default function Navigation() {
   }
 
   const isContact = scrollElement?.scrollLeft > width * 4.15;
-  // const isContact = false;
-  // console.log(scrollElement.scrollLeft);
 
   return (
     <header className={classes.navContainer}>
