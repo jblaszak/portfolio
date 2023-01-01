@@ -73,7 +73,6 @@ export default function Particles({ position, texture, image, index }) {
         ],
       };
     } else if (prevActiveProjectRef.current === index) {
-      console.log("PREVIOUS PROJECT");
       return {
         config: {
           mass: 1,

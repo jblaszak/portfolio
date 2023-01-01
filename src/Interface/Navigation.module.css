@@ -44,16 +44,32 @@
   cursor: pointer;
   opacity: 0.7;
   transition: 0.25s all;
+  position: relative;
 }
 
-.navItems > li:hover {
+.navItems > li::after {
+  content: "";
+  position: absolute;
+  margin: auto;
+  height: 2px;
+  width: 0;
+  left: 0;
+  right: 0;
+  bottom: -4px;
+  background-color: black;
+  transition: 0.4s;
+}
+
+.navItems > li:hover,
+.navItems > li.active {
   opacity: 1;
 }
 
 .navItems > li:last-child {
-  padding-left: 2rem;
+  margin-left: 2rem;
 }
 
-.active {
-  opacity: 1;
+.navItems > li:hover::after,
+.navItems > li.active::after {
+  width: 100%;
 }
