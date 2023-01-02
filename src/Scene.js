@@ -5,8 +5,14 @@ import { CanvasContext } from "./CanvasContext";
 import { VideoContext } from "./VideoContext";
 import { useContext, useEffect } from "react";
 import * as THREE from "three";
-import ppc_small from "./assets/ppc_small.png";
 import ppc from "./assets/ppc.png";
+import ppc_small from "./assets/ppc_small.png";
+import qoor from "./assets/qoor.png";
+import qoor_small from "./assets/qoor_small.png";
+import cfp from "./assets/cfp.png";
+import cfp_small from "./assets/cfp_small.png";
+import starship from "./assets/starship.png";
+import starship_small from "./assets/starship_small.png";
 
 import Floor from "./Floor";
 import GlassPortal from "./GlassPortal";
@@ -16,7 +22,25 @@ import "./style.css";
 import Particles from "./Particles";
 
 export default function Scene() {
-  const [ppcTexture, ppcImage] = useLoader(THREE.TextureLoader, [ppc_small, ppc]);
+  const [
+    ppcTexture,
+    ppcImage,
+    qoorTexture,
+    qoorImage,
+    cfpTexture,
+    cfpImage,
+    starshipTexture,
+    starshipImage,
+  ] = useLoader(THREE.TextureLoader, [
+    ppc_small,
+    ppc,
+    qoor_small,
+    qoor,
+    cfp_small,
+    cfp,
+    starship_small,
+    starship,
+  ]);
   const { width } = useThree((state) => state.size);
   const { setWidth, setScrollElement } = useContext(CanvasContext);
   const ContextBridge = useContextBridge(CanvasContext, VideoContext, ActiveProjectContext);
@@ -27,9 +51,9 @@ export default function Scene() {
 
   const projects = [
     { min: width * 0.9, max: width * 1.15, texture: ppcTexture, image: ppcImage },
-    { min: width * 1.9, max: width * 2.15, texture: ppcTexture, image: ppcImage },
-    { min: width * 2.9, max: width * 3.15, texture: ppcTexture, image: ppcImage },
-    { min: width * 3.9, max: width * 4.15, texture: ppcTexture, image: ppcImage },
+    { min: width * 1.9, max: width * 2.15, texture: cfpTexture, image: cfpImage },
+    { min: width * 2.9, max: width * 3.15, texture: starshipTexture, image: starshipImage },
+    { min: width * 3.9, max: width * 4.15, texture: qoorTexture, image: qoorImage },
   ];
 
   useEffect(() => {
