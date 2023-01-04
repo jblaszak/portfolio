@@ -39,7 +39,7 @@ function App() {
       >
         <OrbitControls makeDefault />
         <ContextBridge>
-          <Perf position="bottom-left" />
+          {/* <Perf position="bottom-left" /> */}
           <ScrollControls horizontal damping={4} pages={6}>
             <Scene />
           </ScrollControls>

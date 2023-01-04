@@ -1,10 +1,14 @@
 import { useContext } from "react";
+import { CanvasContext } from "../CanvasContext";
 import { ActiveProjectContext } from "../ActiveProjectContext";
 import Project from "./Project";
 import classes from "./Main.module.css";
 import starshipVideo from "../assets/starship-nexus-demo.mp4";
 
-export default function Main({ scrollElement, width }) {
+export default function Main() {
+  const { activeProject } = useContext(ActiveProjectContext);
+  const { width, scrollElement } = useContext(CanvasContext);
+
   const projects = [
     {
       title: "Perfect Pixels Club",
@@ -27,7 +31,7 @@ export default function Main({ scrollElement, width }) {
       title: "Qoor Starship/Nexus",
       date: "2019",
       description:
-        "Prototype for monitoring/scheduling service for AI/Machine Learning and Crypto Mining workloads. Required running machines so is no longer operational.",
+        "Prototype for monitoring/scheduling service for AI/Machine Learning and Crypto Mining workloads. Required multiple running machines so no live demo available.",
       tech: "HTML, CSS, Node.js, React, Socket.io",
       video: starshipVideo,
       videoCaption:
@@ -47,8 +51,6 @@ export default function Main({ scrollElement, width }) {
     scrollElement.scrollTo({ left: width, behaviour: "smooth" });
   }
 
-  const { activeProject } = useContext(ActiveProjectContext);
-
   return (
     <>
       <main>
@@ -57,7 +59,11 @@ export default function Main({ scrollElement, width }) {
             Jo Blaszak <span>Full Stack Web Developer</span>
           </h1>
           <p>I craft the future using web technologies.</p>
-          <button aria-label="View My Work" onClick={(e) => scrollToFirstProject()}>
+          <button
+            className={classes.largeButton}
+            aria-label="View My Work"
+            onClick={(e) => scrollToFirstProject()}
+          >
             View My Work
           </button>
         </header>
@@ -83,6 +89,7 @@ export default function Main({ scrollElement, width }) {
             If you would like to discuss my work or connect with me you may do so{" "}
             <span>
               <a
+                className={classes.largeLink}
                 href="mailto:jblaszak@gmail.com"
                 aria-label="Send Jo Blaszak an email"
                 target="_blank"
@@ -92,6 +99,7 @@ export default function Main({ scrollElement, width }) {
               </a>{" "}
               or{" "}
               <a
+                className={classes.largeLink}
                 href="https://www.linkedin.com/in/joblaszak/"
                 aria-label="Visit my linkedIn page"
                 target="_blank"

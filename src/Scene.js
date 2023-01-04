@@ -56,6 +56,13 @@ export default function Scene() {
     { min: width * 3.9, max: width * 4.15, texture: qoorTexture, image: qoorImage },
   ];
 
+  // some math, 25 at < 500px width, 23 at > 1080px width, otherwise linearly interpolate between
+  // y = mx + b
+  // pos = -(2/(1080-500)*width) + 25
+  // pos = -width/290 + 25
+  // pos = -(width - 500)/290 + 25, shift to start moving at width 500
+  const portalPosition = width < 500 ? 25 : width > 1080 ? 23 : -(width - 500) / 290 + 25;
+
   useEffect(() => {
     setWidth(width);
     setScrollElement(data.el);
@@ -91,7 +98,7 @@ export default function Scene() {
       <ambientLight intensity={1} />
       {projects.map((project, i) => {
         return (
-          <group key={i} position={[23 + 25 * i, 0, 0]} rotation={rotation}>
+          <group key={i} position={[portalPosition + 25 * i, 0, 0]} rotation={rotation}>
             <Particles
               position={[0, 3, 0.101]}
               texture={project.texture}
@@ -105,7 +112,7 @@ export default function Scene() {
       <Floor />
       <Scroll html>
         <ContextBridge>
-          <Main width={width} scrollElement={data.el} />
+          <Main />
         </ContextBridge>
       </Scroll>
     </>
