@@ -6,13 +6,13 @@ import { VideoContext } from "./VideoContext";
 import { useContext, useEffect } from "react";
 import * as THREE from "three";
 import ppc from "./assets/ppc.png";
-import ppc_small from "./assets/ppc_small.png";
+import ppc_small from "./assets/ppc_xsmall.png";
 import qoor from "./assets/qoor.png";
-import qoor_small from "./assets/qoor_small.png";
+import qoor_small from "./assets/qoor_xsmall.png";
 import cfp from "./assets/cfp.png";
-import cfp_small from "./assets/cfp_small.png";
+import cfp_small from "./assets/cfp_xsmall.png";
 import starship from "./assets/starship.png";
-import starship_small from "./assets/starship_small.png";
+import starship_small from "./assets/starship_xsmall.png";
 
 import Floor from "./Floor";
 import GlassPortal from "./GlassPortal";
