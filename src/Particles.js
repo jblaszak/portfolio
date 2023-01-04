@@ -53,6 +53,7 @@ export default function Particles({ position, texture, image, index }) {
           friction: 120,
           tension: 400,
           duration: 2000,
+          precision: 0.0001,
         },
         to: [
           {

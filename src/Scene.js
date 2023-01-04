@@ -1,4 +1,5 @@
-import { BakeShadows, Scroll, softShadows, useScroll, useContextBridge } from "@react-three/drei";
+// import { BakeShadows, Scroll, softShadows, useScroll, useContextBridge } from "@react-three/drei";
+import { BakeShadows, Scroll, useScroll, useContextBridge } from "@react-three/drei";
 import { useFrame, useThree, useLoader } from "@react-three/fiber";
 import { ActiveProjectContext } from "./ActiveProjectContext";
 import { CanvasContext } from "./CanvasContext";
@@ -120,4 +121,4 @@ export default function Scene() {
   );
 }
 
-softShadows();
+// softShadows();
