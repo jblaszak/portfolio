@@ -37,7 +37,7 @@ function App() {
           state.camera.lookAt(new THREE.Vector3(0.0, 2.6, -8.3));
         }}
       >
-        <OrbitControls makeDefault />
+        {/* <OrbitControls makeDefault /> */}
         <ContextBridge>
           <Perf position="bottom-left" />
           <ScrollControls horizontal damping={4} pages={6}>

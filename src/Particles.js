@@ -113,7 +113,7 @@ export default function Particles({ position, texture, image, index }) {
           attach="material"
           uRandom={props.uRandom}
           uOpacity={props.uOpacity}
-          uSize={3.0}
+          uSize={2.0}
           uScale={0.045}
           uTextureSize={new THREE.Vector2(textureWidth, textureHeight)}
           uTexture={texture}
