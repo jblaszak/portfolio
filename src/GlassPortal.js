@@ -87,13 +87,15 @@ export default function GlassPortal({ position, image }) {
           intensity={0}
           target={portalRef.current}
           shadow-bias={-0.0005}
-          shadow-mapSize={[512, 512]}
+          shadow-mapSize={[16, 16]}
+          // shadow-mapSize={[512, 512]}
           shadow-camera-near={1.0}
-          shadow-camera-far={90}
+          shadow-camera-far={20}
           shadow-camera-top={6.4}
           shadow-camera-right={5.1}
           shadow-camera-bottom={-1.0}
           shadow-camera-left={-4.8}
+          // shadow-blurSamples={10}
           // shadow-camera-near={near}
           // shadow-camera-far={far}
           // shadow-camera-top={top}
