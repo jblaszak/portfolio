@@ -1,10 +1,9 @@
-// import { BakeShadows, Scroll, softShadows, useScroll, useContextBridge } from "@react-three/drei";
 import { BakeShadows, Scroll, useScroll, useContextBridge } from "@react-three/drei";
 import { useFrame, useThree, useLoader } from "@react-three/fiber";
 import { ActiveProjectContext } from "./ActiveProjectContext";
 import { CanvasContext } from "./CanvasContext";
 import { VideoContext } from "./VideoContext";
-import { useContext, useEffect } from "react";
+import { useContext, useEffect, useState } from "react";
 import * as THREE from "three";
 import ppc from "./assets/ppc.png";
 import ppc_small from "./assets/ppc_xsmall.png";
@@ -47,6 +46,8 @@ export default function Scene() {
   const ContextBridge = useContextBridge(CanvasContext, VideoContext, ActiveProjectContext);
   const data = useScroll();
   const { activeProject, setActiveProject } = useContext(ActiveProjectContext);
+  const [currScroll, setCurrScroll] = useState(0);
+  const [isMouseDown, setIsMouseDown] = useState(false);
 
   const projects = [
     { min: width * 0.9, max: width * 1.15, texture: ppcTexture, image: ppcImage },
@@ -81,6 +82,35 @@ export default function Scene() {
     return null;
   }
 
+  // Scroll Container from Drei sets scroll to 1px briefly, this resets it back to 0
+  useEffect(() => {
+    setTimeout(() => {
+      data.el.scrollTo({ left: 0 });
+    }, 50);
+  }, [data.el]);
+
+  // If dragging scrollbar or touching and dragging screen on mobile, keep track so we don't try to
+  // jump to next section until we release
+  useEffect(() => {
+    function mouseDown(e) {
+      setIsMouseDown(true);
+    }
+    function mouseUp(e) {
+      setIsMouseDown(false);
+    }
+    window.addEventListener("mousedown", mouseDown);
+    window.addEventListener("mouseup", mouseUp);
+    window.addEventListener("touchstart", mouseDown);
+    window.addEventListener("touchend", mouseUp);
+
+    return () => {
+      window.removeEventListener("mousedown", mouseDown);
+      window.removeEventListener("mouseup", mouseUp);
+      window.removeEventListener("touchstart", mouseDown);
+      window.removeEventListener("touchend", mouseUp);
+    };
+  }, []);
+
   useFrame((state, delta) => {
     const maxWidth = 125;
     state.camera.position.copy(new THREE.Vector3(data.offset * maxWidth, 4.4, 6.3));
@@ -89,6 +119,19 @@ export default function Scene() {
     const active = getActiveProject(data.el.scrollLeft);
     if (active !== activeProject) {
       setActiveProject(active);
+    }
+
+    // When scrolling a little bit manually, scroll to next section
+    if (!isMouseDown) {
+      if (data.el.scrollLeft < currScroll) {
+        const pos = Math.floor(data.el.scrollLeft / width) * width;
+        data.el.scrollTo({ left: pos });
+        setCurrScroll(pos);
+      } else if (data.el.scrollLeft > currScroll) {
+        const pos = Math.ceil(data.el.scrollLeft / width) * width;
+        data.el.scrollTo({ left: pos });
+        setCurrScroll(pos);
+      }
     }
   });
 
