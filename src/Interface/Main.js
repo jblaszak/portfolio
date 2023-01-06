@@ -48,7 +48,7 @@ export default function Main() {
   ];
 
   function scrollToFirstProject() {
-    scrollElement.scrollTo({ left: width, behaviour: "smooth" });
+    scrollElement.scrollTo({ left: width });
   }
 
   return (
@@ -76,10 +76,10 @@ export default function Main() {
               date={p.date}
               description={p.description}
               tech={p.tech}
-              siteLink={p.siteLink || null}
-              codeLink={p.codeLink || null}
-              video={p.video || null}
-              videoCaption={p.videoCaption || null}
+              siteLink={p.siteLink ?? null}
+              codeLink={p.codeLink ?? null}
+              video={p.video ?? null}
+              videoCaption={p.videoCaption ?? null}
             />
           ))}
         </article>

@@ -8,7 +8,7 @@ export default function Navigation() {
   const { activeProject } = useContext(ActiveProjectContext);
 
   function scrollToSection(section) {
-    scrollElement.scrollTo({ left: width * section, behaviour: "smooth" });
+    scrollElement.scrollTo({ left: width * section });
   }
 
   const isContact = scrollElement?.scrollLeft > width * 4.15;

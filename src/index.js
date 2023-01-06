@@ -2,7 +2,7 @@ import React from "react";
 import ReactDOM from "react-dom/client";
 import { ScrollControls, useContextBridge, Preload } from "@react-three/drei";
 import { Canvas } from "@react-three/fiber";
-import { Perf } from "r3f-perf";
+// import { Perf } from "r3f-perf";
 import Scene from "./Scene";
 import Navigation from "./Interface/Navigation";
 import VideoModal from "./Interface/VideoModal";
@@ -40,8 +40,8 @@ function App() {
         {/* <OrbitControls makeDefault /> */}
         <Preload all />
         <ContextBridge>
-          <Perf position="bottom-left" />
-          <ScrollControls horizontal damping={4} pages={6}>
+          {/* <Perf position="bottom-left" /> */}
+          <ScrollControls horizontal damping={5} pages={6}>
             <Scene />
           </ScrollControls>
         </ContextBridge>

@@ -48,8 +48,6 @@ export default function Scene() {
   const data = useScroll();
   const { activeProject, setActiveProject } = useContext(ActiveProjectContext);
 
-  const rotation = [0, Math.PI / 6, 0];
-
   const projects = [
     { min: width * 0.9, max: width * 1.15, texture: ppcTexture, image: ppcImage },
     { min: width * 1.9, max: width * 2.15, texture: cfpTexture, image: cfpImage },
@@ -63,6 +61,7 @@ export default function Scene() {
   // pos = -width/290 + 25
   // pos = -(width - 500)/290 + 25, shift to start moving at width 500
   const portalPosition = width < 500 ? 25 : width > 1080 ? 23 : -(width - 500) / 290 + 25;
+  const rotation = [0, Math.PI / 6, 0];
 
   useEffect(() => {
     setWidth(width);
