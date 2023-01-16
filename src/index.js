@@ -6,27 +6,24 @@ import { Canvas } from "@react-three/fiber";
 import Scene from "./Scene";
 import Navigation from "./Interface/Navigation";
 import VideoModal from "./Interface/VideoModal";
-import { CanvasContextProvider, CanvasContext } from "./CanvasContext";
+import { SectionContextProvider, SectionContext } from "./SectionContext";
 import { VideoContextProvider, VideoContext } from "./VideoContext";
-import { ActiveProjectContextProvider, ActiveProjectContext } from "./ActiveProjectContext";
 import * as THREE from "three";
 import "./style.css";
 
 const root = ReactDOM.createRoot(document.getElementById("root"));
 root.render(
   <>
-    <CanvasContextProvider>
-      <ActiveProjectContextProvider>
-        <VideoContextProvider>
-          <App />
-        </VideoContextProvider>
-      </ActiveProjectContextProvider>
-    </CanvasContextProvider>
+    <VideoContextProvider>
+      <SectionContextProvider>
+        <App />
+      </SectionContextProvider>
+    </VideoContextProvider>
   </>
 );
 
 function App() {
-  const ContextBridge = useContextBridge(CanvasContext, ActiveProjectContext, VideoContext);
+  const ContextBridge = useContextBridge(VideoContext, SectionContext);
 
   return (
     <>

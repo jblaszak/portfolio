@@ -1,9 +1,8 @@
 import { BakeShadows, Scroll, useScroll, useContextBridge } from "@react-three/drei";
 import { useFrame, useThree, useLoader } from "@react-three/fiber";
-import { ActiveProjectContext } from "./ActiveProjectContext";
-import { CanvasContext } from "./CanvasContext";
+import { SectionContext } from "./SectionContext";
 import { VideoContext } from "./VideoContext";
-import { useContext, useEffect, useState } from "react";
+import { useContext, useEffect } from "react";
 import * as THREE from "three";
 import ppc from "./assets/ppc.png";
 import ppc_small from "./assets/ppc_xsmall.png";
@@ -41,20 +40,26 @@ export default function Scene() {
     starship_small,
     starship,
   ]);
+  const { setCurrSection, targetSection } = useContext(SectionContext);
+  const ContextBridge = useContextBridge(VideoContext, SectionContext);
   const { width } = useThree((state) => state.size);
-  const { setWidth, setScrollElement } = useContext(CanvasContext);
-  const ContextBridge = useContextBridge(CanvasContext, VideoContext, ActiveProjectContext);
   const data = useScroll();
-  const { activeProject, setActiveProject } = useContext(ActiveProjectContext);
-  const [currScroll, setCurrScroll] = useState(0);
-  const [isMouseDown, setIsMouseDown] = useState(false);
+
+  useEffect(() => {
+    window.onwheel = (e) => {
+      e.preventDefault();
+      e.stopPropagation();
+    };
+  }, []);
 
   const projects = [
-    { min: width * 0.9, max: width * 1.15, texture: ppcTexture, image: ppcImage },
-    { min: width * 1.9, max: width * 2.15, texture: cfpTexture, image: cfpImage },
-    { min: width * 2.9, max: width * 3.15, texture: starshipTexture, image: starshipImage },
-    { min: width * 3.9, max: width * 4.15, texture: qoorTexture, image: qoorImage },
+    { texture: ppcTexture, image: ppcImage },
+    { texture: cfpTexture, image: cfpImage },
+    { texture: starshipTexture, image: starshipImage },
+    { texture: qoorTexture, image: qoorImage },
   ];
+
+  const maxSections = projects.length + 2;
 
   // some math, 25 at < 500px width, 23 at > 1080px width, otherwise linearly interpolate between
   // y = mx + b
@@ -64,75 +69,34 @@ export default function Scene() {
   const portalPosition = width < 500 ? 25 : width > 1080 ? 23 : -(width - 500) / 290 + 25;
   const rotation = [0, Math.PI / 6, 0];
 
-  useEffect(() => {
-    setWidth(width);
-    setScrollElement(data.el);
-  }, [width, data.el, setWidth, setScrollElement]);
-
   // const cameraInitialPosition =
   // const { cameraPosition, lookAtPosition } = useControls("camera", {
   //   cameraPosition: { value: [0.0, 4.4, 6.3], step: 0.1 },
   //   lookAtPosition: { value: [0.0, 2.6, -8.3], step: 0.1 },
   // });
 
-  function getActiveProject(pos) {
-    for (let i = 0; i < projects.length; i++) {
-      if (pos > projects[i].min && pos < projects[i].max) return i + 1;
-    }
-    return null;
+  function getFirstDigit(num) {
+    return parseInt(num, 10);
   }
-
-  // Scroll Container from Drei sets scroll to 1px briefly, this resets it back to 0
-  useEffect(() => {
-    setTimeout(() => {
-      data.el.scrollTo({ left: 0 });
-    }, 50);
-  }, [data.el]);
-
-  // If dragging scrollbar or touching and dragging screen on mobile, keep track so we don't try to
-  // jump to next section until we release
-  useEffect(() => {
-    function mouseDown(e) {
-      setIsMouseDown(true);
-    }
-    function mouseUp(e) {
-      setIsMouseDown(false);
-    }
-    window.addEventListener("mousedown", mouseDown);
-    window.addEventListener("mouseup", mouseUp);
-    window.addEventListener("touchstart", mouseDown);
-    window.addEventListener("touchend", mouseUp);
-
-    return () => {
-      window.removeEventListener("mousedown", mouseDown);
-      window.removeEventListener("mouseup", mouseUp);
-      window.removeEventListener("touchstart", mouseDown);
-      window.removeEventListener("touchend", mouseUp);
-    };
-  }, []);
 
   useFrame((state, delta) => {
     const maxWidth = 125;
     state.camera.position.copy(new THREE.Vector3(data.offset * maxWidth, 4.4, 6.3));
     state.camera.lookAt(new THREE.Vector3(0.0 + data.offset * maxWidth, 2.6, -8.3));
 
-    const active = getActiveProject(data.el.scrollLeft);
-    if (active !== activeProject) {
-      setActiveProject(active);
+    // set appropriate section if currPos +- range matches;
+    const currPos = data.offset * (maxSections - 1);
+    const firstDigit = getFirstDigit(currPos);
+    const range = 0.25;
+    if (getFirstDigit(currPos + range) > firstDigit) {
+      setCurrSection(getFirstDigit(currPos + range));
+    } else if (getFirstDigit(currPos - range) < firstDigit) {
+      setCurrSection(firstDigit);
+    } else {
+      setCurrSection(null);
     }
 
-    // When scrolling a little bit manually, scroll to next section
-    if (!isMouseDown) {
-      if (data.el.scrollLeft < currScroll) {
-        const pos = Math.floor(data.el.scrollLeft / width) * width;
-        data.el.scrollTo({ left: pos });
-        setCurrScroll(pos);
-      } else if (data.el.scrollLeft > currScroll) {
-        const pos = Math.ceil(data.el.scrollLeft / width) * width;
-        data.el.scrollTo({ left: pos });
-        setCurrScroll(pos);
-      }
-    }
+    data.el.scrollLeft = targetSection * width;
   });
 
   return (
@@ -162,5 +126,3 @@ export default function Scene() {
     </>
   );
 }
-
-// softShadows();

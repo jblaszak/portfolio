@@ -5,7 +5,7 @@ import ParticlesVertexShader from "./shaders/ParticlesVertexShader";
 import ParticlesFragmentShader from "./shaders/ParticlesFragmentShader";
 import { useSpring, a } from "@react-spring/three";
 import { useRef, useEffect, useContext } from "react";
-import { ActiveProjectContext } from "./ActiveProjectContext";
+import { SectionContext } from "./SectionContext";
 // import { useControls } from "leva";
 
 const ParticleMaterial = shaderMaterial(
@@ -24,7 +24,7 @@ const ParticleMaterial = shaderMaterial(
 extend({ ParticleMaterial });
 
 export default function Particles({ position, texture, image, index }) {
-  const { activeProject } = useContext(ActiveProjectContext);
+  const { currSection } = useContext(SectionContext);
   const textureWidth = texture.source.data.width;
   const textureHeight = texture.source.data.height;
   const numParticles = textureWidth * textureHeight;
@@ -40,13 +40,13 @@ export default function Particles({ position, texture, image, index }) {
 
   const materialRef = useRef();
 
-  const prevActiveProjectRef = useRef();
+  const prevSectionRef = useRef();
   useEffect(() => {
-    prevActiveProjectRef.current = activeProject;
-  }, [activeProject]);
+    prevSectionRef.current = currSection;
+  }, [currSection]);
 
   const [springs] = useSpring(() => {
-    if (activeProject === index) {
+    if (currSection === index) {
       return {
         config: {
           mass: 1,
@@ -73,7 +73,7 @@ export default function Particles({ position, texture, image, index }) {
           },
         ],
       };
-    } else if (prevActiveProjectRef.current === index) {
+    } else if (prevSectionRef.current === index) {
       return {
         config: {
           mass: 1,
@@ -97,7 +97,7 @@ export default function Particles({ position, texture, image, index }) {
         materialOpacity: 0.0,
       };
     }
-  }, [activeProject]);
+  }, [currSection]);
 
   const geo = new THREE.InstancedBufferGeometry().copy(new THREE.PlaneGeometry(1, 1, 1, 1));
 

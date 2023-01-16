@@ -1,51 +1,60 @@
 import { useContext } from "react";
-import { CanvasContext } from "../CanvasContext";
-import { ActiveProjectContext } from "../ActiveProjectContext";
+import { SectionContext } from "../SectionContext";
 import classes from "./Navigation.module.css";
 
 export default function Navigation() {
-  const { width, scrollElement } = useContext(CanvasContext);
-  const { activeProject } = useContext(ActiveProjectContext);
+  const { currSection, setTargetSection } = useContext(SectionContext);
 
-  function scrollToSection(section) {
-    scrollElement.scrollTo({ left: width * section });
-  }
+  // function prevSection() {
+  //   const target = currSection - 1;
+  //   setTargetSection(target < 0 ? 0 : target);
+  // }
 
-  const isContact = scrollElement?.scrollLeft > width * 4.15;
+  // function nextSection() {
+  //   const target = currSection + 1;
+  //   setTargetSection(target > 5 ? 5 : target);
+  // }
 
   return (
     <header className={classes.navContainer}>
       <nav className={classes.navigation}>
         <ul className={classes.navItems}>
           <li
-            className={activeProject === 1 ? classes.active : ""}
-            onClick={(e) => scrollToSection(1)}
+            className={currSection === 1 ? classes.active : ""}
+            onClick={(e) => setTargetSection(1)}
           >
             Project 1
           </li>
           <li
-            className={activeProject === 2 ? classes.active : ""}
-            onClick={(e) => scrollToSection(2)}
+            className={currSection === 2 ? classes.active : ""}
+            onClick={(e) => setTargetSection(2)}
           >
             Project 2
           </li>
           <li
-            className={activeProject === 3 ? classes.active : ""}
-            onClick={(e) => scrollToSection(3)}
+            className={currSection === 3 ? classes.active : ""}
+            onClick={(e) => setTargetSection(3)}
           >
             Project 3
           </li>
           <li
-            className={activeProject === 4 ? classes.active : ""}
-            onClick={(e) => scrollToSection(4)}
+            className={currSection === 4 ? classes.active : ""}
+            onClick={(e) => setTargetSection(4)}
           >
             Project 4
           </li>
-          <li className={isContact ? classes.active : ""} onClick={(e) => scrollToSection(5)}>
+          <li
+            className={currSection === 5 ? classes.active : ""}
+            onClick={(e) => setTargetSection(5)}
+          >
             Contact
           </li>
         </ul>
       </nav>
+      {/* <nav className={classes.sideNav}>
+        <button className={} onClick={(e) => prevSection()}>←</button>
+        <button onClick={(e) => nextSection()}>→</button>
+      </nav> */}
     </header>
   );
 }

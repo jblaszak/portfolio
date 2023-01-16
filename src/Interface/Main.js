@@ -1,13 +1,11 @@
 import { useContext } from "react";
-import { CanvasContext } from "../CanvasContext";
-import { ActiveProjectContext } from "../ActiveProjectContext";
+import { SectionContext } from "../SectionContext";
 import Project from "./Project";
 import classes from "./Main.module.css";
 import starshipVideo from "../assets/starship-nexus-demo.mp4";
 
 export default function Main() {
-  const { activeProject } = useContext(ActiveProjectContext);
-  const { width, scrollElement } = useContext(CanvasContext);
+  const { currSection, setTargetSection } = useContext(SectionContext);
 
   const projects = [
     {
@@ -47,10 +45,6 @@ export default function Main() {
     },
   ];
 
-  function scrollToFirstProject() {
-    scrollElement.scrollTo({ left: width });
-  }
-
   return (
     <>
       <main>
@@ -62,7 +56,7 @@ export default function Main() {
           <button
             className={classes.largeButton}
             aria-label="View My Work"
-            onClick={(e) => scrollToFirstProject()}
+            onClick={(e) => setTargetSection(1)}
           >
             View My Work
           </button>
@@ -71,7 +65,7 @@ export default function Main() {
           {projects.map((p, i) => (
             <Project
               key={p.title}
-              active={i + 1 === activeProject}
+              active={i + 1 === currSection}
               title={p.title}
               date={p.date}
               description={p.description}
