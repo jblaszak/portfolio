@@ -1,7 +1,6 @@
-import { BakeShadows, Scroll, useScroll, useContextBridge } from "@react-three/drei";
+import { BakeShadows, useContextBridge } from "@react-three/drei";
 import { useFrame, useThree, useLoader } from "@react-three/fiber";
 import { SectionContext } from "./SectionContext";
-import { VideoContext } from "./VideoContext";
 import { useContext } from "react";
 import * as THREE from "three";
 import ppc from "./assets/ppc.png";
@@ -15,7 +14,6 @@ import starship_small from "./assets/starship_xsmall.png";
 
 import Floor from "./Floor";
 import GlassPortal from "./GlassPortal";
-import Main from "./Interface/Main";
 
 import "./style.css";
 import Particles from "./Particles";
@@ -41,9 +39,7 @@ export default function Scene() {
     starship,
   ]);
   const { setCurrSection, targetSection } = useContext(SectionContext);
-  const ContextBridge = useContextBridge(VideoContext, SectionContext);
-  const { width } = useThree((state) => state.size);
-  const data = useScroll();
+  const { width, height } = useThree((state) => state.size);
 
   const projects = [
     { texture: ppcTexture, image: ppcImage },
@@ -68,28 +64,25 @@ export default function Scene() {
   //   lookAtPosition: { value: [0.0, 2.6, -8.3], step: 0.1 },
   // });
 
-  function getFirstDigit(num) {
-    return parseInt(num, 10);
-  }
+  // function getFirstDigit(num) {
+  //   return parseInt(num, 10);
+  // }
 
   useFrame((state, delta) => {
-    const maxWidth = 125;
-    state.camera.position.copy(new THREE.Vector3(data.offset * maxWidth, 4.4, 6.3));
-    state.camera.lookAt(new THREE.Vector3(0.0 + data.offset * maxWidth, 2.6, -8.3));
-
+    // const maxWidth = 125;
+    // state.camera.position.copy(new THREE.Vector3(data.offset * maxWidth, 4.4, 6.3));
+    // state.camera.lookAt(new THREE.Vector3(0.0 + data.offset * maxWidth, 2.6, -8.3));
     // set appropriate section if currPos +- range matches;
-    const currPos = data.offset * (maxSections - 1);
-    const firstDigit = getFirstDigit(currPos);
-    const range = 0.25;
-    if (getFirstDigit(currPos + range) > firstDigit) {
-      setCurrSection(getFirstDigit(currPos + range));
-    } else if (getFirstDigit(currPos - range) < firstDigit) {
-      setCurrSection(firstDigit);
-    } else {
-      setCurrSection(null);
-    }
-
-    data.el.scrollLeft = targetSection * width;
+    // const currPos = data.offset * (maxSections - 1);
+    // const firstDigit = getFirstDigit(currPos);
+    // const range = 0.25;
+    // if (getFirstDigit(currPos + range) > firstDigit) {
+    //   setCurrSection(getFirstDigit(currPos + range));
+    // } else if (getFirstDigit(currPos - range) < firstDigit) {
+    //   setCurrSection(firstDigit);
+    // } else {
+    //   setCurrSection(null);
+    // }
   });
 
   return (
@@ -98,7 +91,7 @@ export default function Scene() {
       <ambientLight intensity={1} />
       {projects.map((project, i) => {
         return (
-          <group key={i} position={[portalPosition + 25 * i, 0, 0]} rotation={rotation}>
+          <group key={i} position={[portalPosition + 25 * (i - 1), 0, -3]} rotation={rotation}>
             <Particles
               position={[0, 3, 0.101]}
               texture={project.texture}
@@ -111,11 +104,6 @@ export default function Scene() {
       })}
       <Floor />
       <BakeShadows />
-      <Scroll html>
-        <ContextBridge>
-          <Main />
-        </ContextBridge>
-      </Scroll>
     </>
   );
 }

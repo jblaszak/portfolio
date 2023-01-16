@@ -1,11 +1,12 @@
 import * as THREE from "three";
 import { shaderMaterial } from "@react-three/drei";
-import { extend } from "@react-three/fiber";
+import { extend, useThree } from "@react-three/fiber";
 import ParticlesVertexShader from "./shaders/ParticlesVertexShader";
 import ParticlesFragmentShader from "./shaders/ParticlesFragmentShader";
 import { useSpring, a } from "@react-spring/three";
-import { useRef, useEffect, useContext } from "react";
+import { useRef, useEffect, useContext, useState, useCallback } from "react";
 import { SectionContext } from "./SectionContext";
+import { INITIAL_CAMERA_LOOKAT, INITIAL_CAMERA_POSITION } from "./constants";
 // import { useControls } from "leva";
 
 const ParticleMaterial = shaderMaterial(
@@ -25,6 +26,8 @@ extend({ ParticleMaterial });
 
 export default function Particles({ position, texture, image, index }) {
   const { currSection } = useContext(SectionContext);
+  const [hovered, setHovered] = useState(false);
+  const [focused, setFocused] = useState(false);
   const textureWidth = texture.source.data.width;
   const textureHeight = texture.source.data.height;
   const numParticles = textureWidth * textureHeight;
@@ -39,11 +42,16 @@ export default function Particles({ position, texture, image, index }) {
   }
 
   const materialRef = useRef();
+  const imageRef = useRef();
 
   const prevSectionRef = useRef();
   useEffect(() => {
     prevSectionRef.current = currSection;
   }, [currSection]);
+
+  useEffect(() => {
+    document.body.style.cursor = hovered ? "pointer" : "auto";
+  }, [hovered]);
 
   const [springs] = useSpring(() => {
     if (currSection === index) {
@@ -99,6 +107,53 @@ export default function Particles({ position, texture, image, index }) {
     }
   }, [currSection]);
 
+  const camera = useThree((s) => s.camera);
+
+  const startCamera = [
+    INITIAL_CAMERA_POSITION.x + position[0],
+    INITIAL_CAMERA_POSITION.y,
+    INITIAL_CAMERA_POSITION.z,
+  ];
+  const startLookAt = [
+    INITIAL_CAMERA_LOOKAT.x + position[0],
+    INITIAL_CAMERA_LOOKAT.y,
+    INITIAL_CAMERA_LOOKAT.z,
+  ];
+  const finalCamera = position;
+  const finalLookAt = position;
+
+  const [cameraSpring, api] = useSpring(
+    () => ({
+      position: startCamera,
+      lookAt: startLookAt,
+      // onChange: (val) => {
+      //   camera.position.copy(new THREE.Vector3(...val.value.position));
+      //   camera.lookAt(new THREE.Vector3(...val.value.lookAt));
+      //   console.log(camera.position);
+      // },
+    }),
+    []
+  );
+
+  const handleClick = useCallback(() => {
+    return () => {
+      setFocused((prev) => !prev);
+      api.start({
+        position: focused
+          ? [...imageRef.current.localToWorld(new THREE.Vector3(0, 0, 5))]
+          : startCamera,
+        lookAt: focused
+          ? [...imageRef.current.localToWorld(new THREE.Vector3(0, 0, 0))]
+          : startLookAt,
+        onChange: (val) => {
+          camera.position.copy(new THREE.Vector3(...val.value.position));
+          camera.lookAt(new THREE.Vector3(...val.value.lookAt));
+          // console.log(imageRef.current.localToWorld(new THREE.Vector3(0, 0, 0)));
+        },
+      });
+    };
+  }, [focused]);
+
   const geo = new THREE.InstancedBufferGeometry().copy(new THREE.PlaneGeometry(1, 1, 1, 1));
 
   const Shader = () => {
@@ -135,7 +190,24 @@ export default function Particles({ position, texture, image, index }) {
           </instancedBufferGeometry>
           <FinalMaterial uRandom={springs.uRandom} uOpacity={springs.uOpacity} />
         </mesh>
-        <mesh position={[0, 0.02, 0]} scale={[0.91, 0.94, 0.92]}>
+        <mesh
+          ref={imageRef}
+          position={[0, 0.02, 0]}
+          scale={[0.91, 0.94, 0.92]}
+          onPointerOver={() => setHovered(true)}
+          onPointerOut={() => setHovered(false)}
+          // onPointerEnter={(e) => {
+          //   setHovered(true);
+          // }}
+          // onPointerLeave={(e) => {
+          //   setHovered(false);
+          // }}
+          onClick={handleClick()}
+          // onClick={() => {
+          //   handleClick();
+          //   setHovered(false);
+          // }}
+        >
           <planeGeometry args={[4, 6]} />
           <a.meshBasicMaterial map={image} transparent={true} opacity={springs.materialOpacity} />
         </mesh>

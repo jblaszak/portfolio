@@ -1,50 +1,43 @@
 import React from "react";
 import ReactDOM from "react-dom/client";
-import { ScrollControls, useContextBridge, Preload } from "@react-three/drei";
+import { useContextBridge, Preload } from "@react-three/drei";
 import { Canvas } from "@react-three/fiber";
 // import { Perf } from "r3f-perf";
 import Scene from "./Scene";
 import Navigation from "./Interface/Navigation";
-import VideoModal from "./Interface/VideoModal";
 import { SectionContextProvider, SectionContext } from "./SectionContext";
-import { VideoContextProvider, VideoContext } from "./VideoContext";
-import * as THREE from "three";
+import { INITIAL_CAMERA_LOOKAT, INITIAL_CAMERA_POSITION } from "./constants";
 import "./style.css";
 
 const root = ReactDOM.createRoot(document.getElementById("root"));
 root.render(
   <>
-    <VideoContextProvider>
-      <SectionContextProvider>
-        <App />
-      </SectionContextProvider>
-    </VideoContextProvider>
+    <SectionContextProvider>
+      <App />
+    </SectionContextProvider>
   </>
 );
 
 function App() {
-  const ContextBridge = useContextBridge(VideoContext, SectionContext);
+  const ContextBridge = useContextBridge(SectionContext);
 
   return (
     <>
       <Canvas
         shadows
-        camera={{ position: new THREE.Vector3(0.0, 4.4, 6.3) }}
+        camera={{ position: INITIAL_CAMERA_POSITION }}
         onCreated={(state) => {
-          state.camera.lookAt(new THREE.Vector3(0.0, 2.6, -8.3));
+          state.camera.lookAt(INITIAL_CAMERA_LOOKAT);
         }}
       >
         {/* <OrbitControls makeDefault /> */}
         <Preload all />
         <ContextBridge>
           {/* <Perf position="bottom-left" /> */}
-          <ScrollControls horizontal damping={5} pages={6}>
-            <Scene />
-          </ScrollControls>
+          <Scene />
         </ContextBridge>
       </Canvas>
       <Navigation />
-      <VideoModal />
     </>
   );
 }

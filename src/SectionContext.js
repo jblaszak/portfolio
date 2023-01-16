@@ -8,7 +8,7 @@ export const SectionContext = createContext({
 });
 
 export function SectionContextProvider({ children }) {
-  const [currSection, setCurrSection] = useState(0);
+  const [currSection, setCurrSection] = useState(1);
   const [targetSection, setTargetSection] = useState(0);
 
   return (
