@@ -2,7 +2,7 @@ import { BakeShadows, Scroll, useScroll, useContextBridge } from "@react-three/d
 import { useFrame, useThree, useLoader } from "@react-three/fiber";
 import { SectionContext } from "./SectionContext";
 import { VideoContext } from "./VideoContext";
-import { useContext, useEffect } from "react";
+import { useContext } from "react";
 import * as THREE from "three";
 import ppc from "./assets/ppc.png";
 import ppc_small from "./assets/ppc_xsmall.png";
@@ -44,13 +44,6 @@ export default function Scene() {
   const ContextBridge = useContextBridge(VideoContext, SectionContext);
   const { width } = useThree((state) => state.size);
   const data = useScroll();
-
-  useEffect(() => {
-    window.onwheel = (e) => {
-      e.preventDefault();
-      e.stopPropagation();
-    };
-  }, []);
 
   const projects = [
     { texture: ppcTexture, image: ppcImage },
