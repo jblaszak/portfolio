@@ -42,7 +42,7 @@ export default function Scene() {
   const { width, height } = useThree((state) => state.size);
 
   const projects = [
-    { texture: ppcTexture, image: ppcImage },
+    { texture: ppcTexture, image: ppc },
     { texture: cfpTexture, image: cfpImage },
     { texture: starshipTexture, image: starshipImage },
     { texture: qoorTexture, image: qoorImage },
@@ -60,8 +60,8 @@ export default function Scene() {
 
   // const cameraInitialPosition =
   // const { cameraPosition, lookAtPosition } = useControls("camera", {
-  //   cameraPosition: { value: [0.0, 4.4, 6.3], step: 0.1 },
-  //   lookAtPosition: { value: [0.0, 2.6, -8.3], step: 0.1 },
+  //   cameraPosition: { value: [0.0, 3.4, 6.3], step: 0.1 },
+  //   lookAtPosition: { value: [0.0, 1.6, -8.3], step: 0.1 },
   // });
 
   // function getFirstDigit(num) {
