@@ -3,14 +3,7 @@ import { useFrame, useThree, useLoader } from "@react-three/fiber";
 import { SectionContext } from "./SectionContext";
 import { useContext } from "react";
 import * as THREE from "three";
-import ppc from "./assets/ppc.png";
-import ppc_small from "./assets/ppc_xsmall.png";
-import qoor from "./assets/qoor.png";
-import qoor_small from "./assets/qoor_xsmall.png";
-import cfp from "./assets/cfp.png";
-import cfp_small from "./assets/cfp_xsmall.png";
-import starship from "./assets/starship.png";
-import starship_small from "./assets/starship_xsmall.png";
+import { projects } from "./data";
 
 import Floor from "./Floor";
 import GlassPortal from "./GlassPortal";
@@ -19,34 +12,10 @@ import "./style.css";
 import Particles from "./Particles";
 
 export default function Scene() {
-  const [
-    ppcTexture,
-    ppcImage,
-    qoorTexture,
-    qoorImage,
-    cfpTexture,
-    cfpImage,
-    starshipTexture,
-    starshipImage,
-  ] = useLoader(THREE.TextureLoader, [
-    ppc_small,
-    ppc,
-    qoor_small,
-    qoor,
-    cfp_small,
-    cfp,
-    starship_small,
-    starship,
-  ]);
+  const projectTextureFiles = projects.map((project) => project.texture);
+  const projectTextures = useLoader(THREE.TextureLoader, projectTextureFiles);
   const { setCurrSection, targetSection } = useContext(SectionContext);
   const { width, height } = useThree((state) => state.size);
-
-  const projects = [
-    { texture: ppcTexture, image: ppc },
-    { texture: cfpTexture, image: cfpImage },
-    { texture: starshipTexture, image: starshipImage },
-    { texture: qoorTexture, image: qoorImage },
-  ];
 
   const maxSections = projects.length + 2;
 
@@ -91,14 +60,16 @@ export default function Scene() {
       <ambientLight intensity={1} />
       {projects.map((project, i) => {
         return (
-          <group key={i} position={[portalPosition + 25 * (i - 1), 0, -3]} rotation={rotation}>
-            <Particles
-              position={[0, 3, 0.101]}
-              texture={project.texture}
-              image={project.image}
-              index={i + 1}
-            />
-            <GlassPortal />
+          <group key={i} position={[portalPosition + 25 * (i - 1), 0, -3]}>
+            <group rotation={rotation}>
+              <Particles
+                position={[0, 3, 0.101]}
+                texture={projectTextures[i]}
+                image={project.image}
+                index={i + 1}
+              />
+              <GlassPortal />
+            </group>
           </group>
         );
       })}

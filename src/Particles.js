@@ -28,8 +28,6 @@ extend({ ParticleMaterial });
 
 export default function Particles({ position, texture, image, index }) {
   const { currSection } = useContext(SectionContext);
-  const [hovered, setHovered] = useState(false);
-  const [focused, setFocused] = useState(false);
   const textureWidth = texture.source.data.width;
   const textureHeight = texture.source.data.height;
   const numParticles = textureWidth * textureHeight;
@@ -51,13 +49,6 @@ export default function Particles({ position, texture, image, index }) {
     prevSectionRef.current = currSection;
   }, [currSection]);
 
-  // useEffect(() => {
-  //   if (imageRef.current) {
-  //     console.log(imageRef.current);
-  //     imageRef.current.style.cursor = hovered ? "pointer" : "auto";
-  //   }
-  // }, [hovered]);
-
   const [springs] = useSpring(() => {
     if (currSection === index) {
       return {
@@ -72,17 +63,17 @@ export default function Particles({ position, texture, image, index }) {
           {
             uRandom: 300.0,
             uOpacity: 0.0,
-            materialOpacity: 0.0,
+            imageOpacity: 0.0,
           },
           {
             uRandom: 0.0,
             uOpacity: 1.0,
-            materialOpacity: 0.0,
+            imageOpacity: 0.0,
           },
           {
             uRandom: 0.0,
             uOpacity: 0.0,
-            materialOpacity: 1.0,
+            imageOpacity: 1.0,
           },
         ],
       };
@@ -99,7 +90,7 @@ export default function Particles({ position, texture, image, index }) {
           {
             uRandom: 300.0,
             uOpacity: 0.0,
-            materialOpacity: 0.0,
+            imageOpacity: 0.0,
           },
         ],
       };
@@ -107,7 +98,7 @@ export default function Particles({ position, texture, image, index }) {
       return {
         uRandom: 300.0,
         uOpacity: 0.0,
-        materialOpacity: 0.0,
+        imageOpacity: 0.0,
       };
     }
   }, [currSection]);
@@ -134,8 +125,9 @@ export default function Particles({ position, texture, image, index }) {
   );
 
   const handleClick = useCallback(() => {
+    let focused = false;
     return () => {
-      setFocused((prev) => !prev);
+      focused = !focused;
       api.start({
         position: focused
           ? [...imageRef.current.localToWorld(new THREE.Vector3(0, 0, 5))]
@@ -150,7 +142,7 @@ export default function Particles({ position, texture, image, index }) {
         },
       });
     };
-  }, [focused]);
+  }, []);
 
   const geo = new THREE.InstancedBufferGeometry().copy(new THREE.PlaneGeometry(1, 1, 1, 1));
 
@@ -161,7 +153,6 @@ export default function Particles({ position, texture, image, index }) {
       return (
         <particleMaterial
           depthTest={false}
-          encoding={THREE.sRGBEncoding}
           transparent={true}
           // flatShading={true}
           ref={materialRef}
@@ -179,16 +170,17 @@ export default function Particles({ position, texture, image, index }) {
     const PortalImage = a(({ ...props }) => {
       return (
         <img
-          className={classes.portalImage}
-          style={{ opacity: props.portalOpacity }}
+          className={classes.image}
+          style={{ opacity: props.imageOpacity }}
           src={image}
-          alt="text"
+          alt=""
+          onClick={handleClick()}
         />
       );
     });
 
     return (
-      <group position={position}>
+      <group position={position} ref={imageRef}>
         <mesh ref={meshRef}>
           <instancedBufferGeometry
             index={geo.index}
@@ -200,29 +192,8 @@ export default function Particles({ position, texture, image, index }) {
           </instancedBufferGeometry>
           <FinalMaterial uRandom={springs.uRandom} uOpacity={springs.uOpacity} />
         </mesh>
-        {/* <mesh
-          ref={imageRef}
-          position={[0, 0.02, 0]}
-          scale={[0.91, 0.94, 0.92]}
-          // onPointerOver={() => setHovered(true)}
-          // onPointerOut={() => setHovered(false)}
-          // onPointerEnter={(e) => {
-          //   setHovered(true);
-          // }}
-          // onPointerLeave={(e) => {
-          //   setHovered(false);
-          // }}
-          onClick={handleClick()}
-          // onClick={() => {
-          //   handleClick();
-          //   setHovered(false);
-          // }}
-        >
-          <planeGeometry args={[4, 6]} />
-          <a.meshBasicMaterial map={image} transparent={true} opacity={springs.materialOpacity} />
-        </mesh> */}
-        <Html scale={0.1125} transform>
-          <PortalImage portalOpacity={springs.materialOpacity} />
+        <Html scale={0.115} transform>
+          <PortalImage imageOpacity={springs.imageOpacity} />
         </Html>
       </group>
     );

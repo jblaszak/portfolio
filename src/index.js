@@ -2,7 +2,7 @@ import React from "react";
 import ReactDOM from "react-dom/client";
 import { useContextBridge, Preload } from "@react-three/drei";
 import { Canvas } from "@react-three/fiber";
-// import { Perf } from "r3f-perf";
+import { Perf } from "r3f-perf";
 import Scene from "./Scene";
 import Navigation from "./Interface/Navigation";
 import { SectionContextProvider, SectionContext } from "./SectionContext";
@@ -33,7 +33,7 @@ function App() {
         {/* <OrbitControls makeDefault /> */}
         <Preload all />
         <ContextBridge>
-          {/* <Perf position="bottom-left" /> */}
+          <Perf position="bottom-left" />
           <Scene />
         </ContextBridge>
       </Canvas>
