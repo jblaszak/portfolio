@@ -1,10 +1,10 @@
-import { useContext, useCallback, useRef } from "react";
+import { useCallback, useRef } from "react";
 import { Html } from "@react-three/drei";
 import { useThree } from "@react-three/fiber";
 import { useSpring } from "@react-spring/three";
 import * as THREE from "three";
 import { INITIAL_CAMERA_LOOKAT, INITIAL_CAMERA_POSITION } from "./constants";
-import { VideoContext } from "./VideoContext";
+import useNavigateStore from "./stores/useNavigate";
 
 import classes from "./Card.module.css";
 
@@ -20,7 +20,7 @@ export default function Card({
   videoCaption,
   videoAriaLabel,
 }) {
-  const videoContext = useContext(VideoContext);
+  const { setVideo, setVideoCaption } = useNavigateStore((state) => state);
 
   const cardRef = useRef();
   const camera = useThree((s) => s.camera);
@@ -63,7 +63,13 @@ export default function Card({
 
   return (
     <group ref={cardRef}>
-      <Html scale={0.15} transform position={[3.5, 3, 0]} occlude="blending">
+      <Html
+        scale={0.15}
+        transform
+        position={[3.5, 3, 0]}
+        // occlude="blending"
+        // zIndexRange={[0, 1000]}
+      >
         <div
           className={`${classes.card}${active ? ` ${classes.active}` : ""}`}
           onClick={handleClick()}
@@ -89,8 +95,8 @@ export default function Card({
               <button
                 aria-label={videoAriaLabel}
                 onClick={() => {
-                  videoContext.setVideo((prev) => video);
-                  videoContext.setVideoCaption((prev) => videoCaption);
+                  setVideo(video);
+                  setVideoCaption(videoCaption);
                 }}
               >
                 View Video

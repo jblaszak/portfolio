@@ -1,8 +1,6 @@
-import { BakeShadows, useContextBridge } from "@react-three/drei";
+import { BakeShadows } from "@react-three/drei";
 import { useFrame, useThree, useLoader } from "@react-three/fiber";
-import { SectionContext } from "./SectionContext";
 import Card from "./Card";
-import { useContext } from "react";
 import * as THREE from "three";
 import Avatar from "./Avatar";
 import { projects } from "./data";
@@ -15,8 +13,9 @@ import Particles from "./Particles";
 
 export default function Scene() {
   const projectTextureFiles = projects.map((project) => project.texture);
+  const projectImageFiles = projects.map((project) => project.image);
   const projectTextures = useLoader(THREE.TextureLoader, projectTextureFiles);
-  const { setCurrSection, targetSection } = useContext(SectionContext);
+  const projectImages = useLoader(THREE.TextureLoader, projectImageFiles);
   const { width, height } = useThree((state) => state.size);
 
   const maxSections = projects.length + 2;
@@ -68,7 +67,7 @@ export default function Scene() {
               <Particles
                 position={[0, 3, 0.101]}
                 texture={projectTextures[i]}
-                image={project.image}
+                image={projectImages[i]}
                 index={i + 1}
               />
               <GlassPortal />

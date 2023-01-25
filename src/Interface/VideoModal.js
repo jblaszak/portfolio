@@ -1,22 +1,22 @@
-import { useContext, useRef } from "react";
-import { VideoContext } from "../VideoContext";
+import { useRef } from "react";
 import { createPortal } from "react-dom";
+import useNavigateStore from "../stores/useNavigate";
 import classes from "./VideoModal.module.css";
 
 export default function VideoModal() {
-  const videoContext = useContext(VideoContext);
+  const { video, videoCaption, setVideo, setVideoCaption } = useNavigateStore((state) => state);
   const modalRef = useRef();
   const closeRef = useRef();
 
   function closeModal(e) {
     if (e.target === modalRef.current || e.target === closeRef.current) {
-      videoContext.setVideo(null);
-      videoContext.setVideoCaption(null);
+      setVideo(null);
+      setVideoCaption(null);
     }
   }
 
   return (
-    videoContext.video &&
+    video &&
     createPortal(
       <div ref={modalRef} className={classes.modal} onClick={(e) => closeModal(e)}>
         <div className={classes.container}>
@@ -24,10 +24,10 @@ export default function VideoModal() {
             X
           </p>
           <video controls width="100%">
-            <source src={videoContext.video} type="video/mp4" />
+            <source src={video} type="video/mp4" />
             Sorry, your browser doesn't support videos.
           </video>
-          <p className={classes.caption}>{videoContext.videoCaption}</p>
+          <p className={classes.caption}>{videoCaption}</p>
         </div>
       </div>,
       document.getElementById("modal-root")

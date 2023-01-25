@@ -1,15 +1,13 @@
 import * as THREE from "three";
-import { shaderMaterial, Html } from "@react-three/drei";
+import { shaderMaterial } from "@react-three/drei";
 import { extend, useThree } from "@react-three/fiber";
 import ParticlesVertexShader from "./shaders/ParticlesVertexShader";
 import ParticlesFragmentShader from "./shaders/ParticlesFragmentShader";
 import { useSpring, a } from "@react-spring/three";
-import { useRef, useEffect, useContext, useCallback } from "react";
-import { SectionContext } from "./SectionContext";
+import { useRef, useEffect, useCallback } from "react";
 import { INITIAL_CAMERA_LOOKAT, INITIAL_CAMERA_POSITION } from "./constants";
+import useNavigateStore from "./stores/useNavigate";
 // import { useControls } from "leva";
-
-import classes from "./Particles.module.css";
 
 const ParticleMaterial = shaderMaterial(
   {
@@ -27,7 +25,7 @@ const ParticleMaterial = shaderMaterial(
 extend({ ParticleMaterial });
 
 export default function Particles({ position, texture, image, index }) {
-  const { currSection } = useContext(SectionContext);
+  const { currentSection } = useNavigateStore((state) => state);
   const textureWidth = texture.source.data.width;
   const textureHeight = texture.source.data.height;
   const numParticles = textureWidth * textureHeight;
@@ -46,11 +44,11 @@ export default function Particles({ position, texture, image, index }) {
 
   const prevSectionRef = useRef();
   useEffect(() => {
-    prevSectionRef.current = currSection;
-  }, [currSection]);
+    prevSectionRef.current = currentSection;
+  }, [currentSection]);
 
   const [springs] = useSpring(() => {
-    if (currSection === index) {
+    if (currentSection === index) {
       return {
         config: {
           mass: 1,
@@ -101,7 +99,7 @@ export default function Particles({ position, texture, image, index }) {
         imageOpacity: 0.0,
       };
     }
-  }, [currSection]);
+  }, [currentSection]);
 
   const camera = useThree((s) => s.camera);
 
@@ -152,7 +150,8 @@ export default function Particles({ position, texture, image, index }) {
     const FinalMaterial = a(({ ...props }) => {
       return (
         <particleMaterial
-          depthTest={false}
+          depthTest={true}
+          depthWrite={false}
           transparent={true}
           // flatShading={true}
           ref={materialRef}
@@ -167,13 +166,16 @@ export default function Particles({ position, texture, image, index }) {
       );
     });
 
-    const PortalImage = a(({ ...props }) => {
-      return <img className={classes.image} src={image} alt="" onClick={handleClick()} />;
+    const TexturedMaterial = a(({ ...props }) => {
+      return (
+        <meshBasicMaterial map={props.image} opacity={props.materialOpacity} transparent={true} />
+        // <meshBasicMaterial opacity={props.materialOpacity} transparent={true} />
+      );
     });
 
     return (
       <group position={position} ref={imageRef}>
-        {/* <mesh ref={meshRef}>
+        <mesh ref={meshRef}>
           <instancedBufferGeometry
             index={geo.index}
             attributes-position={geo.attributes.position}
@@ -183,16 +185,11 @@ export default function Particles({ position, texture, image, index }) {
             <instancedBufferAttribute attach="attributes-offset" args={[offsets, 3]} />
           </instancedBufferGeometry>
           <FinalMaterial uRandom={springs.uRandom} uOpacity={springs.uOpacity} />
-        </mesh> */}
-        <Html
-          scale={0.115}
-          // position={[1, 0, 2]}
-          transform
-          occlude="blending"
-          // material={<meshBasicMaterial side={THREE.DoubleSide} opacity={0} transparent={true} />}
-        >
-          <PortalImage />
-        </Html>
+        </mesh>
+        <mesh scale={[4 * 0.91, 6 * 0.93, 1]}>
+          <planeGeometry />
+          <TexturedMaterial materialOpacity={springs.imageOpacity} image={image} />
+        </mesh>
       </group>
     );
   };

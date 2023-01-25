@@ -1,9 +1,10 @@
-import { useContext } from "react";
-import { SectionContext } from "../SectionContext";
+import useNavigateStore from "../stores/useNavigate";
 import classes from "./Navigation.module.css";
 
 export default function Navigation() {
-  const { currSection, setTargetSection } = useContext(SectionContext);
+  const { currentSection, setTargetSection, setCurrentSection } = useNavigateStore(
+    (state) => state
+  );
 
   // function prevSection() {
   //   const target = currSection - 1;
@@ -20,32 +21,32 @@ export default function Navigation() {
       <nav className={classes.navigation}>
         <ul className={classes.navItems}>
           <li
-            className={currSection === 1 ? classes.active : ""}
-            onClick={(e) => setTargetSection(1)}
+            className={currentSection === 1 ? classes.active : ""}
+            onClick={(e) => setCurrentSection(1)}
           >
             Project 1
           </li>
           <li
-            className={currSection === 2 ? classes.active : ""}
-            onClick={(e) => setTargetSection(2)}
+            className={currentSection === 2 ? classes.active : ""}
+            onClick={(e) => setCurrentSection(2)}
           >
             Project 2
           </li>
           <li
-            className={currSection === 3 ? classes.active : ""}
-            onClick={(e) => setTargetSection(3)}
+            className={currentSection === 3 ? classes.active : ""}
+            onClick={(e) => setCurrentSection(3)}
           >
             Project 3
           </li>
           <li
-            className={currSection === 4 ? classes.active : ""}
-            onClick={(e) => setTargetSection(4)}
+            className={currentSection === 4 ? classes.active : ""}
+            onClick={(e) => setCurrentSection(4)}
           >
             Project 4
           </li>
           <li
-            className={currSection === 5 ? classes.active : ""}
-            onClick={(e) => setTargetSection(5)}
+            className={currentSection === 5 ? classes.active : ""}
+            onClick={(e) => setCurrentSection(5)}
           >
             Contact
           </li>

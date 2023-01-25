@@ -1,26 +1,21 @@
 import React from "react";
 import ReactDOM from "react-dom/client";
-import { useContextBridge, Preload } from "@react-three/drei";
+import { Preload } from "@react-three/drei";
 import { Canvas } from "@react-three/fiber";
 import { Perf } from "r3f-perf";
 import Scene from "./Scene";
 import Navigation from "./Interface/Navigation";
-import { SectionContextProvider, SectionContext } from "./SectionContext";
 import { INITIAL_CAMERA_LOOKAT, INITIAL_CAMERA_POSITION } from "./constants";
 import "./style.css";
 
 const root = ReactDOM.createRoot(document.getElementById("root"));
 root.render(
   <>
-    <SectionContextProvider>
-      <App />
-    </SectionContextProvider>
+    <App />
   </>
 );
 
 function App() {
-  const ContextBridge = useContextBridge(SectionContext);
-
   return (
     <>
       <Canvas
@@ -34,10 +29,8 @@ function App() {
       >
         {/* <OrbitControls makeDefault /> */}
         <Preload all />
-        <ContextBridge>
-          <Perf position="bottom-left" />
-          <Scene />
-        </ContextBridge>
+        <Perf position="bottom-left" />
+        <Scene />
       </Canvas>
       <Navigation />
     </>
