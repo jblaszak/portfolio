@@ -1,8 +1,10 @@
 import { BakeShadows, useContextBridge } from "@react-three/drei";
 import { useFrame, useThree, useLoader } from "@react-three/fiber";
 import { SectionContext } from "./SectionContext";
+import Card from "./Card";
 import { useContext } from "react";
 import * as THREE from "three";
+import Avatar from "./Avatar";
 import { projects } from "./data";
 
 import Floor from "./Floor";
@@ -56,8 +58,9 @@ export default function Scene() {
 
   return (
     <>
-      <color attach="background" args={["white"]} />
+      {/* <color attach="background" args={["white"]} /> */}
       <ambientLight intensity={1} />
+      <Avatar />
       {projects.map((project, i) => {
         return (
           <group key={i} position={[portalPosition + 25 * (i - 1), 0, -3]}>
@@ -70,6 +73,17 @@ export default function Scene() {
               />
               <GlassPortal />
             </group>
+            <Card
+              title={project.title}
+              date={project.date}
+              description={project.description}
+              tech={project.tech}
+              siteLink={project.siteLink || null}
+              codeLink={project.codeLink || null}
+              video={project.video || null}
+              videoCaption={project.videoCaption || null}
+              videoAriaLabel={project.videoAriaLabel || null}
+            />
           </group>
         );
       })}

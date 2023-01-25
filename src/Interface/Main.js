@@ -1,6 +1,6 @@
 import { useContext } from "react";
 import { SectionContext } from "../SectionContext";
-import Project from "./Project";
+import Project from "../Card";
 import classes from "./Main.module.css";
 import starshipVideo from "../assets/starship-nexus-demo.mp4";
 

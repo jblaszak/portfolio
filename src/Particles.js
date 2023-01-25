@@ -4,7 +4,7 @@ import { extend, useThree } from "@react-three/fiber";
 import ParticlesVertexShader from "./shaders/ParticlesVertexShader";
 import ParticlesFragmentShader from "./shaders/ParticlesFragmentShader";
 import { useSpring, a } from "@react-spring/three";
-import { useRef, useEffect, useContext, useState, useCallback } from "react";
+import { useRef, useEffect, useContext, useCallback } from "react";
 import { SectionContext } from "./SectionContext";
 import { INITIAL_CAMERA_LOOKAT, INITIAL_CAMERA_POSITION } from "./constants";
 // import { useControls } from "leva";
@@ -159,7 +159,7 @@ export default function Particles({ position, texture, image, index }) {
           attach="material"
           uRandom={props.uRandom}
           uOpacity={props.uOpacity}
-          uSize={3.0}
+          uSize={3}
           uScale={0.045}
           uTextureSize={new THREE.Vector2(textureWidth, textureHeight)}
           uTexture={texture}
@@ -168,20 +168,12 @@ export default function Particles({ position, texture, image, index }) {
     });
 
     const PortalImage = a(({ ...props }) => {
-      return (
-        <img
-          className={classes.image}
-          style={{ opacity: props.imageOpacity }}
-          src={image}
-          alt=""
-          onClick={handleClick()}
-        />
-      );
+      return <img className={classes.image} src={image} alt="" onClick={handleClick()} />;
     });
 
     return (
       <group position={position} ref={imageRef}>
-        <mesh ref={meshRef}>
+        {/* <mesh ref={meshRef}>
           <instancedBufferGeometry
             index={geo.index}
             attributes-position={geo.attributes.position}
@@ -191,9 +183,15 @@ export default function Particles({ position, texture, image, index }) {
             <instancedBufferAttribute attach="attributes-offset" args={[offsets, 3]} />
           </instancedBufferGeometry>
           <FinalMaterial uRandom={springs.uRandom} uOpacity={springs.uOpacity} />
-        </mesh>
-        <Html scale={0.115} transform>
-          <PortalImage imageOpacity={springs.imageOpacity} />
+        </mesh> */}
+        <Html
+          scale={0.115}
+          // position={[1, 0, 2]}
+          transform
+          occlude="blending"
+          // material={<meshBasicMaterial side={THREE.DoubleSide} opacity={0} transparent={true} />}
+        >
+          <PortalImage />
         </Html>
       </group>
     );

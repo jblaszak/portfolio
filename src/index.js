@@ -29,6 +29,8 @@ function App() {
         onCreated={(state) => {
           state.camera.lookAt(INITIAL_CAMERA_LOOKAT);
         }}
+        // eventSource={document.getElementById("root")}
+        // eventPrefix="client"
       >
         {/* <OrbitControls makeDefault /> */}
         <Preload all />
