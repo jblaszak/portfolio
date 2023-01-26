@@ -1,5 +1,6 @@
 import { create } from "zustand";
 import { subscribeWithSelector } from "zustand/middleware";
+import { projects } from "../data";
 
 const useNavigateStore = create(
   subscribeWithSelector((set) => {

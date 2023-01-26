@@ -1,17 +1,32 @@
+import { useEffect } from "react";
 import { BakeShadows } from "@react-three/drei";
 import { useFrame, useThree, useLoader } from "@react-three/fiber";
-import Card from "./Card";
 import * as THREE from "three";
-import Avatar from "./Avatar";
+
+import useNavigateStore from "./stores/useNavigate";
+import useMoveCharacter from "./hooks/useMoveCharacter";
 import { projects } from "./data";
 
+import Card from "./Card";
+import Avatar from "./Avatar";
 import Floor from "./Floor";
 import GlassPortal from "./GlassPortal";
-
-import "./style.css";
 import Particles from "./Particles";
 
+import "./style.css";
+
 export default function Scene() {
+  const currentSection = useNavigateStore((state) => state.currentSection);
+  const setCurrentSection = useNavigateStore((state) => state.setCurrentSection);
+  const targetSection = useNavigateStore((state) => state.targetSection);
+  const setTargetSection = useNavigateStore((state) => state.setTargetSection);
+  const animation = useNavigateStore((state) => state.animation);
+  const setAnimation = useNavigateStore((state) => state.setAnimation);
+  const focus = useNavigateStore((state) => state.focus);
+  const setFocus = useNavigateStore((state) => state.setFocus);
+
+  const moveCharacter = useMoveCharacter();
+
   const projectTextureFiles = projects.map((project) => project.texture);
   const projectImageFiles = projects.map((project) => project.image);
   const projectTextures = useLoader(THREE.TextureLoader, projectTextureFiles);
@@ -55,11 +70,37 @@ export default function Scene() {
     // }
   });
 
+  useEffect(() => {
+    function handleKeyboard(e) {
+      if (e.key === "ArrowLeft") {
+        moveCharacter(currentSection - 1);
+      } else if (e.key === "ArrowRight") {
+        moveCharacter(currentSection + 1);
+      }
+    }
+
+    function handleWheel(e) {
+      if (e.deltaY < 0) {
+        moveCharacter(currentSection - 1);
+      } else {
+        moveCharacter(currentSection + 1);
+      }
+    }
+
+    document.addEventListener("keydown", handleKeyboard);
+    document.addEventListener("wheel", handleWheel);
+
+    return () => {
+      document.removeEventListener("keydown", handleKeyboard);
+      document.removeEventListener("wheel", handleWheel);
+    };
+  }, [currentSection, targetSection]);
+
   return (
     <>
       {/* <color attach="background" args={["white"]} /> */}
       <ambientLight intensity={1} />
-      <Avatar />
+      <Avatar animation={animation} position={[0, 0, 0]} rotation={[0, 0, 0]} />
       {projects.map((project, i) => {
         return (
           <group key={i} position={[portalPosition + 25 * (i - 1), 0, -3]}>
