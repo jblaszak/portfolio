@@ -1,6 +1,6 @@
 import { useEffect } from "react";
 import { BakeShadows } from "@react-three/drei";
-import { useFrame, useThree, useLoader } from "@react-three/fiber";
+import { useThree, useLoader } from "@react-three/fiber";
 import * as THREE from "three";
 
 import useNavigateStore from "./stores/useNavigate";
@@ -33,8 +33,6 @@ export default function Scene() {
   const projectImages = useLoader(THREE.TextureLoader, projectImageFiles);
   const { width, height } = useThree((state) => state.size);
 
-  const maxSections = projects.length + 2;
-
   // some math, 25 at < 500px width, 23 at > 1080px width, otherwise linearly interpolate between
   // y = mx + b
   // pos = -(2/(1080-500)*width) + 25
@@ -53,22 +51,22 @@ export default function Scene() {
   //   return parseInt(num, 10);
   // }
 
-  useFrame((state, delta) => {
-    // const maxWidth = 125;
-    // state.camera.position.copy(new THREE.Vector3(data.offset * maxWidth, 4.4, 6.3));
-    // state.camera.lookAt(new THREE.Vector3(0.0 + data.offset * maxWidth, 2.6, -8.3));
-    // set appropriate section if currPos +- range matches;
-    // const currPos = data.offset * (maxSections - 1);
-    // const firstDigit = getFirstDigit(currPos);
-    // const range = 0.25;
-    // if (getFirstDigit(currPos + range) > firstDigit) {
-    //   setCurrSection(getFirstDigit(currPos + range));
-    // } else if (getFirstDigit(currPos - range) < firstDigit) {
-    //   setCurrSection(firstDigit);
-    // } else {
-    //   setCurrSection(null);
-    // }
-  });
+  // useFrame((state, delta) => {
+  //   // const maxWidth = 125;
+  //   // state.camera.position.copy(new THREE.Vector3(data.offset * maxWidth, 4.4, 6.3));
+  //   // state.camera.lookAt(new THREE.Vector3(0.0 + data.offset * maxWidth, 2.6, -8.3));
+  //   // set appropriate section if currPos +- range matches;
+  //   // const currPos = data.offset * (maxSections - 1);
+  //   // const firstDigit = getFirstDigit(currPos);
+  //   // const range = 0.25;
+  //   // if (getFirstDigit(currPos + range) > firstDigit) {
+  //   //   setCurrSection(getFirstDigit(currPos + range));
+  //   // } else if (getFirstDigit(currPos - range) < firstDigit) {
+  //   //   setCurrSection(firstDigit);
+  //   // } else {
+  //   //   setCurrSection(null);
+  //   // }
+  // });
 
   useEffect(() => {
     function handleKeyboard(e) {
@@ -94,13 +92,13 @@ export default function Scene() {
       document.removeEventListener("keydown", handleKeyboard);
       document.removeEventListener("wheel", handleWheel);
     };
-  }, [currentSection, targetSection]);
+  }, [currentSection, targetSection, moveCharacter]);
 
   return (
     <>
       {/* <color attach="background" args={["white"]} /> */}
       <ambientLight intensity={1} />
-      <Avatar animation={animation} position={[0, 0, 0]} rotation={[0, 0, 0]} />
+      <Avatar />
       {projects.map((project, i) => {
         return (
           <group key={i} position={[portalPosition + 25 * (i - 1), 0, -3]}>

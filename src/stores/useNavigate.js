@@ -1,6 +1,5 @@
 import { create } from "zustand";
 import { subscribeWithSelector } from "zustand/middleware";
-import { projects } from "../data";
 
 const useNavigateStore = create(
   subscribeWithSelector((set) => {
@@ -8,7 +7,10 @@ const useNavigateStore = create(
       targetSection: 0,
       currentSection: 0,
       focus: "player",
-      animation: "IDLE",
+      avatar: null,
+      actions: null,
+      targetRotation: 0,
+      targetPosition: 0,
       video: null,
       videoCaption: null,
       setTargetSection: (newTargetSection) => {
@@ -26,9 +28,24 @@ const useNavigateStore = create(
           return { focus: newFocus };
         });
       },
-      setAnimation: (newAnimation) => {
+      setAvatar: (newAvatar) => {
         set((state) => {
-          return { animation: newAnimation };
+          return { avatar: newAvatar };
+        });
+      },
+      setActions: (newActions) => {
+        set((state) => {
+          return { actions: newActions };
+        });
+      },
+      updateRotation: (rotation) => {
+        set((state) => {
+          return { targetRotation: state.targetRotation + rotation };
+        });
+      },
+      setTargetPosition: (newTargetPosition) => {
+        set((state) => {
+          return { targetPosition: newTargetPosition };
         });
       },
       setVideo: (newVideo) => {
