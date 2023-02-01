@@ -1,18 +1,23 @@
 import React, { useRef, useEffect, useState } from "react";
 import { useGLTF, useAnimations } from "@react-three/drei";
-import { useFrame } from "@react-three/fiber";
+import { useFrame, useLoader } from "@react-three/fiber";
 import useNavigateStore from "./stores/useNavigate";
-import * as THREE from "three";
 
-export default function Avatar() {
+import * as THREE from "three";
+import shadowTexture from "./assets/simpleShadow.jpg";
+
+export default function Avatar(props) {
+  const shadowAlphaMap = useLoader(THREE.TextureLoader, shadowTexture);
+
   const setAvatar = useNavigateStore((state) => state.setAvatar);
   const setActions = useNavigateStore((state) => state.setActions);
   const targetRotation = useNavigateStore((state) => state.targetRotation);
   const targetPosition = useNavigateStore((state) => state.targetPosition);
 
+  const shadowRef = useRef();
   const avatarRef = useRef();
-  const model = useGLTF("./avatar.glb");
-  const { actions } = useAnimations(model.animations, avatarRef);
+  const { nodes, materials, animations } = useGLTF("./avatar.glb");
+  const { actions } = useAnimations(animations, avatarRef);
 
   const [startPosition, setStartPosition] = useState(() => 0);
   const [totalTime, setTotalTime] = useState(() => 0);
@@ -23,6 +28,7 @@ export default function Avatar() {
   useEffect(() => {
     setActions(actions);
     setAvatar(avatarRef);
+    console.log(avatarRef.current);
   }, []);
 
   useEffect(() => {
@@ -37,6 +43,7 @@ export default function Avatar() {
   }
 
   useFrame((state, delta) => {
+    shadowRef.current.position.copy(avatarRef.current.position);
     if (targetPosition === null || targetRotation === null) return;
 
     // Rotate the avatar
@@ -65,9 +72,106 @@ export default function Avatar() {
     );
     let newPosition = new THREE.Vector3(newPositionX, 0, 0);
     avatarRef.current.position.copy(newPosition);
+
+    // Scale the shadow, min 3.5, max 5.5
+    const shadowXScale = 3 * Math.sin((newTotalTime * Math.PI) / moveDuration) + 3.5;
+    shadowRef.current.scale.copy(new THREE.Vector3(shadowXScale, 3.5, 3.5));
   });
 
-  return <primitive ref={avatarRef} object={model.scene} scale={2} />;
+  return (
+    <group>
+      <mesh ref={shadowRef} rotation={[-Math.PI / 2, 0, 0]} scale={3.5}>
+        <planeGeometry args={[1, 1]} />
+        <meshBasicMaterial color={"grey"} transparent alphaMap={shadowAlphaMap} />
+      </mesh>
+      <group ref={avatarRef} {...props} dispose={null} scale={2}>
+        <group name="Scene">
+          <group name="Armature">
+            <primitive object={nodes.Hips} />
+            <skinnedMesh
+              name="Wolf3D_Body"
+              castShadow
+              receiveShadow
+              geometry={nodes.Wolf3D_Body.geometry}
+              material={materials.Wolf3D_Body}
+              skeleton={nodes.Wolf3D_Body.skeleton}
+            />
+            <skinnedMesh
+              name="Wolf3D_Hair"
+              castShadow
+              receiveShadow
+              geometry={nodes.Wolf3D_Hair.geometry}
+              material={materials.Wolf3D_Hair}
+              skeleton={nodes.Wolf3D_Hair.skeleton}
+            />
+            <skinnedMesh
+              name="Wolf3D_Outfit_Footwear"
+              castShadow
+              receiveShadow
+              geometry={nodes.Wolf3D_Outfit_Footwear.geometry}
+              material={materials.Wolf3D_Outfit_Footwear}
+              skeleton={nodes.Wolf3D_Outfit_Footwear.skeleton}
+            />
+            <skinnedMesh
+              name="Wolf3D_Outfit_Bottom"
+              castShadow
+              receiveShadow
+              geometry={nodes.Wolf3D_Outfit_Bottom.geometry}
+              material={materials.Wolf3D_Outfit_Bottom}
+              skeleton={nodes.Wolf3D_Outfit_Bottom.skeleton}
+            />
+            <skinnedMesh
+              name="EyeLeft"
+              geometry={nodes.EyeLeft.geometry}
+              material={materials.Wolf3D_Eye}
+              skeleton={nodes.EyeLeft.skeleton}
+              morphTargetDictionary={nodes.EyeLeft.morphTargetDictionary}
+              morphTargetInfluences={nodes.EyeLeft.morphTargetInfluences}
+            />
+            <skinnedMesh
+              name="EyeRight"
+              geometry={nodes.EyeRight.geometry}
+              material={materials.Wolf3D_Eye}
+              skeleton={nodes.EyeRight.skeleton}
+              morphTargetDictionary={nodes.EyeRight.morphTargetDictionary}
+              morphTargetInfluences={nodes.EyeRight.morphTargetInfluences}
+            />
+            <skinnedMesh
+              name="Wolf3D_Outfit_Top"
+              castShadow
+              receiveShadow
+              geometry={nodes.Wolf3D_Outfit_Top.geometry}
+              material={materials.Wolf3D_Outfit_Top}
+              skeleton={nodes.Wolf3D_Outfit_Top.skeleton}
+            />
+            <skinnedMesh
+              name="Wolf3D_Teeth"
+              geometry={nodes.Wolf3D_Teeth.geometry}
+              material={materials.Wolf3D_Teeth}
+              skeleton={nodes.Wolf3D_Teeth.skeleton}
+              morphTargetDictionary={nodes.Wolf3D_Teeth.morphTargetDictionary}
+              morphTargetInfluences={nodes.Wolf3D_Teeth.morphTargetInfluences}
+            />
+            <skinnedMesh
+              name="Wolf3D_Head"
+              castShadow
+              receiveShadow
+              geometry={nodes.Wolf3D_Head.geometry}
+              material={materials.Wolf3D_Skin}
+              skeleton={nodes.Wolf3D_Head.skeleton}
+              morphTargetDictionary={nodes.Wolf3D_Head.morphTargetDictionary}
+              morphTargetInfluences={nodes.Wolf3D_Head.morphTargetInfluences}
+            />
+          </group>
+        </group>
+      </group>
+      {/* <mesh position={[0, 3, 0]} castShadow>
+        <boxGeometry />
+        <meshPhysicalMaterial />
+      </mesh>
+      <primitive ref={avatarRef} object={model.scene} scale={2} /> */}
+    </group>
+  );
 }
 
 useGLTF.preload("./avatar.glb");

@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { BakeShadows } from "@react-three/drei";
+import { BakeShadows, Environment } from "@react-three/drei";
 import { useThree, useLoader, useFrame } from "@react-three/fiber";
 import * as THREE from "three";
 
@@ -95,8 +95,7 @@ export default function Scene() {
 
   return (
     <>
-      {/* <color attach="background" args={["white"]} /> */}
-      <ambientLight intensity={1} />
+      <Environment preset="warehouse" intensity={0.5} />
       <Avatar />
       {projects.map((project, i) => {
         return (
