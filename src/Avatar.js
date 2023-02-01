@@ -14,7 +14,8 @@ export default function Avatar() {
   const model = useGLTF("./avatar.glb");
   const { actions } = useAnimations(model.animations, avatarRef);
 
-  const [totalTranslation, setTotalTranslation] = useState(() => new THREE.Vector3(0, 0, 0));
+  const [startPosition, setStartPosition] = useState(() => 0);
+  const [totalTime, setTotalTime] = useState(() => 0);
   const [smoothedAvatarRotation] = useState(() =>
     new THREE.Quaternion().setFromEuler(new THREE.Euler(0, 0, 0))
   );
@@ -25,9 +26,15 @@ export default function Avatar() {
   }, []);
 
   useEffect(() => {
-    const startPosition = avatarRef.current.position.x;
-    setTotalTranslation(targetPosition - startPosition);
+    setStartPosition(avatarRef.current.position.x);
+    setTotalTime(0);
   }, [targetPosition]);
+
+  function easeInOutCubic(t, b, c, d) {
+    // Arguments: t = time, b = beginning value, c = change in value, d = duration
+    if ((t /= d / 2) < 1) return (c / 2) * t * t * t + b;
+    return (c / 2) * ((t -= 2) * t * t + 2) + b;
+  }
 
   useFrame((state, delta) => {
     if (targetPosition === null || targetRotation === null) return;
@@ -44,10 +51,19 @@ export default function Avatar() {
     const moveDuration =
       actions["WALKING"]._clip.duration * 2 + actions["RUNNING"]._clip.duration * 4;
 
-    const movement = totalTranslation * (delta / moveDuration);
-    let newPosition = new THREE.Vector3(avatarRef.current.position.x + movement, 0, 0);
-    if (movement < 0 && newPosition.x < targetPosition) newPosition.x = targetPosition;
-    if (movement > 0 && newPosition.x > targetPosition) newPosition.x = targetPosition;
+    let newTotalTime = totalTime + delta;
+    if (newTotalTime > moveDuration) {
+      newTotalTime = moveDuration;
+    }
+    setTotalTime(newTotalTime);
+
+    const newPositionX = easeInOutCubic(
+      newTotalTime,
+      startPosition,
+      targetPosition - startPosition,
+      moveDuration
+    );
+    let newPosition = new THREE.Vector3(newPositionX, 0, 0);
     avatarRef.current.position.copy(newPosition);
   });
 

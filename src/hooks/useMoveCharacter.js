@@ -38,12 +38,17 @@ const useMoveCharacter = () => {
     const waveDuration = actions["WAVING"]._clip.duration * 1000;
 
     // Start movement
-    if (currentSection === 0 || !moveRight) {
+    if (currentSection === projects.length + 1) {
+      // if last section
+      setCurrentAction("TURNRIGHT");
+      updateRotation(-Math.PI / 2);
+      delay += turnDuration;
+    } else if (currentSection === 0 || !moveRight) {
       setCurrentAction("TURNLEFT");
       updateRotation(Math.PI / 2);
       delay += turnDuration;
     } else {
-      // If moving right or at last section
+      // If moving right
       setCurrentAction("TURNRIGHT");
       updateRotation(-Math.PI / 2);
       delay += turnDuration;
@@ -51,7 +56,7 @@ const useMoveCharacter = () => {
 
     setTimeout(() => {
       setCurrentAction("WALKING");
-      setTargetPosition(newTarget * PORTAL_SEPARATION);
+      setTargetPosition(newTarget * PORTAL_SEPARATION + 1.5);
     }, delay);
     delay += walkDuration;
 
@@ -81,7 +86,7 @@ const useMoveCharacter = () => {
       setTimeout(() => {
         setCurrentAction("IDLE");
       }, delay);
-    } else if (newTarget === projects.length || !moveRight) {
+    } else if (newTarget === projects.length + 1 || !moveRight) {
       setTimeout(() => {
         setCurrentAction("TURNRIGHT");
         updateRotation(-Math.PI / 2);

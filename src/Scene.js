@@ -61,8 +61,8 @@ export default function Scene() {
     lookAtPositionTarget.y += initialLookAtY;
     lookAtPositionTarget.z += initialLookAtZ;
 
-    smoothedCameraPosition.lerp(cameraPositionTarget, 5 * delta);
-    smoothedLookAtPosition.lerp(lookAtPositionTarget, 5 * delta);
+    smoothedCameraPosition.lerp(cameraPositionTarget, 20 * delta);
+    smoothedLookAtPosition.lerp(lookAtPositionTarget, 20 * delta);
     state.camera.position.copy(smoothedCameraPosition);
     state.camera.lookAt(smoothedLookAtPosition);
   });
