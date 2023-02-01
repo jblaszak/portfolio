@@ -1,6 +1,7 @@
 import useNavigateStore from "../stores/useNavigate";
 import { useState, useEffect } from "react";
 import { projects } from "../data";
+import { PORTAL_SEPARATION } from "../constants";
 
 const useMoveCharacter = () => {
   const actions = useNavigateStore((state) => state.actions);
@@ -15,7 +16,6 @@ const useMoveCharacter = () => {
 
   const [currentAction, setCurrentAction] = useState("IDLE");
   const fadeDuration = 0.5;
-  const distanceBetweenPortals = 5;
 
   useEffect(() => {
     if (!actions || !currentAction) return;
@@ -51,7 +51,7 @@ const useMoveCharacter = () => {
 
     setTimeout(() => {
       setCurrentAction("WALKING");
-      setTargetPosition(newTarget * distanceBetweenPortals);
+      setTargetPosition(newTarget * PORTAL_SEPARATION);
     }, delay);
     delay += walkDuration;
 
