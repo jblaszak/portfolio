@@ -169,7 +169,6 @@ export default function Particles({ position, texture, image, index }) {
     const TexturedMaterial = a(({ ...props }) => {
       return (
         <meshBasicMaterial map={props.image} opacity={props.materialOpacity} transparent={true} />
-        // <meshBasicMaterial opacity={props.materialOpacity} transparent={true} />
       );
     });
 

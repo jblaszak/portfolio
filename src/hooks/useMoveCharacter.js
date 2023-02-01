@@ -40,12 +40,12 @@ const useMoveCharacter = () => {
     // Start movement
     if (currentSection === 0 || !moveRight) {
       setCurrentAction("TURNLEFT");
-      updateRotation(-Math.PI / 2);
+      updateRotation(Math.PI / 2);
       delay += turnDuration;
     } else {
       // If moving right or at last section
       setCurrentAction("TURNRIGHT");
-      updateRotation(Math.PI / 2);
+      updateRotation(-Math.PI / 2);
       delay += turnDuration;
     }
 
@@ -69,7 +69,7 @@ const useMoveCharacter = () => {
     if (newTarget === 0) {
       setTimeout(() => {
         setCurrentAction("TURNLEFT");
-        updateRotation(-Math.PI / 2);
+        updateRotation(Math.PI / 2);
       }, delay);
       delay += turnDuration;
 
@@ -84,7 +84,7 @@ const useMoveCharacter = () => {
     } else if (newTarget === projects.length || !moveRight) {
       setTimeout(() => {
         setCurrentAction("TURNRIGHT");
-        updateRotation(Math.PI / 2);
+        updateRotation(-Math.PI / 2);
       }, delay);
       delay += turnDuration;
 
@@ -94,7 +94,7 @@ const useMoveCharacter = () => {
     } else {
       setTimeout(() => {
         setCurrentAction("TURNLEFT");
-        updateRotation(-Math.PI / 2);
+        updateRotation(Math.PI / 2);
       }, delay);
       delay += turnDuration;
 
