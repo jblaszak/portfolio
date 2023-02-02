@@ -5,6 +5,7 @@ import { PORTAL_SEPARATION } from "../constants";
 
 const useMoveCharacter = () => {
   const actions = useNavigateStore((state) => state.actions);
+  const avatar = useNavigateStore((state) => state.avatar);
   const currentSection = useNavigateStore((state) => state.currentSection);
   const setCurrentSection = useNavigateStore((state) => state.setCurrentSection);
   const targetSection = useNavigateStore((state) => state.targetSection);
@@ -26,7 +27,7 @@ const useMoveCharacter = () => {
 
   function moveCharacter(newTarget) {
     // Don't allow move until target section reached and player is not zoomed in on something
-    if (targetSection !== currentSection || focus !== "avatar") return;
+    if (targetSection !== currentSection || focus !== avatar) return;
     if (newTarget < 0 || newTarget > projects.length + 1) return;
 
     setTargetSection(newTarget);

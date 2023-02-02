@@ -1,12 +1,13 @@
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import { BakeShadows, Environment } from "@react-three/drei";
-import { useThree, useLoader, useFrame } from "@react-three/fiber";
+import { useThree, useLoader } from "@react-three/fiber";
 import * as THREE from "three";
 
 import useNavigateStore from "./stores/useNavigate";
 import useMoveCharacter from "./hooks/useMoveCharacter";
+import useMoveCamera from "./hooks/useMoveCamera";
 import { projects } from "./data";
-import { INITIAL_CAMERA_POSITION, INITIAL_CAMERA_LOOKAT, PORTAL_SEPARATION } from "./constants";
+import { PORTAL_SEPARATION } from "./constants";
 
 import Card from "./Card";
 import Avatar from "./Avatar";
@@ -17,13 +18,9 @@ import "./style.css";
 
 export default function Scene() {
   const currentSection = useNavigateStore((state) => state.currentSection);
-  const targetSection = useNavigateStore((state) => state.targetSection);
-  const setTargetSection = useNavigateStore((state) => state.setTargetSection);
-  const avatar = useNavigateStore((state) => state.avatar);
-  const focus = useNavigateStore((state) => state.focus);
-  const setFocus = useNavigateStore((state) => state.setFocus);
 
   const moveCharacter = useMoveCharacter();
+  const moveCamera = useMoveCamera();
 
   const projectTextureFiles = projects.map((project) => project.texture);
   const projectImageFiles = projects.map((project) => project.image);
@@ -32,41 +29,6 @@ export default function Scene() {
   const { width, height } = useThree((state) => state.size);
 
   const rotation = [0, Math.PI / 6, 0];
-
-  // Seems stupid to declare things like this but if you use the actual vector in the useFrame below,
-  // the lerp function changes INITIAL_CAMERA variables :(
-  const [initialCameraX, initialCameraY, initialCameraZ] = [...INITIAL_CAMERA_POSITION];
-  const [initialLookAtX, initialLookAtY, initialLookAtZ] = [...INITIAL_CAMERA_LOOKAT];
-
-  const [smoothedCameraPosition] = useState(
-    () => new THREE.Vector3(initialCameraX, initialCameraY, initialCameraZ)
-  );
-  const [smoothedLookAtPosition] = useState(
-    () => new THREE.Vector3(initialLookAtX, initialLookAtY, initialLookAtZ)
-  );
-
-  useFrame((state, delta) => {
-    if (!avatar.current) return;
-
-    const cameraPositionTarget = new THREE.Vector3();
-    cameraPositionTarget.copy(avatar.current.position);
-    cameraPositionTarget.x += initialCameraX;
-    cameraPositionTarget.y += initialCameraY;
-    cameraPositionTarget.z += initialCameraZ;
-
-    const lookAtPositionTarget = new THREE.Vector3();
-    lookAtPositionTarget.copy(avatar.current.position);
-    lookAtPositionTarget.x += initialLookAtX;
-    lookAtPositionTarget.y += initialLookAtY;
-    lookAtPositionTarget.z += initialLookAtZ;
-
-    const lerpSpeed = focus === "avatar" ? 20 * delta : 5 * delta;
-
-    smoothedCameraPosition.lerp(cameraPositionTarget, lerpSpeed);
-    smoothedLookAtPosition.lerp(lookAtPositionTarget, lerpSpeed);
-    state.camera.position.copy(smoothedCameraPosition);
-    state.camera.lookAt(smoothedLookAtPosition);
-  });
 
   useEffect(() => {
     function handleKeyboard(e) {
@@ -92,7 +54,7 @@ export default function Scene() {
       document.removeEventListener("keydown", handleKeyboard);
       document.removeEventListener("wheel", handleWheel);
     };
-  }, [currentSection, targetSection, moveCharacter]);
+  }, [currentSection, moveCharacter]);
 
   return (
     <>

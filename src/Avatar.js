@@ -10,6 +10,7 @@ export default function Avatar(props) {
   const shadowAlphaMap = useLoader(THREE.TextureLoader, shadowTexture);
 
   const setAvatar = useNavigateStore((state) => state.setAvatar);
+  const setFocus = useNavigateStore((state) => state.setFocus);
   const setActions = useNavigateStore((state) => state.setActions);
   const targetRotation = useNavigateStore((state) => state.targetRotation);
   const targetPosition = useNavigateStore((state) => state.targetPosition);
@@ -28,6 +29,7 @@ export default function Avatar(props) {
   useEffect(() => {
     setActions(actions);
     setAvatar(avatarRef);
+    setFocus(avatarRef);
   }, []);
 
   useEffect(() => {

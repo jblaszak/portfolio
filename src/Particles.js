@@ -1,11 +1,10 @@
 import * as THREE from "three";
 import { shaderMaterial, useCursor } from "@react-three/drei";
-import { extend, useThree, useFrame } from "@react-three/fiber";
+import { extend, useFrame } from "@react-three/fiber";
 import ParticlesVertexShader from "./shaders/ParticlesVertexShader";
 import ParticlesFragmentShader from "./shaders/ParticlesFragmentShader";
 import { useSpring, a } from "@react-spring/three";
 import { useRef, useEffect, useCallback, useState } from "react";
-import { INITIAL_CAMERA_LOOKAT, INITIAL_CAMERA_POSITION } from "./constants";
 import useNavigateStore from "./stores/useNavigate";
 
 const ParticleMaterial = shaderMaterial(
@@ -25,6 +24,7 @@ extend({ ParticleMaterial });
 
 export default function Particles({ position, texture, image, index }) {
   const currentSection = useNavigateStore((state) => state.currentSection);
+  const avatar = useNavigateStore((state) => state.avatar);
   const focus = useNavigateStore((state) => state.focus);
   const setFocus = useNavigateStore((state) => state.setFocus);
   const textureWidth = texture.source.data.width;
@@ -102,46 +102,13 @@ export default function Particles({ position, texture, image, index }) {
     }
   }, [currentSection]);
 
-  const camera = useThree((s) => s.camera);
-
-  const startCamera = [
-    INITIAL_CAMERA_POSITION.x + position[0],
-    INITIAL_CAMERA_POSITION.y,
-    INITIAL_CAMERA_POSITION.z,
-  ];
-  const startLookAt = [
-    INITIAL_CAMERA_LOOKAT.x + position[0],
-    INITIAL_CAMERA_LOOKAT.y,
-    INITIAL_CAMERA_LOOKAT.z,
-  ];
-
-  const [cameraSpring, api] = useSpring(
-    () => ({
-      position: startCamera,
-      lookAt: startLookAt,
-    }),
-    []
-  );
-
-  const handleClick = useCallback(() => {
-    let focused = false;
-    return () => {
-      focused = !focused;
-      api.start({
-        position: focused
-          ? [...imageRef.current.localToWorld(new THREE.Vector3(0, 0, 5))]
-          : startCamera,
-        lookAt: focused
-          ? [...imageRef.current.localToWorld(new THREE.Vector3(0, 0, 0))]
-          : startLookAt,
-        onChange: (val) => {
-          camera.position.copy(new THREE.Vector3(...val.value.position));
-          camera.lookAt(new THREE.Vector3(...val.value.lookAt));
-          // console.log(imageRef.current.localToWorld(new THREE.Vector3(0, 0, 0)));
-        },
-      });
-    };
-  }, []);
+  const handleClick = () => {
+    if (focus !== imageRef) {
+      setFocus(imageRef);
+    } else {
+      setFocus(avatar);
+    }
+  };
 
   const geo = new THREE.InstancedBufferGeometry().copy(new THREE.PlaneGeometry(1, 1, 1, 1));
 
@@ -150,7 +117,7 @@ export default function Particles({ position, texture, image, index }) {
   useCursor(hovered);
   useFrame((state) => {
     const scaleFactor =
-      hovered && focus === "avatar" ? 1 + Math.sin(state.clock.elapsedTime * 7.5) / 100 : 1;
+      hovered && focus === avatar ? 1 + Math.sin(state.clock.elapsedTime * 7.5) / 100 : 1;
     const scale = new THREE.Vector3(4 * 0.91 * scaleFactor, 6 * 0.93 * scaleFactor, 1);
     imageRef.current.scale.copy(scale);
   });
@@ -198,8 +165,11 @@ export default function Particles({ position, texture, image, index }) {
         </mesh>
         <mesh
           ref={imageRef}
-          scale={[4 * 0.91, 6 * 0.93, 1]}
-          onPointerOver={(e) => (e.stopPropagation(), setHovered(true))}
+          onClick={() => handleClick()}
+          onPointerOver={(e) => {
+            e.stopPropagation();
+            setHovered(true);
+          }}
           onPointerOut={() => setHovered(false)}
         >
           <planeGeometry />
