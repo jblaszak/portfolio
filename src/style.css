@@ -27,12 +27,6 @@ body,
   -webkit-font-smoothing: antialiased;
 }
 
-canvas {
-  /* position: relative; */
-  /* z-index: 1; */
-  background-color: transparent;
-}
-
 .scene {
   color: var(--font-color);
 }

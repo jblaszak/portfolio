@@ -15,8 +15,8 @@ export default function Avatar(props) {
   const targetRotation = useNavigateStore((state) => state.targetRotation);
   const targetPosition = useNavigateStore((state) => state.targetPosition);
 
-  const shadowRef = useRef();
   const avatarRef = useRef();
+  const shadowRef = useRef();
   const { nodes, materials, animations } = useGLTF("./avatar.glb");
   const { actions } = useAnimations(animations, avatarRef);
 
@@ -43,9 +43,30 @@ export default function Avatar(props) {
     return (c / 2) * ((t -= 2) * t * t + 2) + b;
   }
 
+  const fadePoint = new THREE.Vector3();
+  const frustum = new THREE.Frustum();
+
   useFrame((state, delta) => {
-    shadowRef.current.position.copy(avatarRef.current.position);
     if (targetPosition === null || targetRotation === null) return;
+
+    // Move the shadow with the avatar
+    shadowRef.current.position.copy(avatarRef.current.position);
+
+    const frustum = new THREE.Frustum();
+    const fadePoint = new THREE.Vector3().copy(avatarRef.current.position);
+    fadePoint.y += 3;
+    fadePoint.z += 1;
+    const matrix = new THREE.Matrix4().multiplyMatrices(
+      state.camera.projectionMatrix,
+      state.camera.matrixWorldInverse
+    );
+    frustum.setFromProjectionMatrix(matrix);
+
+    if (frustum.containsPoint(fadePoint)) {
+      avatarRef.current.visible = true;
+    } else {
+      avatarRef.current.visible = false;
+    }
 
     // Rotate the avatar
     const targetRotationQuaternion = new THREE.Quaternion().setFromEuler(
@@ -74,7 +95,7 @@ export default function Avatar(props) {
     let newPosition = new THREE.Vector3(newPositionX, 0, 0);
     avatarRef.current.position.copy(newPosition);
 
-    // Scale the shadow, min 3.5, max 5.5
+    // Scale the shadow, min 3.5, max 6.5
     const shadowXScale = 3 * Math.sin((newTotalTime * Math.PI) / moveDuration) + 3.5;
     shadowRef.current.scale.copy(new THREE.Vector3(shadowXScale, 3.5, 3.5));
   });

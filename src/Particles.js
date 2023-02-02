@@ -4,7 +4,7 @@ import { extend, useFrame } from "@react-three/fiber";
 import ParticlesVertexShader from "./shaders/ParticlesVertexShader";
 import ParticlesFragmentShader from "./shaders/ParticlesFragmentShader";
 import { useSpring, a } from "@react-spring/three";
-import { useRef, useEffect, useCallback, useState } from "react";
+import { useRef, useEffect, useState } from "react";
 import useNavigateStore from "./stores/useNavigate";
 
 const ParticleMaterial = shaderMaterial(
@@ -40,7 +40,7 @@ export default function Particles({ position, texture, image, index }) {
     indices[i] = i;
   }
 
-  const materialRef = useRef();
+  const shaderMaterialRef = useRef();
   const imageRef = useRef();
 
   const prevSectionRef = useRef();
@@ -123,7 +123,7 @@ export default function Particles({ position, texture, image, index }) {
   });
 
   const Shader = () => {
-    const meshRef = useRef();
+    const shaderMeshRef = useRef();
 
     const FinalMaterial = a(({ ...props }) => {
       return (
@@ -132,7 +132,7 @@ export default function Particles({ position, texture, image, index }) {
           depthWrite={false}
           transparent={true}
           // flatShading={true}
-          ref={materialRef}
+          ref={shaderMaterialRef}
           attach="material"
           uRandom={props.uRandom}
           uOpacity={props.uOpacity}
@@ -144,40 +144,36 @@ export default function Particles({ position, texture, image, index }) {
       );
     });
 
-    const TexturedMaterial = a(({ ...props }) => {
-      return (
-        <meshBasicMaterial map={props.image} opacity={props.materialOpacity} transparent={true} />
-      );
-    });
-
     return (
-      <group position={position}>
-        <mesh ref={meshRef}>
-          <instancedBufferGeometry
-            index={geo.index}
-            attributes-position={geo.attributes.position}
-            attributes-uv={geo.attributes.uv}
-          >
-            <instancedBufferAttribute attach="attributes-pindex" args={[indices, 1]} />
-            <instancedBufferAttribute attach="attributes-offset" args={[offsets, 3]} />
-          </instancedBufferGeometry>
-          <FinalMaterial uRandom={springs.uRandom} uOpacity={springs.uOpacity} />
-        </mesh>
-        <mesh
-          ref={imageRef}
-          onClick={() => handleClick()}
-          onPointerOver={(e) => {
-            e.stopPropagation();
-            setHovered(true);
-          }}
-          onPointerOut={() => setHovered(false)}
+      <mesh ref={shaderMeshRef}>
+        <instancedBufferGeometry
+          index={geo.index}
+          attributes-position={geo.attributes.position}
+          attributes-uv={geo.attributes.uv}
         >
-          <planeGeometry />
-          <TexturedMaterial materialOpacity={springs.imageOpacity} image={image} />
-        </mesh>
-      </group>
+          <instancedBufferAttribute attach="attributes-pindex" args={[indices, 1]} />
+          <instancedBufferAttribute attach="attributes-offset" args={[offsets, 3]} />
+        </instancedBufferGeometry>
+        <FinalMaterial uRandom={springs.uRandom} uOpacity={springs.uOpacity} />
+      </mesh>
     );
   };
 
-  return <Shader />;
+  return (
+    <group position={position}>
+      <Shader />
+      <mesh
+        ref={imageRef}
+        onClick={() => handleClick()}
+        onPointerOver={(e) => {
+          e.stopPropagation();
+          setHovered(true);
+        }}
+        onPointerOut={() => setHovered(false)}
+      >
+        <planeGeometry />
+        <a.meshBasicMaterial map={image} opacity={springs.imageOpacity} transparent={true} />
+      </mesh>
+    </group>
+  );
 }

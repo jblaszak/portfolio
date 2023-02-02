@@ -22,7 +22,7 @@ const useMoveCamera = () => {
   );
 
   useFrame((state, delta) => {
-    if (!avatar.current) return;
+    if (!focus.current) return;
 
     const cameraPositionTarget = new THREE.Vector3();
     if (focus === avatar) {
@@ -31,7 +31,7 @@ const useMoveCamera = () => {
       cameraPositionTarget.y += initialCameraY;
       cameraPositionTarget.z += initialCameraZ;
     } else {
-      const newTarget = focus.current.localToWorld(new THREE.Vector3(0, 0, 5));
+      const newTarget = focus.current.localToWorld(new THREE.Vector3(0, 0, 4));
       cameraPositionTarget.copy(newTarget);
     }
 
