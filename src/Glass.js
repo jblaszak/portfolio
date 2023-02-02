@@ -7,7 +7,6 @@ export default function Glass({ position, scale, planeSize }) {
 
   return (
     <mesh
-      castShadow
       scale={scale}
       position={position}
       onPointerEnter={(e) => {

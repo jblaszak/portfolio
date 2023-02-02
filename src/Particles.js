@@ -7,7 +7,6 @@ import { useSpring, a } from "@react-spring/three";
 import { useRef, useEffect, useCallback } from "react";
 import { INITIAL_CAMERA_LOOKAT, INITIAL_CAMERA_POSITION } from "./constants";
 import useNavigateStore from "./stores/useNavigate";
-// import { useControls } from "leva";
 
 const ParticleMaterial = shaderMaterial(
   {

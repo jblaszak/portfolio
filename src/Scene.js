@@ -95,7 +95,7 @@ export default function Scene() {
 
   return (
     <>
-      <Environment preset="warehouse" intensity={0.5} />
+      <Environment preset="warehouse" />
       <Avatar />
       {projects.map((project, i) => {
         return (
@@ -123,7 +123,7 @@ export default function Scene() {
           </group>
         );
       })}
-      <Floor />
+      {/* <Floor /> */}
       <BakeShadows />
     </>
   );

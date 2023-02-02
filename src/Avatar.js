@@ -28,7 +28,6 @@ export default function Avatar(props) {
   useEffect(() => {
     setActions(actions);
     setAvatar(avatarRef);
-    console.log(avatarRef.current);
   }, []);
 
   useEffect(() => {
@@ -165,11 +164,6 @@ export default function Avatar(props) {
           </group>
         </group>
       </group>
-      {/* <mesh position={[0, 3, 0]} castShadow>
-        <boxGeometry />
-        <meshPhysicalMaterial />
-      </mesh>
-      <primitive ref={avatarRef} object={model.scene} scale={2} /> */}
     </group>
   );
 }
