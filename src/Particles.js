@@ -1,10 +1,10 @@
 import * as THREE from "three";
-import { shaderMaterial } from "@react-three/drei";
-import { extend, useThree } from "@react-three/fiber";
+import { shaderMaterial, useCursor } from "@react-three/drei";
+import { extend, useThree, useFrame } from "@react-three/fiber";
 import ParticlesVertexShader from "./shaders/ParticlesVertexShader";
 import ParticlesFragmentShader from "./shaders/ParticlesFragmentShader";
 import { useSpring, a } from "@react-spring/three";
-import { useRef, useEffect, useCallback } from "react";
+import { useRef, useEffect, useCallback, useState } from "react";
 import { INITIAL_CAMERA_LOOKAT, INITIAL_CAMERA_POSITION } from "./constants";
 import useNavigateStore from "./stores/useNavigate";
 
@@ -24,7 +24,9 @@ const ParticleMaterial = shaderMaterial(
 extend({ ParticleMaterial });
 
 export default function Particles({ position, texture, image, index }) {
-  const { currentSection } = useNavigateStore((state) => state);
+  const currentSection = useNavigateStore((state) => state.currentSection);
+  const focus = useNavigateStore((state) => state.focus);
+  const setFocus = useNavigateStore((state) => state.setFocus);
   const textureWidth = texture.source.data.width;
   const textureHeight = texture.source.data.height;
   const numParticles = textureWidth * textureHeight;
@@ -143,6 +145,16 @@ export default function Particles({ position, texture, image, index }) {
 
   const geo = new THREE.InstancedBufferGeometry().copy(new THREE.PlaneGeometry(1, 1, 1, 1));
 
+  // Make image scale on hover if in avatar view
+  const [hovered, setHovered] = useState(false);
+  useCursor(hovered);
+  useFrame((state) => {
+    const scaleFactor =
+      hovered && focus === "avatar" ? 1 + Math.sin(state.clock.elapsedTime * 7.5) / 100 : 1;
+    const scale = new THREE.Vector3(4 * 0.91 * scaleFactor, 6 * 0.93 * scaleFactor, 1);
+    imageRef.current.scale.copy(scale);
+  });
+
   const Shader = () => {
     const meshRef = useRef();
 
@@ -172,7 +184,7 @@ export default function Particles({ position, texture, image, index }) {
     });
 
     return (
-      <group position={position} ref={imageRef}>
+      <group position={position}>
         <mesh ref={meshRef}>
           <instancedBufferGeometry
             index={geo.index}
@@ -184,7 +196,12 @@ export default function Particles({ position, texture, image, index }) {
           </instancedBufferGeometry>
           <FinalMaterial uRandom={springs.uRandom} uOpacity={springs.uOpacity} />
         </mesh>
-        <mesh scale={[4 * 0.91, 6 * 0.93, 1]}>
+        <mesh
+          ref={imageRef}
+          scale={[4 * 0.91, 6 * 0.93, 1]}
+          onPointerOver={(e) => (e.stopPropagation(), setHovered(true))}
+          onPointerOut={() => setHovered(false)}
+        >
           <planeGeometry />
           <TexturedMaterial materialOpacity={springs.imageOpacity} image={image} />
         </mesh>

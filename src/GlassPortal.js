@@ -1,6 +1,6 @@
 import Glass from "./Glass";
 import { useLoader } from "@react-three/fiber";
-import shadowImage from "./assets/baked3.jpg";
+import shadowImage from "./assets/portal_shadow.jpg";
 import { useRef } from "react";
 import * as THREE from "three";
 

@@ -26,7 +26,7 @@ const useMoveCharacter = () => {
 
   function moveCharacter(newTarget) {
     // Don't allow move until target section reached and player is not zoomed in on something
-    if (targetSection !== currentSection || focus !== "player") return;
+    if (targetSection !== currentSection || focus !== "avatar") return;
     if (newTarget < 0 || newTarget > projects.length + 1) return;
 
     setTargetSection(newTarget);

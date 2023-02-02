@@ -4,7 +4,7 @@ import { useFrame, useLoader } from "@react-three/fiber";
 import useNavigateStore from "./stores/useNavigate";
 
 import * as THREE from "three";
-import shadowTexture from "./assets/simpleShadow.jpg";
+import shadowTexture from "./assets/avatar_shadow.jpg";
 
 export default function Avatar(props) {
   const shadowAlphaMap = useLoader(THREE.TextureLoader, shadowTexture);

@@ -10,7 +10,6 @@ import { INITIAL_CAMERA_POSITION, INITIAL_CAMERA_LOOKAT, PORTAL_SEPARATION } fro
 
 import Card from "./Card";
 import Avatar from "./Avatar";
-import Floor from "./Floor";
 import GlassPortal from "./GlassPortal";
 import Particles from "./Particles";
 
@@ -61,8 +60,10 @@ export default function Scene() {
     lookAtPositionTarget.y += initialLookAtY;
     lookAtPositionTarget.z += initialLookAtZ;
 
-    smoothedCameraPosition.lerp(cameraPositionTarget, 20 * delta);
-    smoothedLookAtPosition.lerp(lookAtPositionTarget, 20 * delta);
+    const lerpSpeed = focus === "avatar" ? 20 * delta : 5 * delta;
+
+    smoothedCameraPosition.lerp(cameraPositionTarget, lerpSpeed);
+    smoothedLookAtPosition.lerp(lookAtPositionTarget, lerpSpeed);
     state.camera.position.copy(smoothedCameraPosition);
     state.camera.lookAt(smoothedLookAtPosition);
   });
@@ -123,7 +124,6 @@ export default function Scene() {
           </group>
         );
       })}
-      {/* <Floor /> */}
       <BakeShadows />
     </>
   );
