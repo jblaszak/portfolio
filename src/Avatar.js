@@ -52,20 +52,28 @@ export default function Avatar(props) {
     // Move the shadow with the avatar
     shadowRef.current.position.copy(avatarRef.current.position);
 
-    const frustum = new THREE.Frustum();
-    const fadePoint = new THREE.Vector3().copy(avatarRef.current.position);
-    fadePoint.y += 3;
-    fadePoint.z += 1;
-    const matrix = new THREE.Matrix4().multiplyMatrices(
-      state.camera.projectionMatrix,
-      state.camera.matrixWorldInverse
-    );
-    frustum.setFromProjectionMatrix(matrix);
+    // // Slow way to handle visibility of avatar when camera is near
+    // const frustum = new THREE.Frustum();
+    // const fadePoint = new THREE.Vector3().copy(avatarRef.current.position);
+    // fadePoint.y += 3;
+    // fadePoint.z += 1;
+    // const matrix = new THREE.Matrix4().multiplyMatrices(
+    //   state.camera.projectionMatrix,
+    //   state.camera.matrixWorldInverse
+    // );
+    // frustum.setFromProjectionMatrix(matrix);
 
-    if (frustum.containsPoint(fadePoint)) {
-      avatarRef.current.visible = true;
-    } else {
+    // if (frustum.containsPoint(fadePoint)) {
+    //   avatarRef.current.visible = true;
+    // } else {
+    //   avatarRef.current.visible = false;
+    // }
+
+    // Faster way to handle visibility of avatar when camera is near
+    if (state.camera.position.z < 2) {
       avatarRef.current.visible = false;
+    } else {
+      avatarRef.current.visible = true;
     }
 
     // Rotate the avatar
