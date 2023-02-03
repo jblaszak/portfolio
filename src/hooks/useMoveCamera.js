@@ -8,6 +8,8 @@ import { INITIAL_CAMERA_POSITION, INITIAL_CAMERA_LOOKAT } from "../constants";
 const useMoveCamera = () => {
   const avatar = useNavigateStore((state) => state.avatar);
   const focus = useNavigateStore((state) => state.focus);
+  const currentSection = useNavigateStore((state) => state.currentSection);
+  const targetSection = useNavigateStore((state) => state.targetSection);
 
   // Seems stupid to declare things like this but if you use the actual vector in the useFrame below,
   // the lerp function changes INITIAL_CAMERA variables :(
@@ -46,7 +48,7 @@ const useMoveCamera = () => {
       lookAtPositionTarget.copy(newTarget);
     }
 
-    const lerpSpeed = focus === avatar ? 20 * delta : 5 * delta;
+    const lerpSpeed = targetSection !== currentSection ? 20 * delta : 5 * delta;
 
     smoothedCameraPosition.lerp(cameraPositionTarget, lerpSpeed);
     smoothedLookAtPosition.lerp(lookAtPositionTarget, lerpSpeed);
