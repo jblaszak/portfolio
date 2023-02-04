@@ -10,7 +10,7 @@ import { projects } from "./data";
 import { PORTAL_SEPARATION } from "./constants";
 
 import Card from "./Card";
-import AnimatedText from "./AnimatedText";
+import IntroText from "./IntroText";
 import Avatar from "./Avatar";
 import GlassPortal from "./GlassPortal";
 import Particles from "./Particles";
@@ -61,16 +61,8 @@ export default function Scene() {
     <>
       <Environment preset="warehouse" />
       {/* <fog attach="fog" args={["#FFFFFF", 10, 20]} /> */}
+      <IntroText />
       <Avatar />
-      <AnimatedText
-        position={[0, 5, -5]}
-        transition={[0, 2, 0]}
-        active={true}
-        fontStyle={"bold"}
-        fontSize={16}
-      >
-        Jo Blaszak
-      </AnimatedText>
       {projects.map((project, i) => {
         return (
           <group key={i} position={[PORTAL_SEPARATION * (i + 1), 0, -3]}>

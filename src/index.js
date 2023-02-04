@@ -20,7 +20,8 @@ function App() {
     <>
       <Canvas
         shadows
-        camera={{ position: INITIAL_CAMERA_POSITION, near: 1.5 }}
+        dpr={[1, 2]}
+        camera={{ position: INITIAL_CAMERA_POSITION }}
         onCreated={(state) => {
           state.camera.lookAt(INITIAL_CAMERA_LOOKAT);
         }}

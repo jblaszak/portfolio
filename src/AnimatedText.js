@@ -1,21 +1,25 @@
 import { Text } from "@react-three/drei";
+import { useFrame } from "@react-three/fiber";
 import { useSpring, a } from "@react-spring/three";
+import { useRef } from "react";
 import * as THREE from "three";
 import fontBold from "./assets/fonts/playfairdisplay-black-webfont.woff";
 import font from "./assets/fonts/playfairdisplay-bold-webfont.woff";
 
 export default function AnimatedText({
-  position,
-  transition,
-  active,
   children,
+  position = [0, 0, 0],
+  active = true,
+  transition = [0, 0, 0],
   fontStyle = "regular",
-  fontSize = 1,
+  fontSize = 16,
 }) {
+  const textRef = useRef();
+
   const fontProps = {
     color: "black",
     font: fontStyle === "bold" ? fontBold : font,
-    fontSize: fontSize / 10,
+    fontSize: fontSize / 20,
     lineHeight: 1,
     "material-toneMapped": false,
   };
@@ -27,10 +31,14 @@ export default function AnimatedText({
     opacity: active ? 1 : 0,
   });
 
+  useFrame(({ camera }) => {
+    // Make text face the camera
+    textRef.current.quaternion.copy(camera.quaternion);
+  });
+
   const IntermediateAnimatedText = a((props) => {
-    console.log(props.position);
     return (
-      <Text position={props.position} {...fontProps}>
+      <Text ref={textRef} position={props.position} {...fontProps}>
         <a.meshBasicMaterial
           side={THREE.FrontSide}
           color={fontProps.color}
