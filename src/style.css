@@ -1,4 +1,20 @@
-@import url("https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;0,900;1,700&display=swap");
+@font-face {
+  font-family: "Playfair Display";
+  font-weight: 700;
+  src: local("Playfair Display Bold"),
+    url("./assets/fonts/playfairdisplay-bold-webfont.woff2") format("woff2"),
+    url("./assets/fonts/playfairdisplay-bold-webfont.woff") format("woff");
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "Playfair Display";
+  font-weight: 900;
+  src: local("Playfair Display Extrabold"), local("Playfiar Display Black"),
+    url("./assets/fonts/playfairdisplay-black-webfont.woff2") format("woff2"),
+    url("./assets/fonts/playfairdisplay-black-webfont.woff") format("woff");
+  font-display: swap;
+}
 
 :root {
   --font-color: black;
@@ -22,6 +38,7 @@ body,
   width: 100%;
   height: 100%;
   font-size: 12px;
+  font-weight: bold;
   font-family: "Playfair Display", serif;
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
