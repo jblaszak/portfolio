@@ -1,10 +1,8 @@
-import useMoveCharacter from "../hooks/useMoveCharacter";
 import useNavigateStore from "../stores/useNavigate";
 import classes from "./Navigation.module.css";
 
-export default function Navigation() {
+export default function Navigation({ moveCharacter }) {
   const currentSection = useNavigateStore((state) => state.currentSection);
-  const moveCharacter = useMoveCharacter();
 
   return (
     <header className={classes.navContainer}>

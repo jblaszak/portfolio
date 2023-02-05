@@ -4,6 +4,7 @@ import { Preload } from "@react-three/drei";
 import { Canvas } from "@react-three/fiber";
 import { Perf } from "r3f-perf";
 import Scene from "./Scene";
+import useMoveCharacter from "./hooks/useMoveCharacter";
 import Navigation from "./Interface/Navigation";
 import { INITIAL_CAMERA_LOOKAT, INITIAL_CAMERA_POSITION } from "./constants";
 import "./style.css";
@@ -16,6 +17,7 @@ root.render(
 );
 
 function App() {
+  const moveCharacter = useMoveCharacter();
   return (
     <>
       <Canvas
@@ -31,9 +33,9 @@ function App() {
         {/* <OrbitControls makeDefault /> */}
         <Preload all />
         <Perf position="bottom-left" />
-        <Scene />
+        <Scene moveCharacter={moveCharacter} />
       </Canvas>
-      <Navigation />
+      <Navigation moveCharacter={moveCharacter} />
     </>
   );
 }

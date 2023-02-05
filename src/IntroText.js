@@ -1,6 +1,6 @@
 import AnimatedText from "./AnimatedText";
 
-export default function IntroText() {
+export default function IntroText({ moveCharacter }) {
   return (
     <>
       <AnimatedText

@@ -4,7 +4,6 @@ import { useThree, useLoader } from "@react-three/fiber";
 import * as THREE from "three";
 
 import useNavigateStore from "./stores/useNavigate";
-import useMoveCharacter from "./hooks/useMoveCharacter";
 import useMoveCamera from "./hooks/useMoveCamera";
 import { projects } from "./data";
 import { PORTAL_SEPARATION } from "./constants";
@@ -17,10 +16,9 @@ import Particles from "./Particles";
 
 import "./style.css";
 
-export default function Scene() {
+export default function Scene({ moveCharacter }) {
   const currentSection = useNavigateStore((state) => state.currentSection);
 
-  const moveCharacter = useMoveCharacter();
   const moveCamera = useMoveCamera();
 
   const projectTextureFiles = projects.map((project) => project.texture);
@@ -61,7 +59,7 @@ export default function Scene() {
     <>
       <Environment preset="warehouse" />
       {/* <fog attach="fog" args={["#FFFFFF", 10, 20]} /> */}
-      <IntroText />
+      <IntroText moveCharacter={moveCharacter} />
       <Avatar />
       {projects.map((project, i) => {
         return (
