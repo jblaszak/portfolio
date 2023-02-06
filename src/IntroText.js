@@ -1,4 +1,5 @@
 import AnimatedText from "./AnimatedText";
+import Button from "./Button";
 
 export default function IntroText({ moveCharacter }) {
   return (
@@ -15,9 +16,20 @@ export default function IntroText({ moveCharacter }) {
       <AnimatedText position={[0, 4.5, 0]} fontSize={6}>
         Fullstack Creative Developer
       </AnimatedText>
-      <AnimatedText position={[0, 0.5, 2]} fontSize={5}>
+      <Button
+        text={"See my work!"}
+        width={1.8}
+        height={0.4}
+        // radius={0.3}
+        border={0.025}
+        position={[0, 0.5, 2.5]}
+        buttonPosition={[-0.925, -0.235, 0]}
+        fontSize={5}
+        onClick={() => moveCharacter(1)}
+      />
+      {/* <AnimatedText position={[0, 0.5, 2]} >
         See my work!
-      </AnimatedText>
+      </AnimatedText> */}
     </>
   );
 }

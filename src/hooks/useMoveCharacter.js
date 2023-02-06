@@ -1,5 +1,5 @@
 import useNavigateStore from "../stores/useNavigate";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { projects } from "../data";
 import { PORTAL_SEPARATION, STAND_X_FROM_PORTAL } from "../constants";
 
@@ -25,7 +25,7 @@ const useMoveCharacter = () => {
     return () => action.fadeOut(fadeDuration);
   }, [currentAction, actions]);
 
-  function moveCharacter(newTarget) {
+  const moveCharacter = useCallback((newTarget) => {
     // Don't allow move until target section reached and player is not zoomed in on something
     if (targetSection !== currentSection || focus !== avatar) return;
     if (newTarget < 0 || newTarget > projects.length + 1) return;
@@ -109,7 +109,7 @@ const useMoveCharacter = () => {
         setCurrentAction("IDLE");
       }, delay);
     }
-  }
+  });
 
   return moveCharacter;
 };

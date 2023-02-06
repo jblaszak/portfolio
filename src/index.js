@@ -18,6 +18,7 @@ root.render(
 
 function App() {
   const moveCharacter = useMoveCharacter();
+  console.log("rendered root");
   return (
     <>
       <Canvas
