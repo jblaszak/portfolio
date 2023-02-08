@@ -4,13 +4,7 @@ import Button from "./Button";
 export default function IntroText({ moveCharacter }) {
   return (
     <>
-      <AnimatedText
-        position={[0, 5.8, -2]}
-        transition={[0, 2, 0]}
-        active={true}
-        fontStyle={"bold"}
-        fontSize={20}
-      >
+      <AnimatedText position={[0, 5.8, -2]} active={true} fontStyle={"bold"} fontSize={20}>
         Jo Blaszak
       </AnimatedText>
       <AnimatedText position={[0, 4.5, 0]} fontSize={6}>
@@ -27,9 +21,6 @@ export default function IntroText({ moveCharacter }) {
         fontSize={5}
         onClick={() => moveCharacter(1)}
       />
-      {/* <AnimatedText position={[0, 0.5, 2]} >
-        See my work!
-      </AnimatedText> */}
     </>
   );
 }

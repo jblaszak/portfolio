@@ -48,7 +48,6 @@ export default function Button({
 
   const spring = useSpring({
     backgroundColor: hovered ? "black" : "white",
-    // color: hovered ? "white" : "black",
   });
 
   return (

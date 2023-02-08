@@ -14,11 +14,10 @@ export default function AnimatedText({
   transition = [0, 0, 0],
   fontStyle = "regular",
   fontSize = 16,
+  width = null,
 }) {
   const textRef = useRef();
   const [lerpedPosition] = useState(new THREE.Vector3(...position));
-  const [lerpedColor] = useState(new THREE.Color("black"));
-  // const newPosition = new THREE.Vector3();
   const currentColor = new THREE.Color();
 
   const springs = useSpring({
@@ -53,7 +52,9 @@ export default function AnimatedText({
     // color: "black",
     font: fontStyle === "bold" ? fontBold : font,
     fontSize: fontSize / 20,
-    lineHeight: 1,
+    lineHeight: 1.2,
+    maxWidth: width ?? 100,
+    textAlign: "center",
     "material-toneMapped": false,
   };
 

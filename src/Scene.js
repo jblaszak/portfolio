@@ -13,6 +13,7 @@ import IntroText from "./IntroText";
 import Avatar from "./Avatar";
 import GlassPortal from "./GlassPortal";
 import Particles from "./Particles";
+import Contact from "./Contact";
 
 import "./style.css";
 
@@ -87,6 +88,7 @@ export default function Scene({ moveCharacter }) {
           </group>
         );
       })}
+      <Contact />
       <BakeShadows />
     </>
   );
