@@ -1,6 +1,6 @@
 import React, { useRef, useEffect, useState } from "react";
-import { useGLTF, useAnimations } from "@react-three/drei";
-import { useFrame, useLoader } from "@react-three/fiber";
+import { useGLTF, useAnimations, PerspectiveCamera } from "@react-three/drei";
+import { useFrame, useLoader, useThree } from "@react-three/fiber";
 import useNavigateStore from "./stores/useNavigate";
 
 import * as THREE from "three";
@@ -17,14 +17,18 @@ export default function Avatar(props) {
 
   const avatarRef = useRef();
   const shadowRef = useRef();
+  const invisibleRef = useRef();
   const { nodes, materials, animations } = useGLTF("./avatar.glb");
   const { actions } = useAnimations(animations, avatarRef);
 
   const [startPosition, setStartPosition] = useState(() => 0);
   const [totalTime, setTotalTime] = useState(() => 0);
   const [smoothedAvatarRotation] = useState(() =>
-    new THREE.Quaternion().setFromEuler(new THREE.Euler(0, 0, 0))
+    new THREE.Quaternion().setFromEuler(new THREE.Euler(0, 0, 0, "YXZ"))
   );
+
+  const { width, height } = useThree();
+  const headCam = useRef();
 
   useEffect(() => {
     setActions(actions);
@@ -43,7 +47,17 @@ export default function Avatar(props) {
     return (c / 2) * ((t -= 2) * t * t + 2) + b;
   }
 
-  useFrame((state, delta) => {
+  useFrame(({ camera, raycaster, mouse, scene }, delta) => {
+    const newMouse = new THREE.Vector2().copy(mouse);
+    const rotY = avatarRef.current.rotation.y;
+    newMouse.x *= -Math.cos(rotY);
+    raycaster.setFromCamera(newMouse, headCam.current);
+    const intersects = raycaster.intersectObjects([invisibleRef.current], true);
+
+    if (intersects.length > 0) {
+      nodes.Head.lookAt(intersects[0].point);
+    }
+
     if (targetPosition === null || targetRotation === null) return;
 
     // Move the shadow with the avatar
@@ -67,18 +81,21 @@ export default function Avatar(props) {
     // }
 
     // Faster way to handle visibility of avatar when camera is near
-    if (state.camera.position.z < 2) {
+    if (camera.position.z < 2) {
       avatarRef.current.visible = false;
     } else {
       avatarRef.current.visible = true;
     }
 
     // Rotate the avatar
+    // const targetRotationQuaternion = new THREE.Quaternion().setFromAxisAngle(yAxis, targetRotation);
     const targetRotationQuaternion = new THREE.Quaternion().setFromEuler(
-      new THREE.Euler(0, targetRotation, 0)
+      new THREE.Euler(0, targetRotation, 0, "YXZ")
     );
     smoothedAvatarRotation.slerp(targetRotationQuaternion, delta);
-    avatarRef.current.rotation.copy(new THREE.Euler().setFromQuaternion(smoothedAvatarRotation));
+    avatarRef.current.rotation.copy(
+      new THREE.Euler().setFromQuaternion(smoothedAvatarRotation, "YXZ")
+    );
 
     // Move the avatar
     if (avatarRef.current.position.x === targetPosition) return;
@@ -112,6 +129,20 @@ export default function Avatar(props) {
         <meshBasicMaterial color={"grey"} transparent alphaMap={shadowAlphaMap} />
       </mesh>
       <group ref={avatarRef} {...props} dispose={null} scale={2}>
+        <PerspectiveCamera
+          makeDefault={false}
+          ref={headCam}
+          aspect={width / height}
+          fov={45}
+          near={0.25}
+          far={10}
+          position={[0, 1.8, 0]}
+          rotation={[0, Math.PI, 0]}
+        />
+        <mesh ref={invisibleRef} position={[0, 0, 0]}>
+          <sphereGeometry args={[5, 16, 16]} />
+          <meshBasicMaterial color={"white"} side={THREE.DoubleSide} transparent opacity={0} />
+        </mesh>
         <group name="Scene">
           <group name="Armature">
             <primitive object={nodes.Hips} />

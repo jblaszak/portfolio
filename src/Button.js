@@ -1,23 +1,25 @@
 import { useCursor } from "@react-three/drei";
 import { useFrame } from "@react-three/fiber";
 import { useSpring, a } from "@react-spring/three";
-import { useState, useRef, useCallback } from "react";
+import { useState, useRef, useCallback, useMemo } from "react";
 import * as THREE from "three";
 import AnimatedText from "./AnimatedText";
+import { useEffect } from "react";
 
 export default function Button({
   onClick = null,
   text = "BUTTON",
-  width = 1,
-  height = 1,
   radius = 0.3,
   border = 0.1,
   fontSize = 10,
   position = [0, 0, 0],
-  buttonPosition = [0, 0, 0],
+  padding = [0.075, 0.05],
 }) {
   const buttonRef = useRef();
+  const textRef = useRef();
   const [hovered, setHovered] = useState(false);
+  const buttonPosition = new THREE.Vector3();
+
   useCursor(hovered);
 
   const makeButtonShape = useCallback((x, y, w, h, r) => {
@@ -38,12 +40,39 @@ export default function Button({
     return shape;
   }, []);
 
-  const backgroundShape = makeButtonShape(border, border, width, height, radius * 0.8);
-  const borderShape = makeButtonShape(0, 0, width + 2 * border, height + 2 * border, radius);
+  const [borderShape, setBorderShape] = useState(makeButtonShape(1, 1, 1, 1, 1));
+  const [backgroundShape, setBackgroundShape] = useState(makeButtonShape(1, 1, 1, 1, 1));
+
+  //   useEffect(() => {
+  //     const textBox = textRef.current.geometry.boundingBox;
+  //     const width = textBox.max.x - textBox.min.x;
+  //     const height = textBox.max.y - textBox.min.y;
+  //     const newBackgroundShape = makeButtonShape(
+  //       border,
+  //       border,
+  //       width + 2 * padding[0],
+  //       height + 2 * padding[1],
+  //       radius * 0.8
+  //     );
+  //     const newBorderShape = makeButtonShape(
+  //       0,
+  //       0,
+  //       width + 2 * (border + padding[0]),
+  //       height + 2 * (border + padding[1]),
+  //       radius
+  //     );
+  //     setBackgroundShape(newBackgroundShape);
+  //     setBorderShape(newBorderShape);
+  //     console.log("Aaaaaa");
+  //   }, [textRef, radius, border, padding, makeButtonShape]);
 
   useFrame(({ camera }) => {
     // Make text face the camera
     buttonRef.current.quaternion.copy(camera.quaternion);
+    // buttonPosition.copy(buttonRef.current.position);
+    // buttonPosition.x += padding[0] + border;
+    // buttonPosition.y += padding[1] + border;
+    // textRef.current.position.copy(buttonPosition);
   });
 
   const spring = useSpring({
@@ -53,7 +82,7 @@ export default function Button({
   return (
     <>
       <group position={position}>
-        <group ref={buttonRef} position={buttonPosition}>
+        <group ref={buttonRef}>
           {/* Grouped this way because text also gets a quaternion applied to it, this way they are the same */}
           <mesh
             position={[0, 0, -0.001]}
@@ -70,9 +99,13 @@ export default function Button({
           </mesh>
         </group>
         <AnimatedText
+          ref={textRef}
           position={[0, 0, 0.002]}
           fontSize={fontSize}
           active={true}
+          textAlign={"left"}
+          anchorX={"left"}
+          anchorY={"bottom"}
           color={hovered ? "white" : "black"}
           children={text}
         />
