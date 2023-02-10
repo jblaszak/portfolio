@@ -1,25 +1,28 @@
 import { useCursor } from "@react-three/drei";
 import { useFrame } from "@react-three/fiber";
 import { useSpring, a } from "@react-spring/three";
-import { useState, useRef, useCallback, useMemo } from "react";
+import { useState, useRef, useCallback } from "react";
 import * as THREE from "three";
 import AnimatedText from "./AnimatedText";
-import { useEffect } from "react";
 
 export default function Button({
   onClick = null,
   text = "BUTTON",
+  width = 1,
+  height = 1,
   radius = 0.3,
   border = 0.1,
   fontSize = 10,
+  active = true,
   position = [0, 0, 0],
-  padding = [0.075, 0.05],
+  transition = [0, 0, 0],
+  buttonPosition = [0, 0, 0],
+  faceCam = true,
 }) {
   const buttonRef = useRef();
-  const textRef = useRef();
+  const backingRef = useRef();
+  const [lerpedPosition] = useState(new THREE.Vector3(...position));
   const [hovered, setHovered] = useState(false);
-  const buttonPosition = new THREE.Vector3();
-
   useCursor(hovered);
 
   const makeButtonShape = useCallback((x, y, w, h, r) => {
@@ -40,73 +43,62 @@ export default function Button({
     return shape;
   }, []);
 
-  const [borderShape, setBorderShape] = useState(makeButtonShape(1, 1, 1, 1, 1));
-  const [backgroundShape, setBackgroundShape] = useState(makeButtonShape(1, 1, 1, 1, 1));
-
-  //   useEffect(() => {
-  //     const textBox = textRef.current.geometry.boundingBox;
-  //     const width = textBox.max.x - textBox.min.x;
-  //     const height = textBox.max.y - textBox.min.y;
-  //     const newBackgroundShape = makeButtonShape(
-  //       border,
-  //       border,
-  //       width + 2 * padding[0],
-  //       height + 2 * padding[1],
-  //       radius * 0.8
-  //     );
-  //     const newBorderShape = makeButtonShape(
-  //       0,
-  //       0,
-  //       width + 2 * (border + padding[0]),
-  //       height + 2 * (border + padding[1]),
-  //       radius
-  //     );
-  //     setBackgroundShape(newBackgroundShape);
-  //     setBorderShape(newBorderShape);
-  //     console.log("Aaaaaa");
-  //   }, [textRef, radius, border, padding, makeButtonShape]);
+  const backgroundShape = makeButtonShape(border, border, width, height, radius * 0.8);
+  const borderShape = makeButtonShape(0, 0, width + 2 * border, height + 2 * border, radius);
 
   useFrame(({ camera }) => {
     // Make text face the camera
-    buttonRef.current.quaternion.copy(camera.quaternion);
-    // buttonPosition.copy(buttonRef.current.position);
-    // buttonPosition.x += padding[0] + border;
-    // buttonPosition.y += padding[1] + border;
-    // textRef.current.position.copy(buttonPosition);
+    if (faceCam) {
+      backingRef.current.quaternion.copy(camera.quaternion);
+    }
+    // console.log(camera.quaternion);
+
+    const targetPosition = active
+      ? new THREE.Vector3(...position)
+      : new THREE.Vector3(
+          position[0] + transition[0],
+          position[1] + transition[1],
+          position[2] + transition[2]
+        );
+    lerpedPosition.lerp(targetPosition, 0.1);
+    buttonRef.current.position.copy(lerpedPosition);
   });
 
   const spring = useSpring({
     backgroundColor: hovered ? "black" : "white",
+    opacity: active ? 1 : 0,
   });
 
   return (
     <>
-      <group position={position}>
-        <group ref={buttonRef}>
+      <group ref={buttonRef} position={position}>
+        <group ref={backingRef} position={buttonPosition}>
           {/* Grouped this way because text also gets a quaternion applied to it, this way they are the same */}
+          <mesh position={[0, 0, -0.001]}>
+            <shapeGeometry attach="geometry" args={[borderShape]} />
+            <a.meshBasicMaterial color={"black"} opacity={spring.opacity} transparent />
+          </mesh>
           <mesh
-            position={[0, 0, -0.001]}
+            position={[0, 0, 0]}
             onPointerOver={() => setHovered(true)}
             onPointerOut={() => setHovered(false)}
             onClick={onClick}
           >
-            <shapeGeometry attach="geometry" args={[borderShape]} />
-            <meshBasicMaterial color="black" />
-          </mesh>
-          <mesh position={[0, 0, 0]}>
             <shapeGeometry attach="geometry" args={[backgroundShape]} />
-            <a.meshBasicMaterial color={spring.backgroundColor} toneMapped={false} />
+            <a.meshBasicMaterial
+              color={spring.backgroundColor}
+              toneMapped={false}
+              opacity={spring.opacity}
+              transparent
+            />
           </mesh>
         </group>
         <AnimatedText
-          ref={textRef}
           position={[0, 0, 0.002]}
           fontSize={fontSize}
-          active={true}
-          textAlign={"left"}
-          anchorX={"left"}
-          anchorY={"bottom"}
+          active={active}
           color={hovered ? "white" : "black"}
+          faceCam={faceCam}
           children={text}
         />
       </group>

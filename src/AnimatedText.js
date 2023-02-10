@@ -17,9 +17,10 @@ const AnimatedText = forwardRef(
       fontStyle = "regular",
       textAlign = "center",
       anchorX = "center",
-      anchorY = "center",
+      anchorY = "middle",
       fontSize = 16,
       width = null,
+      faceCam = true,
     },
     ref
   ) => {
@@ -37,9 +38,13 @@ const AnimatedText = forwardRef(
 
     useFrame(({ camera }) => {
       // Make text face the camera
-      ref.current.quaternion.copy(camera.quaternion);
+      if (faceCam) {
+        ref.current.quaternion.copy(camera.quaternion);
+      }
       // Animate font color
       ref.current.material.color.lerp(currentColor.set(color), 0.1);
+
+      // Animate position
       const targetPosition = active
         ? new THREE.Vector3(...position)
         : new THREE.Vector3(

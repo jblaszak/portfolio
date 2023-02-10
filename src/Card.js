@@ -67,7 +67,7 @@ export default function Card({
         scale={0.15}
         transform
         position={[3.5, 3, 0]}
-        // occlude="blending"
+        occlude="blending"
         // zIndexRange={[0, 1000]}
       >
         <div

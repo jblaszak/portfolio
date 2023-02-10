@@ -26,14 +26,18 @@ const useMoveCamera = () => {
   useFrame((state, delta) => {
     if (!focus.current) return;
 
+    const name = focus.current.name;
+
     const cameraPositionTarget = new THREE.Vector3();
-    if (focus === avatar) {
+    if (name === "avatar") {
       cameraPositionTarget.copy(focus.current.position);
       cameraPositionTarget.x += initialCameraX;
       cameraPositionTarget.y += initialCameraY;
       cameraPositionTarget.z += initialCameraZ;
     } else {
-      const newTarget = focus.current.localToWorld(new THREE.Vector3(0, 0, 4));
+      const newTarget = focus.current.localToWorld(
+        name === "portal" ? new THREE.Vector3(0, 0, 4) : new THREE.Vector3(0, 0, 1)
+      );
       cameraPositionTarget.copy(newTarget);
     }
 

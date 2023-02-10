@@ -170,6 +170,7 @@ export default function Particles({ position, texture, image, index }) {
           setHovered(true);
         }}
         onPointerOut={() => setHovered(false)}
+        name="portal"
       >
         <planeGeometry />
         <a.meshBasicMaterial map={image} opacity={springs.imageOpacity} transparent={true} />

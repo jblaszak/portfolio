@@ -128,12 +128,12 @@ export default function Avatar(props) {
         <planeGeometry args={[1, 1]} />
         <meshBasicMaterial color={"grey"} transparent alphaMap={shadowAlphaMap} />
       </mesh>
-      <group ref={avatarRef} {...props} dispose={null} scale={2}>
+      <group ref={avatarRef} {...props} dispose={null} scale={2} name="avatar">
         <PerspectiveCamera
           makeDefault={false}
           ref={headCam}
           aspect={width / height}
-          fov={45}
+          fov={60}
           near={0.25}
           far={10}
           position={[0, 1.8, 0]}
