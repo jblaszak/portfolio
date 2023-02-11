@@ -37,61 +37,97 @@ export default function Scene({ moveCharacter }) {
     {
       image: ppc,
       texture: ppcTexture,
-      title: { text: "Perfect Pixels Club", position: [-2.2, 1.55, 0], transition: [0, 1, 0] },
-      date: { text: "2022", position: [0.85, 1.52, 0], transition: [1, 0, 0] },
+      title: { text: "Perfect Pixels Club", position: [-2, 1.4, 0], transition: [0, 1, 0] },
+      date: { text: "2022", position: [1.05, 1.37, 0], transition: [1, 0, 0] },
       description: {
         text: "A collections page for planned NFT projects.",
-        position: [-2.2, 0.75, 0],
+        position: [-2, 0.65, 0],
         transition: [-4, 0, 0],
       },
       tech: {
         text: "Tech: HTML, CSS, React, Canvas",
-        position: [-2.2, 0.1, 0],
+        position: [-2, 0.05, 0],
         transition: [-4, 0, 0],
       },
       siteLink: {
         href: "https://www.perfectpixels.club",
-        position: [-1.45, -0.5, 0],
+        position: [-1.25, -0.55, 0],
         transition: [0, -2, 0],
       },
       codeLink: {
         href: "https://github.com/jblaszak/perfect-pixels-club",
-        position: [0.2, -0.5, 0],
+        position: [0.4, -0.55, 0],
         transition: [0, -2, 0],
       },
     },
-    // {
-    //   image: cfp,
-    //   texture: cfpTexture,
-    //   title: "Crypto Flex Pixels",
-    //   date: "2021",
-    //   description:
-    //     "An NFT project where all 10,000 NFTs are visible at once. Includes custom smart contract, minting and viewer.",
-    //   tech: "HTML, CSS, React, Redux, Canvas, Solidity",
-    //   siteLink: "https://www.cryptoflexpixels.com",
-    //   codeLink: "https://github.com/jblaszak/crypto-pixels",
-    // },
-    // {
-    //   image: starship,
-    //   texture: starshipTexture,
-    //   title: "Qoor Starship/Nexus",
-    //   date: "2019",
-    //   description:
-    //     "Prototype for monitoring/scheduling service for AI/Machine Learning and Crypto Mining workloads. Required multiple running machines so no live demo available.",
-    //   tech: "HTML, CSS, Node.js, React, Socket.io",
-    //   video: starshipVideo,
-    //   videoCaption:
-    //     "This project required a number of machines communicating with one another to simulate monitoring and accessing a machine in a datacenter. It was created for the purpose of conveying the concept to investors and is no longer operational.",
-    // },
-    // {
-    //   image: qoor,
-    //   texture: qoorTexture,
-    //   title: "Qoor Website",
-    //   date: "2019",
-    //   description: "Company site for pre-seed startup. Code is private.",
-    //   tech: "HTML, CSS, React",
-    //   siteLink: "https://qoor.io/",
-    // },
+    {
+      image: cfp,
+      texture: cfpTexture,
+      title: { text: "Crypto Flex Pixels", position: [-2, 1.4, 0], transition: [0, 1, 0] },
+      date: { text: "2021", position: [1.05, 1.37, 0], transition: [1, 0, 0] },
+      description: {
+        text: "An NFT project where all 10,000 NFTs are visible at once. Includes custom smart contract, minting and viewer.",
+        position: [-2, 0.65, 0],
+        transition: [-4, 0, 0],
+      },
+      tech: {
+        text: "Tech: HTML, CSS, React, Redux, Canvas, Solidity",
+        position: [-2, 0.05, 0],
+        transition: [-4, 0, 0],
+      },
+      siteLink: {
+        href: "https://www.cryptoflexpixels.com",
+        position: [-1.25, -0.55, 0],
+        transition: [0, -2, 0],
+      },
+      codeLink: {
+        href: "https://github.com/jblaszak/crypto-pixels",
+        position: [0.4, -0.55, 0],
+        transition: [0, -2, 0],
+      },
+    },
+    {
+      image: starship,
+      texture: starshipTexture,
+      title: { text: "Qoor Starship/Nexus", position: [-2, 1.4, 0], transition: [0, 1, 0] },
+      date: { text: "2019", position: [1.05, 1.37, 0], transition: [1, 0, 0] },
+      description: {
+        text: "Prototype for monitoring/scheduling service for AI/Machine Learning and Crypto Mining workloads. Required multiple running machines so no live demo available.",
+        position: [-2, 0.65, 0],
+        transition: [-4, 0, 0],
+      },
+      tech: {
+        text: "Tech: HTML, CSS, Node.js, React, Socket.io",
+        position: [-2, 0.05, 0],
+        transition: [-4, 0, 0],
+      },
+      video: {
+        vide: starshipVideo,
+        videoCaption:
+          "This project required a number of machines communicating with one another to simulate monitoring and accessing a machine in a datacenter. It was created for the purpose of conveying the concept to investors and is no longer operational.",
+      },
+    },
+    {
+      image: qoor,
+      texture: qoorTexture,
+      title: { text: "Qoor Website", position: [-2, 1.4, 0], transition: [0, 1, 0] },
+      date: { text: "2019", position: [1.05, 1.37, 0], transition: [1, 0, 0] },
+      description: {
+        text: "Company site for pre-seed startup. Code is private.",
+        position: [-2, 0.65, 0],
+        transition: [-4, 0, 0],
+      },
+      tech: {
+        text: "Tech: HTML, CSS, React",
+        position: [-2, 0.05, 0],
+        transition: [-4, 0, 0],
+      },
+      siteLink: {
+        href: "https://qoor.io/",
+        position: [-1.25, -0.55, 0],
+        transition: [0, -2, 0],
+      },
+    },
   ];
 
   const projectTextureFiles = projects.map((project) => project.texture);
@@ -102,7 +138,7 @@ export default function Scene({ moveCharacter }) {
 
   const portalRotation = [0, Math.PI / 6, 0];
   const cardRotation = [0, -Math.PI / 8, 0];
-  const cardPosition = [4, 4, 0];
+  const cardPosition = [3.5, 4, 0];
 
   useEffect(() => {
     function handleKeyboard(e) {

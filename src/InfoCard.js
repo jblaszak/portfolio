@@ -1,11 +1,13 @@
 import { useRef, useState } from "react";
 import { useCursor } from "@react-three/drei";
-import { useFrame } from "@react-three/fiber";
+import { useFrame, useLoader } from "@react-three/fiber";
 import useNavigateStore from "./stores/useNavigate";
 import AnimatedText from "./AnimatedText";
 import Button from "./Button";
 import openLink from "./helpers/openLink";
 import * as THREE from "three";
+
+import paperImage from "./assets/paper.jpg";
 
 export default function InfoCard({
   position,
@@ -23,28 +25,79 @@ export default function InfoCard({
   const focus = useNavigateStore((state) => state.focus);
   const setFocus = useNavigateStore((state) => state.setFocus);
 
+  const [paperTexture] = useLoader(THREE.TextureLoader, [paperImage]);
+
   const cardRef = useRef();
   const titleRef = useRef();
   const lineRef = useRef();
+  const [activeStatuses, setActiveStatuses] = useState(() => {
+    const activeMap = new Map([
+      ["title", false],
+      ["date", false],
+      ["line", false],
+      ["description", false],
+      ["tech", false],
+    ]);
+
+    if (siteLink) activeMap.set("siteLink", false);
+    if (codeLink) activeMap.set("codeLink", false);
+    if (video) activeMap.set("video", false);
+
+    return activeMap;
+  });
   const [hovered, setHovered] = useState(false);
   const [lerpedLineTargetPosition] = useState(
     new THREE.Vector3(title.position[0], title.position[1] - 0.175, title.position[2])
   );
-  const [lerpedLineScale] = useState(new THREE.Vector3(1, 0.3, 1));
+  const [lerpedLineScale] = useState(new THREE.Vector3(0, 0.3, 1));
   useCursor(hovered);
-
-  const active = true;
+  const delay = 250;
 
   const handleClick = () => {
+    const keys = [...activeStatuses.keys()];
+
     if (focus !== cardRef) {
       setFocus(cardRef);
+      let i = 0;
+      const newStatuses = new Map(activeStatuses);
+      const interval = setInterval(() => {
+        newStatuses.set(keys[i], true);
+        const entries = newStatuses.entries();
+        const newMap = new Map(entries);
+        setActiveStatuses(newMap);
+        i++;
+        if (i >= keys.length) clearInterval(interval);
+      }, delay);
     } else {
       setFocus(avatar);
+      const newStatuses = new Map(activeStatuses);
+      for (const key of newStatuses.keys()) {
+        newStatuses.set(key, false);
+      }
+      setActiveStatuses(newStatuses);
     }
   };
 
+  //   useEffect(() => {
+  //     const activeMap = new Map([
+  //       ["title", false],
+  //       ["date", false],
+  //       ["line", false],
+  //       ["description", false],
+  //       ["tech", false],
+  //     ]);
+
+  //     if (siteLink) activeMap.set("siteLink", false);
+  //     if (codeLink) activeMap.set("codeLink", false);
+  //     if (video) activeMap.set("video", false);
+
+  //     activeStatuses.current = activeMap;
+  //     console.log(activeStatuses.current);
+  //   }, [siteLink, codeLink, video]);
+
   useFrame((state) => {
     if (!titleRef.current) return;
+    if (titleRef.current.geometry.boundingBox.max.x === -Infinity) return;
 
     // Scale card on hover, only if avatar is focus
     const scaleFactor =
@@ -53,7 +106,7 @@ export default function InfoCard({
     cardRef.current.scale.copy(scale);
 
     // Scale size/position of line when toggling between active state
-    const lineTargetPosition = active
+    const lineTargetPosition = activeStatuses.get("line")
       ? new THREE.Vector3(
           title.position[0] + titleRef.current.geometry.boundingBox.max.x / 2,
           title.position[1] - 0.175,
@@ -63,7 +116,7 @@ export default function InfoCard({
     lerpedLineTargetPosition.lerp(lineTargetPosition, 0.1);
     lineRef.current.position.copy(lerpedLineTargetPosition);
 
-    const lineTargetScale = active
+    const lineTargetScale = activeStatuses.get("line")
       ? new THREE.Vector3(titleRef.current.geometry.boundingBox.max.x, 0.03, 1)
       : new THREE.Vector3(0, 0.03, 1);
     lerpedLineScale.lerp(lineTargetScale, 0.1);
@@ -83,15 +136,16 @@ export default function InfoCard({
         rotation={rotation}
         name="card"
       >
-        <mesh position={[0, 0, -0.05]}>
-          <planeGeometry attach="geometry" args={[5, 4]} />
-          <meshBasicMaterial color={"white"} toneMapped={true} />
+        <mesh position={[0, 0, -0.15]}>
+          <planeGeometry attach="geometry" args={[5.4, 4.4]} />
+          <meshBasicMaterial map={paperTexture} toneMapped={false} />
+          {/* <meshBasicMaterial color="white" toneMapped={true} /> */}
         </mesh>
         <AnimatedText
           ref={titleRef}
           position={title.position}
           transition={title.transition}
-          active={active}
+          active={activeStatuses.get("title")}
           fontStyle={"bold"}
           fontSize={6}
           anchorX={"left"}
@@ -102,7 +156,7 @@ export default function InfoCard({
         <AnimatedText
           position={date.position}
           transition={date.transition}
-          active={active}
+          active={activeStatuses.get("date")}
           fontSize={4}
           faceCam={false}
         >
@@ -110,12 +164,12 @@ export default function InfoCard({
         </AnimatedText>
         <mesh ref={lineRef}>
           <planeGeometry attach="geometry" args={[1, 1]} />
-          <meshBasicMaterial color={"black"} toneMapped={true} opacity={1} transparent />
+          <meshBasicMaterial color="black" toneMapped={false} />
         </mesh>
         <AnimatedText
           position={description.position}
           transition={description.transition}
-          active={active}
+          active={activeStatuses.get("description")}
           fontSize={4.5}
           anchorX={"left"}
           textAlign={"left"}
@@ -127,7 +181,7 @@ export default function InfoCard({
         <AnimatedText
           position={tech.position}
           transition={tech.transition}
-          active={active}
+          active={activeStatuses.get("tech")}
           fontSize={4.5}
           anchorX={"left"}
           textAlign={"left"}
@@ -142,7 +196,7 @@ export default function InfoCard({
             width={1.4}
             height={0.4}
             border={0.025}
-            active={active}
+            active={activeStatuses.get("siteLink")}
             position={siteLink.position}
             transition={siteLink.transition}
             buttonPosition={[-0.74, -0.21, 0]}
@@ -157,7 +211,7 @@ export default function InfoCard({
             width={1.55}
             height={0.4}
             border={0.025}
-            active={active}
+            active={activeStatuses.get("codeLink")}
             position={codeLink.position}
             transition={codeLink.transition}
             buttonPosition={[-0.8, -0.21, 0]}
