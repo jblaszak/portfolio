@@ -22,7 +22,7 @@ import "./style.css";
 export default function Scene({ moveCharacter }) {
   const currentSection = useNavigateStore((state) => state.currentSection);
 
-  const moveCamera = useMoveCamera();
+  const moveCamera = useMoveCamera(); // eslint-disable-line
 
   const projectTextureFiles = projects.map((project) => project.texture);
   const projectImageFiles = projects.map((project) => project.image);

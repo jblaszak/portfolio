@@ -1,9 +1,10 @@
 import React from "react";
 import ReactDOM from "react-dom/client";
-import { Preload, Loader } from "@react-three/drei";
 import { Canvas } from "@react-three/fiber";
-import { Perf } from "r3f-perf";
+// import { Preload } from "@react-three/drei";
+// import { Perf } from "r3f-perf";
 import { Suspense } from "react";
+import Loader from "./Loader";
 import Scene from "./Scene";
 import VideoModal from "./Interface/VideoModal";
 import useMoveCharacter from "./hooks/useMoveCharacter";
@@ -34,8 +35,7 @@ function App() {
       >
         {/* <OrbitControls makeDefault /> */}
         <Suspense fallback={null}>
-          <Preload all />
-          <Perf position="bottom-left" />
+          {/* <Perf position="bottom-left" /> */}
           <Scene moveCharacter={moveCharacter} />
         </Suspense>
       </Canvas>
