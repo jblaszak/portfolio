@@ -34,6 +34,8 @@ export default function Scene({ moveCharacter }) {
   const cardPosition = [3.5, 4, 0];
 
   useEffect(() => {
+    let start = null;
+
     function handleKeyboard(e) {
       if (e.key === "ArrowLeft") {
         moveCharacter(currentSection - 1);
@@ -50,12 +52,30 @@ export default function Scene({ moveCharacter }) {
       }
     }
 
+    function handleTouchStart(e) {
+      console.log(e);
+      start = e.changedTouches[0].clientX;
+    }
+
+    function handleTouchEnd(e) {
+      const moved = start - e.changedTouches[0].clientX;
+      if (moved < 0) {
+        moveCharacter(currentSection - 1);
+      } else if (moved > 0) {
+        moveCharacter(currentSection + 1);
+      }
+    }
+
     document.addEventListener("keydown", handleKeyboard);
     document.addEventListener("wheel", handleWheel);
+    document.addEventListener("touchstart", handleTouchStart);
+    document.addEventListener("touchend", handleTouchEnd);
 
     return () => {
       document.removeEventListener("keydown", handleKeyboard);
       document.removeEventListener("wheel", handleWheel);
+      document.removeEventListener("touchstart", handleTouchStart);
+      document.removeEventListener("touchend", handleTouchEnd);
     };
   }, [currentSection, moveCharacter]);
 
