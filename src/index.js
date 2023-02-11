@@ -1,9 +1,11 @@
 import React from "react";
 import ReactDOM from "react-dom/client";
-import { Preload } from "@react-three/drei";
+import { Preload, Loader } from "@react-three/drei";
 import { Canvas } from "@react-three/fiber";
 import { Perf } from "r3f-perf";
+import { Suspense } from "react";
 import Scene from "./Scene";
+import VideoModal from "./Interface/VideoModal";
 import useMoveCharacter from "./hooks/useMoveCharacter";
 import Navigation from "./Interface/Navigation";
 import { INITIAL_CAMERA_LOOKAT, INITIAL_CAMERA_POSITION } from "./constants";
@@ -31,11 +33,15 @@ function App() {
         // eventPrefix="client"
       >
         {/* <OrbitControls makeDefault /> */}
-        <Preload all />
-        <Perf position="bottom-left" />
-        <Scene moveCharacter={moveCharacter} />
+        <Suspense fallback={null}>
+          <Preload all />
+          <Perf position="bottom-left" />
+          <Scene moveCharacter={moveCharacter} />
+        </Suspense>
       </Canvas>
+      <Loader />
       <Navigation moveCharacter={moveCharacter} />
+      <VideoModal />
     </>
   );
 }

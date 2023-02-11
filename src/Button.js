@@ -7,6 +7,7 @@ import AnimatedText from "./AnimatedText";
 
 export default function Button({
   onClick = null,
+  onMouseOver = null,
   text = "BUTTON",
   width = 1,
   height = 1,
@@ -80,7 +81,10 @@ export default function Button({
           </mesh>
           <mesh
             position={[0, 0, 0]}
-            onPointerOver={() => setHovered(true)}
+            onPointerOver={() => {
+              if (onMouseOver) onMouseOver();
+              setHovered(true);
+            }}
             onPointerOut={() => setHovered(false)}
             onClick={onClick}
           >

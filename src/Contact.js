@@ -3,10 +3,11 @@ import Button from "./Button";
 import openLink from "./helpers/openLink";
 import { PORTAL_SEPARATION, STAND_X_FROM_PORTAL } from "./constants";
 import { projects } from "./data.js";
-import { useRef, useEffect } from "react";
 
-export default function Contact() {
+export default function Contact({ moveCharacter }) {
   const basePosition = (projects.length + 1) * PORTAL_SEPARATION + STAND_X_FROM_PORTAL;
+
+  const doThumbsUp = () => moveCharacter("THUMBSUP");
 
   return (
     <>
@@ -24,6 +25,7 @@ export default function Contact() {
         position={[basePosition - 0.75, 0.5, 2.5]}
         buttonPosition={[-0.565, -0.18, 0]}
         fontSize={4}
+        onMouseOver={doThumbsUp}
         onClick={() => openLink("mailto:jblaszak@gmail.com")}
       />
       <Button
@@ -34,6 +36,7 @@ export default function Contact() {
         position={[basePosition + 0.85, 0.5, 2.5]}
         buttonPosition={[-0.7, -0.18, 0]}
         fontSize={4}
+        onMouseOver={doThumbsUp}
         onClick={() => openLink("https://www.linkedin.com/in/joblaszak/")}
       />
     </>

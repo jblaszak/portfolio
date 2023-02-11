@@ -28,11 +28,21 @@ const useMoveCharacter = () => {
   const moveCharacter = useCallback((newTarget) => {
     // Don't allow move until target section reached and player is not zoomed in on something
     if (targetSection !== currentSection || focus !== avatar) return;
+    if (newTarget === currentSection) return;
     if (newTarget < 0 || newTarget > projects.length + 1) return;
+
+    if (newTarget === "THUMBSUP") {
+      const thumbsDuration = actions["THUMBSUP"]._clip.duration * 1000;
+      setCurrentAction("THUMBSUP");
+      setTimeout(() => {
+        setCurrentAction("IDLE");
+      }, thumbsDuration);
+      return;
+    }
+    let delay = 0;
 
     setTargetSection(newTarget);
     const moveRight = newTarget - currentSection > 0;
-    let delay = 0;
     const turnDuration = actions["TURNLEFT"]._clip.duration * 1000;
     const walkDuration = actions["WALKING"]._clip.duration * 1000;
     const runDuration = actions["RUNNING"]._clip.duration * 4000;

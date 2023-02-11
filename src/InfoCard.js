@@ -19,11 +19,12 @@ export default function InfoCard({
   siteLink = null,
   codeLink = null,
   video = null,
-  videoCaption = null,
 }) {
   const avatar = useNavigateStore((state) => state.avatar);
   const focus = useNavigateStore((state) => state.focus);
   const setFocus = useNavigateStore((state) => state.setFocus);
+  const setVideo = useNavigateStore((state) => state.setVideo);
+  const setVideoCaption = useNavigateStore((state) => state.setVideoCaption);
 
   const [paperTexture] = useLoader(THREE.TextureLoader, [paperImage]);
 
@@ -54,22 +55,25 @@ export default function InfoCard({
   const delay = 250;
 
   const handleClick = () => {
-    const keys = [...activeStatuses.keys()];
-
     if (focus !== cardRef) {
       setFocus(cardRef);
+
+      const keys = [...activeStatuses.keys()];
       let i = 0;
       const newStatuses = new Map(activeStatuses);
+
       const interval = setInterval(() => {
         newStatuses.set(keys[i], true);
         const entries = newStatuses.entries();
         const newMap = new Map(entries);
         setActiveStatuses(newMap);
+
         i++;
         if (i >= keys.length) clearInterval(interval);
       }, delay);
     } else {
       setFocus(avatar);
+
       const newStatuses = new Map(activeStatuses);
       for (const key of newStatuses.keys()) {
         newStatuses.set(key, false);
@@ -77,23 +81,6 @@ export default function InfoCard({
       setActiveStatuses(newStatuses);
     }
   };
-
-  //   useEffect(() => {
-  //     const activeMap = new Map([
-  //       ["title", false],
-  //       ["date", false],
-  //       ["line", false],
-  //       ["description", false],
-  //       ["tech", false],
-  //     ]);
-
-  //     if (siteLink) activeMap.set("siteLink", false);
-  //     if (codeLink) activeMap.set("codeLink", false);
-  //     if (video) activeMap.set("video", false);
-
-  //     activeStatuses.current = activeMap;
-  //     console.log(activeStatuses.current);
-  //   }, [siteLink, codeLink, video]);
 
   useFrame((state) => {
     if (!titleRef.current) return;
@@ -127,7 +114,10 @@ export default function InfoCard({
     <>
       <group
         ref={cardRef}
-        onClick={() => handleClick()}
+        onClick={(e) => {
+          //   e.stopPropagation();
+          handleClick();
+        }}
         onPointerOver={(e) => {
           setHovered(true);
         }}
@@ -218,6 +208,25 @@ export default function InfoCard({
             fontSize={5}
             faceCam={false}
             onClick={() => openLink(codeLink.href)}
+          />
+        )}
+        {video && (
+          <Button
+            text={"View Video"}
+            width={1.57}
+            height={0.4}
+            border={0.025}
+            active={activeStatuses.get("video")}
+            position={video.position}
+            transition={video.transition}
+            buttonPosition={[-0.8, -0.21, 0]}
+            fontSize={5}
+            faceCam={false}
+            onClick={(e) => {
+              e.stopPropagation();
+              setVideo(video.video);
+              setVideoCaption(video.videoCaption);
+            }}
           />
         )}
       </group>

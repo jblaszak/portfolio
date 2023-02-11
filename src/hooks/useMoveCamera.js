@@ -24,7 +24,7 @@ const useMoveCamera = () => {
   );
 
   useFrame((state, delta) => {
-    if (!focus.current) return;
+    if (!focus?.current) return;
 
     const name = focus.current.name;
 
