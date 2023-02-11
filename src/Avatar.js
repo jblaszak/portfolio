@@ -34,7 +34,7 @@ export default function Avatar(props) {
     setActions(actions);
     setAvatar(avatarRef);
     setFocus(avatarRef);
-  }, []);
+  }, [actions, setActions, setAvatar, setFocus]);
 
   useEffect(() => {
     setStartPosition(avatarRef.current.position.x);

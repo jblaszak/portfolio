@@ -28,7 +28,6 @@ export default function Scene({ moveCharacter }) {
   const projectImageFiles = projects.map((project) => project.image);
   const projectTextures = useLoader(THREE.TextureLoader, projectTextureFiles);
   const projectImages = useLoader(THREE.TextureLoader, projectImageFiles);
-  // const { width, height } = useThree((state) => state.size);
 
   const portalRotation = [0, Math.PI / 6, 0];
   const cardRotation = [0, -Math.PI / 8, 0];

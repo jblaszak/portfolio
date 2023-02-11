@@ -129,106 +129,107 @@ export default function InfoCard({
         <mesh position={[0, 0, -0.15]}>
           <planeGeometry attach="geometry" args={[5.4, 4.4]} />
           <meshBasicMaterial map={paperTexture} toneMapped={false} />
-          {/* <meshBasicMaterial color="white" toneMapped={true} /> */}
         </mesh>
-        <AnimatedText
-          ref={titleRef}
-          position={title.position}
-          transition={title.transition}
-          active={activeStatuses.get("title")}
-          fontStyle={"bold"}
-          fontSize={6}
-          anchorX={"left"}
-          faceCam={false}
-        >
-          {title.text}
-        </AnimatedText>
-        <AnimatedText
-          position={date.position}
-          transition={date.transition}
-          active={activeStatuses.get("date")}
-          fontSize={4}
-          faceCam={false}
-        >
-          {date.text}
-        </AnimatedText>
-        <mesh ref={lineRef}>
-          <planeGeometry attach="geometry" args={[1, 1]} />
-          <meshBasicMaterial color="black" toneMapped={false} />
-        </mesh>
-        <AnimatedText
-          position={description.position}
-          transition={description.transition}
-          active={activeStatuses.get("description")}
-          fontSize={4.5}
-          anchorX={"left"}
-          textAlign={"left"}
-          faceCam={false}
-          width={4}
-        >
-          {description.text}
-        </AnimatedText>
-        <AnimatedText
-          position={tech.position}
-          transition={tech.transition}
-          active={activeStatuses.get("tech")}
-          fontSize={4.5}
-          anchorX={"left"}
-          textAlign={"left"}
-          width={4}
-          faceCam={false}
-        >
-          {tech.text}
-        </AnimatedText>
-        {siteLink && (
-          <Button
-            text={"View Site"}
-            width={1.4}
-            height={0.4}
-            border={0.025}
-            active={activeStatuses.get("siteLink")}
-            position={siteLink.position}
-            transition={siteLink.transition}
-            buttonPosition={[-0.74, -0.21, 0]}
-            fontSize={5}
+        <group visible={focus === cardRef}>
+          <AnimatedText
+            ref={titleRef}
+            position={title.position}
+            transition={title.transition}
+            active={activeStatuses.get("title")}
+            fontStyle={"bold"}
+            fontSize={6}
+            anchorX={"left"}
             faceCam={false}
-            onClick={() => openLink(siteLink.href)}
-          />
-        )}
-        {codeLink && (
-          <Button
-            text={"View Code"}
-            width={1.55}
-            height={0.4}
-            border={0.025}
-            active={activeStatuses.get("codeLink")}
-            position={codeLink.position}
-            transition={codeLink.transition}
-            buttonPosition={[-0.8, -0.21, 0]}
-            fontSize={5}
+          >
+            {title.text}
+          </AnimatedText>
+          <AnimatedText
+            position={date.position}
+            transition={date.transition}
+            active={activeStatuses.get("date")}
+            fontSize={4}
             faceCam={false}
-            onClick={() => openLink(codeLink.href)}
-          />
-        )}
-        {video && (
-          <Button
-            text={"View Video"}
-            width={1.57}
-            height={0.4}
-            border={0.025}
-            active={activeStatuses.get("video")}
-            position={video.position}
-            transition={video.transition}
-            buttonPosition={[-0.8, -0.21, 0]}
-            fontSize={5}
+          >
+            {date.text}
+          </AnimatedText>
+          <mesh ref={lineRef}>
+            <planeGeometry attach="geometry" args={[1, 1]} />
+            <meshBasicMaterial color="black" toneMapped={false} />
+          </mesh>
+          <AnimatedText
+            position={description.position}
+            transition={description.transition}
+            active={activeStatuses.get("description")}
+            fontSize={4.5}
+            anchorX={"left"}
+            textAlign={"left"}
             faceCam={false}
-            onClick={(e) => {
-              e.stopPropagation();
-              setVideo(video.video);
-              setVideoCaption(video.videoCaption);
-            }}
-          />
-        )}
+            width={4}
+          >
+            {description.text}
+          </AnimatedText>
+          <AnimatedText
+            position={tech.position}
+            transition={tech.transition}
+            active={activeStatuses.get("tech")}
+            fontSize={4.5}
+            anchorX={"left"}
+            textAlign={"left"}
+            width={4}
+            faceCam={false}
+          >
+            {tech.text}
+          </AnimatedText>
+          {siteLink && (
+            <Button
+              text={"View Site"}
+              width={1.4}
+              height={0.4}
+              border={0.025}
+              active={activeStatuses.get("siteLink")}
+              position={siteLink.position}
+              transition={siteLink.transition}
+              buttonPosition={[-0.74, -0.21, 0]}
+              fontSize={5}
+              faceCam={false}
+              onClick={() => openLink(siteLink.href)}
+            />
+          )}
+          {codeLink && (
+            <Button
+              text={"View Code"}
+              width={1.55}
+              height={0.4}
+              border={0.025}
+              active={activeStatuses.get("codeLink")}
+              position={codeLink.position}
+              transition={codeLink.transition}
+              buttonPosition={[-0.8, -0.21, 0]}
+              fontSize={5}
+              faceCam={false}
+              onClick={() => openLink(codeLink.href)}
+            />
+          )}
+          {video && (
+            <Button
+              text={"View Video"}
+              width={1.57}
+              height={0.4}
+              border={0.025}
+              active={activeStatuses.get("video")}
+              position={video.position}
+              transition={video.transition}
+              buttonPosition={[-0.8, -0.21, 0]}
+              fontSize={5}
+              faceCam={false}
+              onClick={(e) => {
+                e.stopPropagation();
+                setVideo(video.video);
+                setVideoCaption(video.videoCaption);
+              }}
+            />
+          )}
+        </group>
       </group>
     </>
   );
