@@ -1,13 +1,15 @@
 import React, { useRef, useEffect, useState } from "react";
-import { useGLTF, useAnimations, PerspectiveCamera } from "@react-three/drei";
+import { useGLTF, useAnimations, PerspectiveCamera, Decal } from "@react-three/drei";
 import { useFrame, useLoader, useThree } from "@react-three/fiber";
 import useNavigateStore from "./stores/useNavigate";
 
 import * as THREE from "three";
 import shadowTexture from "./assets/avatar_shadow.jpg";
+import spiral from "./assets/spiral.png";
 
 export default function Avatar(props) {
   const shadowAlphaMap = useLoader(THREE.TextureLoader, shadowTexture);
+  const spiralDecal = useLoader(THREE.TextureLoader, spiral);
 
   const setAvatar = useNavigateStore((state) => state.setAvatar);
   const setFocus = useNavigateStore((state) => state.setFocus);
@@ -18,17 +20,23 @@ export default function Avatar(props) {
   const avatarRef = useRef();
   const shadowRef = useRef();
   const invisibleRef = useRef();
+  const totalTime = useRef(0);
   const { nodes, materials, animations } = useGLTF("./avatar.glb");
   const { actions } = useAnimations(animations, avatarRef);
 
   const [startPosition, setStartPosition] = useState(() => 0);
-  const [totalTime, setTotalTime] = useState(() => 0);
-  const [smoothedAvatarRotation] = useState(() =>
-    new THREE.Quaternion().setFromEuler(new THREE.Euler(0, 0, 0, "YXZ"))
-  );
 
   const { width, height } = useThree();
   const headCam = useRef();
+
+  const mousePos = new THREE.Vector2();
+  const targetRotationQuaternion = new THREE.Quaternion();
+  const smoothedAvatarRotation = useRef(
+    new THREE.Quaternion().setFromEuler(new THREE.Euler(0, 0, 0, "YXZ"))
+  );
+  const rotationEuler = new THREE.Euler();
+  const newPosition = new THREE.Vector3();
+  const shadowScale = new THREE.Vector3();
 
   useEffect(() => {
     setActions(actions);
@@ -38,7 +46,7 @@ export default function Avatar(props) {
 
   useEffect(() => {
     setStartPosition(avatarRef.current.position.x);
-    setTotalTime(0);
+    totalTime.current = 0;
   }, [targetPosition]);
 
   function easeInOutCubic(t, b, c, d) {
@@ -48,37 +56,18 @@ export default function Avatar(props) {
   }
 
   useFrame(({ camera, raycaster, mouse, scene }, delta) => {
-    const newMouse = new THREE.Vector2().copy(mouse);
+    mousePos.copy(mouse);
     const rotY = avatarRef.current.rotation.y;
-    newMouse.x *= -Math.cos(rotY);
-    raycaster.setFromCamera(newMouse, headCam.current);
+    mousePos.x *= -Math.cos(rotY);
+    raycaster.setFromCamera(mousePos, headCam.current);
     const intersects = raycaster.intersectObjects([invisibleRef.current], true);
 
     if (intersects.length > 0) {
       nodes.Head.lookAt(intersects[0].point);
     }
 
-    if (targetPosition === null || targetRotation === null) return;
-
     // Move the shadow with the avatar
     shadowRef.current.position.copy(avatarRef.current.position);
-
-    // // Slow way to handle visibility of avatar when camera is near
-    // const frustum = new THREE.Frustum();
-    // const fadePoint = new THREE.Vector3().copy(avatarRef.current.position);
-    // fadePoint.y += 3;
-    // fadePoint.z += 1;
-    // const matrix = new THREE.Matrix4().multiplyMatrices(
-    //   state.camera.projectionMatrix,
-    //   state.camera.matrixWorldInverse
-    // );
-    // frustum.setFromProjectionMatrix(matrix);
-
-    // if (frustum.containsPoint(fadePoint)) {
-    //   avatarRef.current.visible = true;
-    // } else {
-    //   avatarRef.current.visible = false;
-    // }
 
     // Faster way to handle visibility of avatar when camera is near
     if (camera.position.z < 2) {
@@ -87,26 +76,26 @@ export default function Avatar(props) {
       avatarRef.current.visible = true;
     }
 
+    if (targetPosition === null || targetRotation === null) return;
     // Rotate the avatar
     // const targetRotationQuaternion = new THREE.Quaternion().setFromAxisAngle(yAxis, targetRotation);
-    const targetRotationQuaternion = new THREE.Quaternion().setFromEuler(
-      new THREE.Euler(0, targetRotation, 0, "YXZ")
-    );
-    smoothedAvatarRotation.slerp(targetRotationQuaternion, delta);
-    avatarRef.current.rotation.copy(
-      new THREE.Euler().setFromQuaternion(smoothedAvatarRotation, "YXZ")
-    );
+    rotationEuler.set(0, targetRotation, 0, "YXZ");
+    targetRotationQuaternion.setFromEuler(rotationEuler);
+    smoothedAvatarRotation.current.slerp(targetRotationQuaternion, delta);
+    rotationEuler.setFromQuaternion(smoothedAvatarRotation.current, "YXZ");
+    avatarRef.current.rotation.copy(rotationEuler);
 
     // Move the avatar
     if (avatarRef.current.position.x === targetPosition) return;
     const moveDuration =
       actions["WALKING"]._clip.duration * 2 + actions["RUNNING"]._clip.duration * 4;
 
-    let newTotalTime = totalTime + delta;
+    let newTotalTime = totalTime.current + delta;
     if (newTotalTime > moveDuration) {
       newTotalTime = moveDuration;
     }
-    setTotalTime(newTotalTime);
+
+    totalTime.current = newTotalTime;
 
     const newPositionX = easeInOutCubic(
       newTotalTime,
@@ -114,12 +103,12 @@ export default function Avatar(props) {
       targetPosition - startPosition,
       moveDuration
     );
-    let newPosition = new THREE.Vector3(newPositionX, 0, 0);
+    newPosition.set(newPositionX, 0, 0);
     avatarRef.current.position.copy(newPosition);
 
     // Scale the shadow, min 3.5, max 6.5
-    const shadowXScale = 3 * Math.sin((newTotalTime * Math.PI) / moveDuration) + 3.5;
-    shadowRef.current.scale.copy(new THREE.Vector3(shadowXScale, 3.5, 3.5));
+    shadowScale.set(3 * Math.sin((newTotalTime * Math.PI) / moveDuration) + 3.5, 3.5, 3.5);
+    shadowRef.current.scale.copy(shadowScale);
   });
 
   return (

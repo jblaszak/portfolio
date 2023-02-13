@@ -1,8 +1,9 @@
 import { create } from "zustand";
-import { subscribeWithSelector } from "zustand/middleware";
+// import { subscribeWithSelector } from "zustand/middleware";
 
 const useNavigateStore = create(
-  subscribeWithSelector((set) => {
+  // subscribeWithSelector((set) => {
+  (set) => {
     return {
       targetSection: 0,
       currentSection: 0,
@@ -59,7 +60,7 @@ const useNavigateStore = create(
         });
       },
     };
-  })
+  }
 );
 
 export default useNavigateStore;

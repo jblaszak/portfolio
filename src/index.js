@@ -2,7 +2,7 @@ import React from "react";
 import ReactDOM from "react-dom/client";
 import { Canvas } from "@react-three/fiber";
 // import { Preload } from "@react-three/drei";
-// import { Perf } from "r3f-perf";
+import { Perf } from "r3f-perf";
 import { Suspense } from "react";
 import Loader from "./Loader";
 import Scene from "./Scene";
@@ -21,11 +21,12 @@ root.render(
 
 function App() {
   const moveCharacter = useMoveCharacter();
+  console.log("remade whole app..");
   return (
     <>
       <Canvas
         shadows
-        dpr={[1, 2]}
+        dpr={[1, 1.5]}
         camera={{ position: INITIAL_CAMERA_POSITION }}
         onCreated={(state) => {
           state.camera.lookAt(INITIAL_CAMERA_LOOKAT);
@@ -35,7 +36,7 @@ function App() {
       >
         {/* <OrbitControls makeDefault /> */}
         <Suspense fallback={null}>
-          {/* <Perf position="bottom-left" /> */}
+          <Perf position="bottom-left" />
           <Scene moveCharacter={moveCharacter} />
         </Suspense>
       </Canvas>

@@ -1,5 +1,5 @@
 import useNavigateStore from "../stores/useNavigate";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { projects } from "../data";
 import { PORTAL_SEPARATION, STAND_X_FROM_PORTAL } from "../constants";
 
@@ -12,6 +12,8 @@ const useMoveCharacter = () => {
   const setTargetSection = useNavigateStore((state) => state.setTargetSection);
   const setTargetPosition = useNavigateStore((state) => state.setTargetPosition);
   const updateRotation = useNavigateStore((state) => state.updateRotation);
+
+  console.log("went into this again");
 
   const focus = useNavigateStore((state) => state.focus);
 
@@ -120,7 +122,6 @@ const useMoveCharacter = () => {
       }, delay);
     }
   };
-
   return moveCharacter;
 };
 

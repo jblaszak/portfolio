@@ -4,7 +4,7 @@ import { extend, useFrame } from "@react-three/fiber";
 import ParticlesVertexShader from "./shaders/ParticlesVertexShader";
 import ParticlesFragmentShader from "./shaders/ParticlesFragmentShader";
 import { useSpring, a } from "@react-spring/three";
-import { useRef, useEffect, useState } from "react";
+import { useRef, useEffect, useState, useMemo } from "react";
 import useNavigateStore from "./stores/useNavigate";
 
 const ParticleMaterial = shaderMaterial(
@@ -39,6 +39,8 @@ export default function Particles({ position, texture, image, index }) {
     offsets[i * 3 + 1] = Math.floor(i / textureWidth);
     indices[i] = i;
   }
+
+  console.log("making new particles probably!");
 
   const shaderMaterialRef = useRef();
   const imageRef = useRef();
