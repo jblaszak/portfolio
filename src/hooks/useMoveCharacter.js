@@ -1,35 +1,24 @@
 import useNavigateStore from "../stores/useNavigate";
-import { useState, useEffect, useCallback } from "react";
 import { projects } from "../data";
 import { PORTAL_SEPARATION, STAND_X_FROM_PORTAL } from "../constants";
 
 const useMoveCharacter = () => {
-  const actions = useNavigateStore((state) => state.actions);
-  const avatar = useNavigateStore((state) => state.avatar);
-  const currentSection = useNavigateStore((state) => state.currentSection);
-  const setCurrentSection = useNavigateStore((state) => state.setCurrentSection);
-  const targetSection = useNavigateStore((state) => state.targetSection);
-  const setTargetSection = useNavigateStore((state) => state.setTargetSection);
-  const setTargetPosition = useNavigateStore((state) => state.setTargetPosition);
-  const updateRotation = useNavigateStore((state) => state.updateRotation);
+  function setCurrentAction(actionName) {
+    useNavigateStore.setState({ currentAction: actionName });
+  }
 
-  console.log("went into this again");
-
-  const focus = useNavigateStore((state) => state.focus);
-
-  const [currentAction, setCurrentAction] = useState("IDLE");
-  const fadeDuration = 0.5;
-
-  useEffect(() => {
-    if (!actions || !currentAction) return;
-    const action = actions[currentAction];
-    action.reset().fadeIn(fadeDuration).play();
-    return () => action.fadeOut(fadeDuration);
-  }, [currentAction, actions]);
+  function setRotation(rotation) {
+    useNavigateStore.setState({ targetRotation: rotation });
+  }
 
   const moveCharacter = (newTarget) => {
     // Don't allow move until target section reached and player is not zoomed in on something
-    if (targetSection !== currentSection || focus !== avatar) return;
+    const focus = useNavigateStore.getState().focus;
+    const targetSection = useNavigateStore.getState().targetSection;
+    const currentSection = useNavigateStore.getState().currentSection;
+    const actions = useNavigateStore.getState().actions;
+
+    if (targetSection !== currentSection || focus.current.name !== "avatar") return;
     if (newTarget === currentSection) return;
     if (newTarget < 0 || newTarget > projects.length + 1) return;
 
@@ -43,34 +32,40 @@ const useMoveCharacter = () => {
     }
     let delay = 0;
 
-    setTargetSection(newTarget);
+    useNavigateStore.setState({ targetSection: newTarget });
     const moveRight = newTarget - currentSection > 0;
     const turnDuration = actions["TURNLEFT"]._clip.duration * 1000;
     const walkDuration = actions["WALKING"]._clip.duration * 1000;
     const runDuration = actions["RUNNING"]._clip.duration * 4000;
     const waveDuration = actions["WAVING"]._clip.duration * 1000;
 
+    let rotation = useNavigateStore.getState().targetRotation;
+
     // Start movement
     if (currentSection === projects.length + 1) {
       // if last section
       setCurrentAction("TURNRIGHT");
-      updateRotation(-Math.PI / 2);
+      rotation += -Math.PI / 2;
+      setRotation(rotation);
       delay += turnDuration;
     } else if (currentSection === 0 || !moveRight) {
       setCurrentAction("TURNLEFT");
-      updateRotation(Math.PI / 2);
+      rotation += Math.PI / 2;
+      setRotation(rotation);
+
       delay += turnDuration;
     } else {
       // If moving right
       setCurrentAction("TURNRIGHT");
-      updateRotation(-Math.PI / 2);
+      rotation += -Math.PI / 2;
+      setRotation(rotation);
       delay += turnDuration;
     }
 
     setTimeout(() => {
       const offset = newTarget === 0 ? 0 : STAND_X_FROM_PORTAL;
       setCurrentAction("WALKING");
-      setTargetPosition(newTarget * PORTAL_SEPARATION + offset);
+      useNavigateStore.setState({ targetPosition: newTarget * PORTAL_SEPARATION + offset });
     }, delay);
     delay += walkDuration;
 
@@ -81,14 +76,15 @@ const useMoveCharacter = () => {
 
     setTimeout(() => {
       setCurrentAction("WALKING");
-      setCurrentSection(newTarget);
+      useNavigateStore.setState({ currentSection: newTarget });
     }, delay);
     delay += walkDuration;
 
     if (newTarget === 0) {
       setTimeout(() => {
         setCurrentAction("TURNLEFT");
-        updateRotation(Math.PI / 2);
+        rotation += Math.PI / 2;
+        setRotation(rotation);
       }, delay);
       delay += turnDuration;
 
@@ -103,7 +99,8 @@ const useMoveCharacter = () => {
     } else if (newTarget === projects.length + 1 || !moveRight) {
       setTimeout(() => {
         setCurrentAction("TURNRIGHT");
-        updateRotation(-Math.PI / 2);
+        rotation += -Math.PI / 2;
+        setRotation(rotation);
       }, delay);
       delay += turnDuration;
 
@@ -113,7 +110,8 @@ const useMoveCharacter = () => {
     } else {
       setTimeout(() => {
         setCurrentAction("TURNLEFT");
-        updateRotation(Math.PI / 2);
+        rotation += Math.PI / 2;
+        setRotation(rotation);
       }, delay);
       delay += turnDuration;
 
@@ -122,6 +120,7 @@ const useMoveCharacter = () => {
       }, delay);
     }
   };
+
   return moveCharacter;
 };
 

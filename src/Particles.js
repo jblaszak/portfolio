@@ -4,7 +4,7 @@ import { extend, useFrame } from "@react-three/fiber";
 import ParticlesVertexShader from "./shaders/ParticlesVertexShader";
 import ParticlesFragmentShader from "./shaders/ParticlesFragmentShader";
 import { useSpring, a } from "@react-spring/three";
-import { useRef, useEffect, useState, useMemo } from "react";
+import { useRef, useEffect, useState, useMemo, useCallback } from "react";
 import useNavigateStore from "./stores/useNavigate";
 
 const ParticleMaterial = shaderMaterial(
@@ -124,9 +124,9 @@ export default function Particles({ position, texture, image, index }) {
     imageRef.current.scale.copy(scale);
   });
 
-  const Shader = () => {
-    const shaderMeshRef = useRef();
+  const shaderMeshRef = useRef();
 
+  const Shader = useCallback(() => {
     const FinalMaterial = a(({ ...props }) => {
       return (
         <particleMaterial
@@ -159,7 +159,16 @@ export default function Particles({ position, texture, image, index }) {
         <FinalMaterial uRandom={springs.uRandom} uOpacity={springs.uOpacity} />
       </mesh>
     );
-  };
+  }, [
+    texture,
+    textureWidth,
+    textureHeight,
+    shaderMeshRef,
+    shaderMaterialRef,
+    geo.index,
+    indices,
+    offsets,
+  ]);
 
   return (
     <group position={position}>

@@ -1,19 +1,18 @@
 import React, { useRef, useEffect, useState } from "react";
-import { useGLTF, useAnimations, PerspectiveCamera, Decal } from "@react-three/drei";
+import { useGLTF, useAnimations, PerspectiveCamera } from "@react-three/drei";
 import { useFrame, useLoader, useThree } from "@react-three/fiber";
 import useNavigateStore from "./stores/useNavigate";
 
 import * as THREE from "three";
 import shadowTexture from "./assets/avatar_shadow.jpg";
-import spiral from "./assets/spiral.png";
 
 export default function Avatar(props) {
   const shadowAlphaMap = useLoader(THREE.TextureLoader, shadowTexture);
-  const spiralDecal = useLoader(THREE.TextureLoader, spiral);
 
   const setAvatar = useNavigateStore((state) => state.setAvatar);
   const setFocus = useNavigateStore((state) => state.setFocus);
   const setActions = useNavigateStore((state) => state.setActions);
+  const currentAction = useNavigateStore((state) => state.currentAction);
   const targetRotation = useNavigateStore((state) => state.targetRotation);
   const targetPosition = useNavigateStore((state) => state.targetPosition);
 
@@ -38,6 +37,8 @@ export default function Avatar(props) {
   const newPosition = new THREE.Vector3();
   const shadowScale = new THREE.Vector3();
 
+  console.log("rerendered avatar");
+
   useEffect(() => {
     setActions(actions);
     setAvatar(avatarRef);
@@ -48,6 +49,13 @@ export default function Avatar(props) {
     setStartPosition(avatarRef.current.position.x);
     totalTime.current = 0;
   }, [targetPosition]);
+
+  useEffect(() => {
+    if (!actions || !currentAction) return;
+    const action = actions[currentAction];
+    action.reset().fadeIn(0.5).play();
+    return () => action.fadeOut(0.5);
+  }, [currentAction, actions]);
 
   function easeInOutCubic(t, b, c, d) {
     // Arguments: t = time, b = beginning value, c = change in value, d = duration

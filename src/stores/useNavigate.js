@@ -7,6 +7,7 @@ const useNavigateStore = create(
     return {
       targetSection: 0,
       currentSection: 0,
+      currentAction: "IDLE",
       focus: null,
       avatar: null,
       actions: null,
