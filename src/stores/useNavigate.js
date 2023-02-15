@@ -15,16 +15,6 @@ const useNavigateStore = create(
       targetPosition: 0,
       video: null,
       videoCaption: null,
-      setVideo: (newVideo) => {
-        set((state) => {
-          return { video: newVideo };
-        });
-      },
-      setVideoCaption: (newVideoCaption) => {
-        set((state) => {
-          return { videoCaption: newVideoCaption };
-        });
-      },
     };
   }
 );

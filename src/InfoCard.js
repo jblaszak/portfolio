@@ -1,4 +1,4 @@
-import { useRef, useState } from "react";
+import { useRef, useState, useEffect } from "react";
 import { useFrame, useLoader } from "@react-three/fiber";
 import useNavigateStore from "./stores/useNavigate";
 import AnimatedText from "./AnimatedText";
@@ -20,12 +20,11 @@ export default function InfoCard({
   video = null,
 }) {
   const focus = useNavigateStore((state) => state.focus);
-  const setVideo = useNavigateStore((state) => state.setVideo);
-  const setVideoCaption = useNavigateStore((state) => state.setVideoCaption);
 
   const [paperTexture] = useLoader(THREE.TextureLoader, [paperImage]);
 
   const cardRef = useRef();
+  const cardContentsRef = useRef();
   const titleRef = useRef();
   const lineRef = useRef();
   const [activeStatuses, setActiveStatuses] = useState(() => {
@@ -73,6 +72,13 @@ export default function InfoCard({
         i++;
         if (i >= keys.length) clearInterval(interval);
       }, delay);
+
+      cardContentsRef.current.traverse((obj) => {
+        if (obj.type === "Mesh") {
+          obj.raycast = THREE.Mesh.prototype.raycast;
+        }
+      });
+      cardContentsRef.current.visible = true;
     } else {
       const avatar = useNavigateStore.getState().avatar;
       useNavigateStore.setState({ focus: avatar });
@@ -82,8 +88,25 @@ export default function InfoCard({
         newStatuses.set(key, false);
       }
       setActiveStatuses(newStatuses);
+
+      cardContentsRef.current.traverse((obj) => {
+        if (obj.type === "Mesh") {
+          obj.raycast = () => null;
+        }
+      });
+      cardContentsRef.current.visible = false;
     }
   };
+
+  useEffect(() => {
+    if (!cardContentsRef.current) return;
+
+    cardContentsRef.current.traverse((obj) => {
+      if (obj.type === "Mesh") {
+        obj.raycast = () => null;
+      }
+    });
+  }, []);
 
   useFrame((state) => {
     if (!titleRef.current) return;
@@ -142,7 +165,7 @@ export default function InfoCard({
           <planeGeometry attach="geometry" args={[5.4, 4.4]} />
           <meshBasicMaterial map={paperTexture} toneMapped={false} />
         </mesh>
-        <group visible={focus === cardRef}>
+        <group ref={cardContentsRef} visible={false}>
           <AnimatedText
             ref={titleRef}
             position={title.position}
@@ -236,8 +259,8 @@ export default function InfoCard({
               faceCam={false}
               onClick={(e) => {
                 e.stopPropagation();
-                setVideo(video.video);
-                setVideoCaption(video.videoCaption);
+                useNavigateStore.setState({ video: video.video });
+                useNavigateStore.setState({ videoCaption: video.videoCaption });
               }}
             />
           )}

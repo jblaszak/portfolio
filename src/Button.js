@@ -24,7 +24,7 @@ export default function Button({
   const backingRef = useRef();
   const [lerpedPosition] = useState(new THREE.Vector3(...position));
   const [hovered, setHovered] = useState(false);
-  useCursor(hovered);
+  // useCursor(hovered);
 
   const makeButtonShape = useCallback((x, y, w, h, r) => {
     let shape = new THREE.Shape();
@@ -84,8 +84,17 @@ export default function Button({
             onPointerOver={() => {
               if (onMouseOver) onMouseOver();
               setHovered(true);
+              document.body.style.cursor = "pointer";
             }}
-            onPointerOut={() => setHovered(false)}
+            onPointerOut={(e) => {
+              let isOverCard = false;
+              e.eventObject.traverseAncestors((obj) => {
+                if (isOverCard) return;
+                if (obj.name === "card") isOverCard = true;
+              });
+              document.body.style.cursor = isOverCard ? "pointer" : "auto";
+              setHovered(false);
+            }}
             onClick={onClick}
           >
             <shapeGeometry attach="geometry" args={[backgroundShape]} />

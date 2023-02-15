@@ -158,7 +158,6 @@ export default function Particles({ position, texture, image, index }) {
         />
       );
     });
-    console.log("materials");
 
     return (
       <mesh ref={shaderMeshRef}>
@@ -173,9 +172,13 @@ export default function Particles({ position, texture, image, index }) {
       <Shader />
       <mesh
         ref={imageRef}
-        onClick={() => handleClick()}
+        onClick={() => {
+          if (currentSection !== index) return;
+          handleClick();
+        }}
         onPointerOver={(e) => {
           e.stopPropagation();
+          if (currentSection !== index) return;
           hovered.current = true;
           document.body.style.cursor = "pointer";
         }}
