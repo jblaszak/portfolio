@@ -21,11 +21,11 @@ root.render(
 
 function App() {
   const moveCharacter = useMoveCharacter();
-  console.log("remade whole app..");
+
   return (
     <>
       <Canvas
-        shadows
+        // shadows
         dpr={[1, 1.5]}
         camera={{ position: INITIAL_CAMERA_POSITION }}
         onCreated={(state) => {
@@ -38,8 +38,8 @@ function App() {
         <Suspense fallback={null}>
           <Perf position="bottom-left" />
           <Scene moveCharacter={moveCharacter} />
-          <Preload all />
         </Suspense>
+        <Preload all />
       </Canvas>
       <Loader />
       <Navigation moveCharacter={moveCharacter} />

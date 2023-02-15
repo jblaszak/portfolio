@@ -1,5 +1,4 @@
 import { useRef, useState } from "react";
-import { useCursor } from "@react-three/drei";
 import { useFrame, useLoader } from "@react-three/fiber";
 import useNavigateStore from "./stores/useNavigate";
 import AnimatedText from "./AnimatedText";
@@ -45,19 +44,22 @@ export default function InfoCard({
 
     return activeMap;
   });
-  //   const [hovered, setHovered] = useState(false);
-  // useCursor(hovered);
+
   const hovered = useRef(false);
-  const [lerpedLineTargetPosition] = useState(
-    new THREE.Vector3(title.position[0], title.position[1] - 0.175, title.position[2])
+  const lineTargetPosition = new THREE.Vector3(
+    title.position[0],
+    title.position[1] - 0.175,
+    title.position[2]
   );
-  const [lerpedLineScale] = useState(new THREE.Vector3(0, 0.3, 1));
+  const lineTargetScale = new THREE.Vector3(0, 0.03, 1);
+  const [lerpedLineTargetPosition] = useState(new THREE.Vector3().copy(lineTargetPosition));
+  const [lerpedLineScale] = useState(new THREE.Vector3().copy(lineTargetScale));
   const delay = 250;
+  const scale = new THREE.Vector3(0.2, 0.2, 1);
 
   const handleClick = () => {
     if (focus !== cardRef) {
       useNavigateStore.setState({ focus: cardRef });
-      //   setFocus(cardRef);
 
       const keys = [...activeStatuses.keys()];
       let i = 0;
@@ -93,23 +95,26 @@ export default function InfoCard({
       hovered.current && focus.current.name === "avatar"
         ? 1 + (4 * Math.sin(state.clock.elapsedTime * 7.5)) / 100
         : 1;
-    const scale = new THREE.Vector3(0.2 * scaleFactor, 0.2 * scaleFactor, 1);
+    scale.set(0.2 * scaleFactor, 0.2 * scaleFactor, 1);
     cardRef.current.scale.copy(scale);
 
     // Scale size/position of line when toggling between active state
-    const lineTargetPosition = activeStatuses.get("line")
-      ? new THREE.Vector3(
+    const positions = activeStatuses.get("line")
+      ? [
           title.position[0] + titleRef.current.geometry.boundingBox.max.x / 2,
           title.position[1] - 0.175,
-          title.position[2]
-        )
-      : new THREE.Vector3(title.position[0], title.position[1] - 0.175, title.position[2]);
+          title.position[2],
+        ]
+      : [title.position[0], title.position[1] - 0.175, title.position[2]];
+    lineTargetPosition.set(...positions);
     lerpedLineTargetPosition.lerp(lineTargetPosition, 0.1);
     lineRef.current.position.copy(lerpedLineTargetPosition);
 
-    const lineTargetScale = activeStatuses.get("line")
-      ? new THREE.Vector3(titleRef.current.geometry.boundingBox.max.x, 0.03, 1)
-      : new THREE.Vector3(0, 0.03, 1);
+    lineTargetScale.set(
+      activeStatuses.get("line") ? titleRef.current.geometry.boundingBox.max.x : 0,
+      0.03,
+      1
+    );
     lerpedLineScale.lerp(lineTargetScale, 0.1);
     lineRef.current.scale.copy(lerpedLineScale);
   });
@@ -123,7 +128,6 @@ export default function InfoCard({
           handleClick();
         }}
         onPointerOver={(e) => {
-          //   setHovered(true);
           hovered.current = true;
           document.body.style.cursor = "pointer";
         }}

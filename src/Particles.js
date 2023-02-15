@@ -24,23 +24,8 @@ extend({ ParticleMaterial });
 
 export default function Particles({ position, texture, image, index }) {
   const currentSection = useNavigateStore((state) => state.currentSection);
-  const avatar = useNavigateStore((state) => state.avatar);
-  const focus = useNavigateStore((state) => state.focus);
-  const setFocus = useNavigateStore((state) => state.setFocus);
   const textureWidth = texture.source.data.width;
   const textureHeight = texture.source.data.height;
-  const numParticles = textureWidth * textureHeight;
-
-  const indices = new Uint16Array(numParticles);
-  const offsets = new Float32Array(numParticles * 3);
-
-  for (let i = 0; i < numParticles; i++) {
-    offsets[i * 3 + 0] = i % textureWidth;
-    offsets[i * 3 + 1] = Math.floor(i / textureWidth);
-    indices[i] = i;
-  }
-
-  console.log("making new particles probably!");
 
   const shaderMaterialRef = useRef();
   const imageRef = useRef();
@@ -104,19 +89,80 @@ export default function Particles({ position, texture, image, index }) {
     }
   }, [currentSection]);
 
+  // const springs = {
+  //   uRandom: 300.0,
+  //   uOpacity: 0.0,
+  //   imageOpacity: 0.0,
+  // };
+
+  // const [springs, set] = useSpring(() => ({
+  //   config: {
+  //     mass: 1,
+  //     friction: 120,
+  //     tension: 400,
+  //     duration: 2000,
+  //     precision: 0.0001,
+  //   },
+  //   to:
+  //     useNavigateStore.getState().currentSection === index
+  //       ? [
+  //           {
+  //             uRandom: 300.0,
+  //             uOpacity: 0.0,
+  //             imageOpacity: 0.0,
+  //           },
+  //           {
+  //             uRandom: 0.0,
+  //             uOpacity: 1.0,
+  //             imageOpacity: 0.0,
+  //           },
+  //           {
+  //             uRandom: 0.0,
+  //             uOpacity: 0.0,
+  //             imageOpacity: 1.0,
+  //           },
+  //         ]
+  //       : {
+  //           uRandom: 300.0,
+  //           uOpacity: 0.0,
+  //           imageOpacity: 0.0,
+  //         },
+  // }));
+  // } else if (prevSectionRef.current === index) {
+  //   return {
+  //     config: {
+  //       mass: 1,
+  //       friction: 120,
+  //       tension: 400,
+  //       duration: 500,
+  //       precision: 0.0001,
+  //     },
+  //     to: [
+  //       {
+  //         uRandom: 300.0,
+  //         uOpacity: 0.0,
+  //         imageOpacity: 0.0,
+  //       },
+  //     ],
+  //   };
+  // } else {
+
+  // useEffect(() => useNavigateStore.subscribe(set, (state) => ({})))
+
   const handleClick = () => {
+    const focus = useNavigateStore.getState().focus;
     if (focus !== imageRef) {
-      setFocus(imageRef);
+      useNavigateStore.setState({ focus: imageRef });
     } else {
-      setFocus(avatar);
+      const avatar = useNavigateStore.getState().avatar;
+      useNavigateStore.setState({ focus: avatar });
     }
   };
-
-  const geo = new THREE.InstancedBufferGeometry().copy(new THREE.PlaneGeometry(1, 1, 1, 1));
 
   // Make image scale on hover if in avatar view
   const hovered = useRef(false);
   useFrame((state) => {
+    const focus = useNavigateStore.getState().focus;
     const scaleFactor =
       hovered.current && focus.current.name === "avatar"
         ? 1 + Math.sin(state.clock.elapsedTime * 7.5) / 100
@@ -126,6 +172,32 @@ export default function Particles({ position, texture, image, index }) {
   });
 
   const shaderMeshRef = useRef();
+
+  const instancedGeo = useMemo(() => {
+    const numParticles = textureWidth * textureHeight;
+
+    const indices = new Uint16Array(numParticles);
+    const offsets = new Float32Array(numParticles * 3);
+
+    for (let i = 0; i < numParticles; i++) {
+      offsets[i * 3 + 0] = i % textureWidth;
+      offsets[i * 3 + 1] = Math.floor(i / textureWidth);
+      indices[i] = i;
+    }
+
+    const geo = new THREE.InstancedBufferGeometry().copy(new THREE.PlaneGeometry(1, 1, 1, 1));
+
+    return (
+      <instancedBufferGeometry
+        index={geo.index}
+        attributes-position={geo.attributes.position}
+        attributes-uv={geo.attributes.uv}
+      >
+        <instancedBufferAttribute attach="attributes-pindex" args={[indices, 1]} />
+        <instancedBufferAttribute attach="attributes-offset" args={[offsets, 3]} />
+      </instancedBufferGeometry>
+    );
+  }, [textureWidth, textureHeight]);
 
   const Shader = useCallback(() => {
     const FinalMaterial = a(({ ...props }) => {
@@ -149,27 +221,11 @@ export default function Particles({ position, texture, image, index }) {
 
     return (
       <mesh ref={shaderMeshRef}>
-        <instancedBufferGeometry
-          index={geo.index}
-          attributes-position={geo.attributes.position}
-          attributes-uv={geo.attributes.uv}
-        >
-          <instancedBufferAttribute attach="attributes-pindex" args={[indices, 1]} />
-          <instancedBufferAttribute attach="attributes-offset" args={[offsets, 3]} />
-        </instancedBufferGeometry>
+        {instancedGeo}
         <FinalMaterial uRandom={springs.uRandom} uOpacity={springs.uOpacity} />
       </mesh>
     );
-  }, [
-    texture,
-    textureWidth,
-    textureHeight,
-    shaderMeshRef,
-    shaderMaterialRef,
-    geo.index,
-    indices,
-    offsets,
-  ]);
+  }, [texture, textureWidth, textureHeight, instancedGeo]);
 
   return (
     <group position={position}>

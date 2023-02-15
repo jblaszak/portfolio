@@ -9,9 +9,6 @@ import shadowTexture from "./assets/avatar_shadow.jpg";
 export default function Avatar(props) {
   const shadowAlphaMap = useLoader(THREE.TextureLoader, shadowTexture);
 
-  const setAvatar = useNavigateStore((state) => state.setAvatar);
-  const setFocus = useNavigateStore((state) => state.setFocus);
-  const setActions = useNavigateStore((state) => state.setActions);
   const currentAction = useNavigateStore((state) => state.currentAction);
   const targetRotation = useNavigateStore((state) => state.targetRotation);
   const targetPosition = useNavigateStore((state) => state.targetPosition);
@@ -20,10 +17,10 @@ export default function Avatar(props) {
   const shadowRef = useRef();
   const invisibleRef = useRef();
   const totalTime = useRef(0);
+  const startPosition = useRef(0);
+  const prevTargetPosition = useRef(0);
   const { nodes, materials, animations } = useGLTF("./avatar.glb");
   const { actions } = useAnimations(animations, avatarRef);
-
-  const [startPosition, setStartPosition] = useState(() => 0);
 
   const { width, height } = useThree();
   const headCam = useRef();
@@ -37,24 +34,20 @@ export default function Avatar(props) {
   const newPosition = new THREE.Vector3();
   const shadowScale = new THREE.Vector3();
 
-  console.log("rerendered avatar");
+  useEffect(() => {
+    useNavigateStore.setState({ actions: actions, avatar: avatarRef, focus: avatarRef });
+  }, [actions]);
 
   useEffect(() => {
-    setActions(actions);
-    setAvatar(avatarRef);
-    setFocus(avatarRef);
-  }, [actions, setActions, setAvatar, setFocus]);
-
-  useEffect(() => {
-    setStartPosition(avatarRef.current.position.x);
+    startPosition.current = avatarRef.current.position.x;
     totalTime.current = 0;
   }, [targetPosition]);
 
   useEffect(() => {
     if (!actions || !currentAction) return;
     const action = actions[currentAction];
-    action.reset().fadeIn(0.5).play();
-    return () => action.fadeOut(0.5);
+    action.reset().fadeIn(0.25).play();
+    return () => action.fadeOut(0.75);
   }, [currentAction, actions]);
 
   function easeInOutCubic(t, b, c, d) {
@@ -74,19 +67,13 @@ export default function Avatar(props) {
       nodes.Head.lookAt(intersects[0].point);
     }
 
-    // Move the shadow with the avatar
-    shadowRef.current.position.copy(avatarRef.current.position);
-
     // Faster way to handle visibility of avatar when camera is near
-    if (camera.position.z < 2) {
-      avatarRef.current.visible = false;
-    } else {
-      avatarRef.current.visible = true;
-    }
+    avatarRef.current.visible = camera.position.z > 2;
 
+    // const targetPositionX = useNavigateStore.getState().targetPosition;
+    // const targetRotation = useNavigateStore.getState().targetRotation;
     if (targetPosition === null || targetRotation === null) return;
     // Rotate the avatar
-    // const targetRotationQuaternion = new THREE.Quaternion().setFromAxisAngle(yAxis, targetRotation);
     rotationEuler.set(0, targetRotation, 0, "YXZ");
     targetRotationQuaternion.setFromEuler(rotationEuler);
     smoothedAvatarRotation.current.slerp(targetRotationQuaternion, delta);
@@ -107,8 +94,8 @@ export default function Avatar(props) {
 
     const newPositionX = easeInOutCubic(
       newTotalTime,
-      startPosition,
-      targetPosition - startPosition,
+      startPosition.current,
+      targetPosition - startPosition.current,
       moveDuration
     );
     newPosition.set(newPositionX, 0, 0);
@@ -117,6 +104,9 @@ export default function Avatar(props) {
     // Scale the shadow, min 3.5, max 6.5
     shadowScale.set(3 * Math.sin((newTotalTime * Math.PI) / moveDuration) + 3.5, 3.5, 3.5);
     shadowRef.current.scale.copy(shadowScale);
+
+    // Move the shadow with the avatar
+    shadowRef.current.position.copy(avatarRef.current.position);
   });
 
   return (
@@ -145,32 +135,24 @@ export default function Avatar(props) {
             <primitive object={nodes.Hips} />
             <skinnedMesh
               name="Wolf3D_Body"
-              castShadow
-              receiveShadow
               geometry={nodes.Wolf3D_Body.geometry}
               material={materials.Wolf3D_Body}
               skeleton={nodes.Wolf3D_Body.skeleton}
             />
             <skinnedMesh
               name="Wolf3D_Hair"
-              castShadow
-              receiveShadow
               geometry={nodes.Wolf3D_Hair.geometry}
               material={materials.Wolf3D_Hair}
               skeleton={nodes.Wolf3D_Hair.skeleton}
             />
             <skinnedMesh
               name="Wolf3D_Outfit_Footwear"
-              castShadow
-              receiveShadow
               geometry={nodes.Wolf3D_Outfit_Footwear.geometry}
               material={materials.Wolf3D_Outfit_Footwear}
               skeleton={nodes.Wolf3D_Outfit_Footwear.skeleton}
             />
             <skinnedMesh
               name="Wolf3D_Outfit_Bottom"
-              castShadow
-              receiveShadow
               geometry={nodes.Wolf3D_Outfit_Bottom.geometry}
               material={materials.Wolf3D_Outfit_Bottom}
               skeleton={nodes.Wolf3D_Outfit_Bottom.skeleton}
@@ -189,8 +171,6 @@ export default function Avatar(props) {
             />
             <skinnedMesh
               name="Wolf3D_Outfit_Top"
-              castShadow
-              receiveShadow
               geometry={nodes.Wolf3D_Outfit_Top.geometry}
               material={materials.Wolf3D_Outfit_Top}
               skeleton={nodes.Wolf3D_Outfit_Top.skeleton}
@@ -203,8 +183,6 @@ export default function Avatar(props) {
             />
             <skinnedMesh
               name="Wolf3D_Head"
-              castShadow
-              receiveShadow
               geometry={nodes.Wolf3D_Head.geometry}
               material={materials.Wolf3D_Skin}
               skeleton={nodes.Wolf3D_Head.skeleton}

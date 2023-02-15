@@ -76,12 +76,12 @@ const useMoveCharacter = () => {
 
     setTimeout(() => {
       setCurrentAction("WALKING");
-      useNavigateStore.setState({ currentSection: newTarget });
     }, delay);
     delay += walkDuration;
 
     if (newTarget === 0) {
       setTimeout(() => {
+        useNavigateStore.setState({ currentSection: newTarget });
         setCurrentAction("TURNLEFT");
         rotation += Math.PI / 2;
         setRotation(rotation);
@@ -98,6 +98,7 @@ const useMoveCharacter = () => {
       }, delay);
     } else if (newTarget === projects.length + 1 || !moveRight) {
       setTimeout(() => {
+        useNavigateStore.setState({ currentSection: newTarget });
         setCurrentAction("TURNRIGHT");
         rotation += -Math.PI / 2;
         setRotation(rotation);
@@ -109,6 +110,7 @@ const useMoveCharacter = () => {
       }, delay);
     } else {
       setTimeout(() => {
+        useNavigateStore.setState({ currentSection: newTarget });
         setCurrentAction("TURNLEFT");
         rotation += Math.PI / 2;
         setRotation(rotation);

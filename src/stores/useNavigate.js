@@ -15,41 +15,6 @@ const useNavigateStore = create(
       targetPosition: 0,
       video: null,
       videoCaption: null,
-      setTargetSection: (newTargetSection) => {
-        set((state) => {
-          return { targetSection: newTargetSection };
-        });
-      },
-      setCurrentSection: (newCurrentSection) => {
-        set((state) => {
-          return { currentSection: newCurrentSection };
-        });
-      },
-      setFocus: (newFocus) => {
-        set((state) => {
-          return { focus: newFocus };
-        });
-      },
-      setAvatar: (newAvatar) => {
-        set((state) => {
-          return { avatar: newAvatar };
-        });
-      },
-      setActions: (newActions) => {
-        set((state) => {
-          return { actions: newActions };
-        });
-      },
-      updateRotation: (rotation) => {
-        set((state) => {
-          return { targetRotation: state.targetRotation + rotation };
-        });
-      },
-      setTargetPosition: (newTargetPosition) => {
-        set((state) => {
-          return { targetPosition: newTargetPosition };
-        });
-      },
       setVideo: (newVideo) => {
         set((state) => {
           return { video: newVideo };

@@ -20,8 +20,6 @@ import Contact from "./Contact";
 import "./style.css";
 
 export default function Scene({ moveCharacter }) {
-  // const currentSection = useNavigateStore((state) => state.currentSection);
-
   const moveCamera = useMoveCamera(); // eslint-disable-line
 
   const projectTextureFiles = projects.map((project) => project.texture);
@@ -81,8 +79,6 @@ export default function Scene({ moveCharacter }) {
     };
   }, [moveCharacter]);
 
-  console.log("rerender scene");
-
   return (
     <>
       <Environment preset="warehouse" />
@@ -117,7 +113,7 @@ export default function Scene({ moveCharacter }) {
         );
       })}
       <Contact moveCharacter={moveCharacter} />
-      <BakeShadows />
+      {/* <BakeShadows /> */}
     </>
   );
 }
