@@ -1,4 +1,3 @@
-import { useCursor } from "@react-three/drei";
 import { useFrame } from "@react-three/fiber";
 import { useSpring, a } from "@react-spring/three";
 import { useState, useRef, useCallback } from "react";
@@ -24,7 +23,6 @@ export default function Button({
   const backingRef = useRef();
   const [lerpedPosition] = useState(new THREE.Vector3(...position));
   const [hovered, setHovered] = useState(false);
-  // useCursor(hovered);
 
   const makeButtonShape = useCallback((x, y, w, h, r) => {
     let shape = new THREE.Shape();
@@ -52,7 +50,6 @@ export default function Button({
     if (faceCam) {
       backingRef.current.quaternion.copy(camera.quaternion);
     }
-    // console.log(camera.quaternion);
 
     const targetPosition = active
       ? new THREE.Vector3(...position)

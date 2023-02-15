@@ -11,6 +11,7 @@ const ParticleMaterial = shaderMaterial(
   {
     uRandom: null,
     uSize: null,
+    uDepth: null,
     uScale: null,
     uOpacity: null,
     uTextureSize: null,
@@ -48,16 +49,19 @@ export default function Particles({ position, texture, image, index }) {
         to: [
           {
             uRandom: 300.0,
+            uDepth: 50.0,
             uOpacity: 0.0,
             imageOpacity: 0.0,
           },
           {
             uRandom: 0.0,
+            uDepth: 0.0,
             uOpacity: 1.0,
             imageOpacity: 0.0,
           },
           {
             uRandom: 0.0,
+            uDepth: 0.0,
             uOpacity: 0.0,
             imageOpacity: 1.0,
           },
@@ -75,6 +79,7 @@ export default function Particles({ position, texture, image, index }) {
         to: [
           {
             uRandom: 300.0,
+            uDepth: 50.0,
             uOpacity: 0.0,
             imageOpacity: 0.0,
           },
@@ -83,6 +88,7 @@ export default function Particles({ position, texture, image, index }) {
     } else {
       return {
         uRandom: 300.0,
+        uDepth: 50.0,
         uOpacity: 0.0,
         imageOpacity: 0.0,
       };
@@ -151,6 +157,7 @@ export default function Particles({ position, texture, image, index }) {
           attach="material"
           uRandom={props.uRandom}
           uOpacity={props.uOpacity}
+          uDepth={props.uDepth}
           uSize={3}
           uScale={0.045}
           uTextureSize={new THREE.Vector2(textureWidth, textureHeight)}
@@ -162,10 +169,22 @@ export default function Particles({ position, texture, image, index }) {
     return (
       <mesh ref={shaderMeshRef}>
         {instancedGeo}
-        <FinalMaterial uRandom={springs.uRandom} uOpacity={springs.uOpacity} />
+        <FinalMaterial
+          uRandom={springs.uRandom}
+          uOpacity={springs.uOpacity}
+          uDepth={springs.uDepth}
+        />
       </mesh>
     );
-  }, [texture, textureWidth, textureHeight, instancedGeo, springs.uRandom, springs.uOpacity]);
+  }, [
+    texture,
+    textureWidth,
+    textureHeight,
+    instancedGeo,
+    springs.uRandom,
+    springs.uOpacity,
+    springs.uDepth,
+  ]);
 
   return (
     <group position={position}>

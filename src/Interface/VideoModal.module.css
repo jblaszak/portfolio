@@ -20,18 +20,43 @@
   display: grid;
   margin: auto;
   max-width: 1200px;
+  max-height: 100vh;
 }
 
 .close {
+  position: relative;
   font-size: 2.5rem;
   font-weight: 700;
   justify-self: end;
   cursor: pointer;
   transition: 0.25s;
+  width: 32px;
+  height: 32px;
+  opacity: 0.5;
+  margin: 4px 0 4px 4px;
+  border: 1px solid black;
+  border-radius: 10px;
+  background-color: white;
 }
 
 .close:hover {
-  color: var(--background-color);
+  opacity: 1;
+}
+.close:before,
+.close:after {
+  position: absolute;
+  top: 3px;
+  left: 15px;
+  content: " ";
+  height: 25px;
+  width: 2px;
+  background-color: #333;
+}
+.close:before {
+  transform: rotate(45deg);
+}
+.close:after {
+  transform: rotate(-45deg);
 }
 
 .caption {
@@ -40,4 +65,10 @@
   border-radius: 1rem;
   padding: 1rem;
   margin: 1rem 0;
+}
+
+@media (orientation: landscape) {
+  .caption {
+    max-height: 0;
+  }
 }
