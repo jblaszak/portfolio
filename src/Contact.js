@@ -6,7 +6,6 @@ import { projects } from "./data.js";
 
 export default function Contact({ moveCharacter }) {
   const basePosition = (projects.length + 1) * PORTAL_SEPARATION + STAND_X_FROM_PORTAL;
-  console.log("intro text rendered");
 
   const doThumbsUp = () => moveCharacter("THUMBSUP");
 

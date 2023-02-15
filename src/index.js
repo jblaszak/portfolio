@@ -38,8 +38,8 @@ function App() {
         <Suspense fallback={null}>
           <Perf position="bottom-left" />
           <Scene moveCharacter={moveCharacter} />
+          <Preload all />
         </Suspense>
-        <Preload all />
       </Canvas>
       <Loader />
       <Navigation moveCharacter={moveCharacter} />

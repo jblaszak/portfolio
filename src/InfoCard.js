@@ -19,7 +19,6 @@ export default function InfoCard({
   codeLink = null,
   video = null,
 }) {
-  //   const avatar = useNavigateStore((state) => state.avatar);
   const focus = useNavigateStore((state) => state.focus);
   const setVideo = useNavigateStore((state) => state.setVideo);
   const setVideoCaption = useNavigateStore((state) => state.setVideoCaption);

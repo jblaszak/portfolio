@@ -1,4 +1,4 @@
-import React, { useRef, useEffect, useState } from "react";
+import React, { useRef, useEffect } from "react";
 import { useGLTF, useAnimations, PerspectiveCamera } from "@react-three/drei";
 import { useFrame, useLoader, useThree } from "@react-three/fiber";
 import useNavigateStore from "./stores/useNavigate";
@@ -18,7 +18,7 @@ export default function Avatar(props) {
   const invisibleRef = useRef();
   const totalTime = useRef(0);
   const startPosition = useRef(0);
-  const prevTargetPosition = useRef(0);
+  const firstRender = useRef(true);
   const { nodes, materials, animations } = useGLTF("./avatar.glb");
   const { actions } = useAnimations(animations, avatarRef);
 
@@ -46,7 +46,12 @@ export default function Avatar(props) {
   useEffect(() => {
     if (!actions || !currentAction) return;
     const action = actions[currentAction];
-    action.reset().fadeIn(0.25).play();
+    if (firstRender.current === true) {
+      action.play();
+      firstRender.current = false;
+    } else {
+      action.reset().fadeIn(0.25).play();
+    }
     return () => action.fadeOut(0.75);
   }, [currentAction, actions]);
 
@@ -70,8 +75,6 @@ export default function Avatar(props) {
     // Faster way to handle visibility of avatar when camera is near
     avatarRef.current.visible = camera.position.z > 2;
 
-    // const targetPositionX = useNavigateStore.getState().targetPosition;
-    // const targetRotation = useNavigateStore.getState().targetRotation;
     if (targetPosition === null || targetRotation === null) return;
     // Rotate the avatar
     rotationEuler.set(0, targetRotation, 0, "YXZ");

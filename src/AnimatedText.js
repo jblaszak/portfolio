@@ -29,8 +29,6 @@ const AnimatedText = forwardRef(
       ref = textRef;
     }
 
-    console.log("rendered text");
-
     const [lerpedPosition] = useState(new THREE.Vector3(...position));
     const currentColor = new THREE.Color();
 

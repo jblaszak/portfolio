@@ -1,10 +1,10 @@
 import * as THREE from "three";
-import { shaderMaterial, useCursor } from "@react-three/drei";
+import { shaderMaterial } from "@react-three/drei";
 import { extend, useFrame } from "@react-three/fiber";
 import ParticlesVertexShader from "./shaders/ParticlesVertexShader";
 import ParticlesFragmentShader from "./shaders/ParticlesFragmentShader";
 import { useSpring, a } from "@react-spring/three";
-import { useRef, useEffect, useState, useMemo, useCallback } from "react";
+import { useRef, useEffect, useMemo, useCallback } from "react";
 import useNavigateStore from "./stores/useNavigate";
 
 const ParticleMaterial = shaderMaterial(
@@ -89,66 +89,6 @@ export default function Particles({ position, texture, image, index }) {
     }
   }, [currentSection]);
 
-  // const springs = {
-  //   uRandom: 300.0,
-  //   uOpacity: 0.0,
-  //   imageOpacity: 0.0,
-  // };
-
-  // const [springs, set] = useSpring(() => ({
-  //   config: {
-  //     mass: 1,
-  //     friction: 120,
-  //     tension: 400,
-  //     duration: 2000,
-  //     precision: 0.0001,
-  //   },
-  //   to:
-  //     useNavigateStore.getState().currentSection === index
-  //       ? [
-  //           {
-  //             uRandom: 300.0,
-  //             uOpacity: 0.0,
-  //             imageOpacity: 0.0,
-  //           },
-  //           {
-  //             uRandom: 0.0,
-  //             uOpacity: 1.0,
-  //             imageOpacity: 0.0,
-  //           },
-  //           {
-  //             uRandom: 0.0,
-  //             uOpacity: 0.0,
-  //             imageOpacity: 1.0,
-  //           },
-  //         ]
-  //       : {
-  //           uRandom: 300.0,
-  //           uOpacity: 0.0,
-  //           imageOpacity: 0.0,
-  //         },
-  // }));
-  // } else if (prevSectionRef.current === index) {
-  //   return {
-  //     config: {
-  //       mass: 1,
-  //       friction: 120,
-  //       tension: 400,
-  //       duration: 500,
-  //       precision: 0.0001,
-  //     },
-  //     to: [
-  //       {
-  //         uRandom: 300.0,
-  //         uOpacity: 0.0,
-  //         imageOpacity: 0.0,
-  //       },
-  //     ],
-  //   };
-  // } else {
-
-  // useEffect(() => useNavigateStore.subscribe(set, (state) => ({})))
-
   const handleClick = () => {
     const focus = useNavigateStore.getState().focus;
     if (focus !== imageRef) {
@@ -218,6 +158,7 @@ export default function Particles({ position, texture, image, index }) {
         />
       );
     });
+    console.log("materials");
 
     return (
       <mesh ref={shaderMeshRef}>
@@ -225,7 +166,7 @@ export default function Particles({ position, texture, image, index }) {
         <FinalMaterial uRandom={springs.uRandom} uOpacity={springs.uOpacity} />
       </mesh>
     );
-  }, [texture, textureWidth, textureHeight, instancedGeo]);
+  }, [texture, textureWidth, textureHeight, instancedGeo, springs.uRandom, springs.uOpacity]);
 
   return (
     <group position={position}>

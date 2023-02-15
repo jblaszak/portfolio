@@ -1,5 +1,5 @@
 import { useEffect } from "react";
-import { BakeShadows, Environment } from "@react-three/drei";
+import { Environment } from "@react-three/drei";
 import { useLoader } from "@react-three/fiber";
 import * as THREE from "three";
 
@@ -82,7 +82,7 @@ export default function Scene({ moveCharacter }) {
   return (
     <>
       <Environment preset="warehouse" />
-      {/* <fog attach="fog" args={["#FFFFFF", 10, 20]} /> */}
+      <fog attach="fog" args={["#FFFFFF", 10, 20]} />
       <IntroText moveCharacter={moveCharacter} />
       <Avatar />
       {projects.map((project, i) => {
@@ -113,7 +113,6 @@ export default function Scene({ moveCharacter }) {
         );
       })}
       <Contact moveCharacter={moveCharacter} />
-      {/* <BakeShadows /> */}
     </>
   );
 }
