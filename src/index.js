@@ -1,7 +1,7 @@
 import React from "react";
 import ReactDOM from "react-dom/client";
 import { Canvas } from "@react-three/fiber";
-// import { Preload } from "@react-three/drei";
+import { Preload } from "@react-three/drei";
 import { Perf } from "r3f-perf";
 import { Suspense } from "react";
 import Loader from "./Loader";
@@ -38,6 +38,7 @@ function App() {
         <Suspense fallback={null}>
           <Perf position="bottom-left" />
           <Scene moveCharacter={moveCharacter} />
+          <Preload all />
         </Suspense>
       </Canvas>
       <Loader />

@@ -115,11 +115,12 @@ export default function Particles({ position, texture, image, index }) {
   const geo = new THREE.InstancedBufferGeometry().copy(new THREE.PlaneGeometry(1, 1, 1, 1));
 
   // Make image scale on hover if in avatar view
-  const [hovered, setHovered] = useState(false);
-  useCursor(hovered);
+  const hovered = useRef(false);
   useFrame((state) => {
     const scaleFactor =
-      hovered && focus === avatar ? 1 + Math.sin(state.clock.elapsedTime * 7.5) / 100 : 1;
+      hovered.current && focus.current.name === "avatar"
+        ? 1 + Math.sin(state.clock.elapsedTime * 7.5) / 100
+        : 1;
     const scale = new THREE.Vector3(4 * 0.91 * scaleFactor, 6 * 0.93 * scaleFactor, 1);
     imageRef.current.scale.copy(scale);
   });
@@ -178,9 +179,13 @@ export default function Particles({ position, texture, image, index }) {
         onClick={() => handleClick()}
         onPointerOver={(e) => {
           e.stopPropagation();
-          setHovered(true);
+          hovered.current = true;
+          document.body.style.cursor = "pointer";
         }}
-        onPointerOut={() => setHovered(false)}
+        onPointerOut={() => {
+          hovered.current = false;
+          document.body.style.cursor = "auto";
+        }}
         name="portal"
       >
         <planeGeometry />

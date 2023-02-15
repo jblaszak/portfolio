@@ -20,9 +20,8 @@ export default function InfoCard({
   codeLink = null,
   video = null,
 }) {
-  const avatar = useNavigateStore((state) => state.avatar);
+  //   const avatar = useNavigateStore((state) => state.avatar);
   const focus = useNavigateStore((state) => state.focus);
-  const setFocus = useNavigateStore((state) => state.setFocus);
   const setVideo = useNavigateStore((state) => state.setVideo);
   const setVideoCaption = useNavigateStore((state) => state.setVideoCaption);
 
@@ -46,17 +45,19 @@ export default function InfoCard({
 
     return activeMap;
   });
-  const [hovered, setHovered] = useState(false);
+  //   const [hovered, setHovered] = useState(false);
+  // useCursor(hovered);
+  const hovered = useRef(false);
   const [lerpedLineTargetPosition] = useState(
     new THREE.Vector3(title.position[0], title.position[1] - 0.175, title.position[2])
   );
   const [lerpedLineScale] = useState(new THREE.Vector3(0, 0.3, 1));
-  useCursor(hovered);
   const delay = 250;
 
   const handleClick = () => {
     if (focus !== cardRef) {
-      setFocus(cardRef);
+      useNavigateStore.setState({ focus: cardRef });
+      //   setFocus(cardRef);
 
       const keys = [...activeStatuses.keys()];
       let i = 0;
@@ -72,7 +73,8 @@ export default function InfoCard({
         if (i >= keys.length) clearInterval(interval);
       }, delay);
     } else {
-      setFocus(avatar);
+      const avatar = useNavigateStore.getState().avatar;
+      useNavigateStore.setState({ focus: avatar });
 
       const newStatuses = new Map(activeStatuses);
       for (const key of newStatuses.keys()) {
@@ -88,7 +90,9 @@ export default function InfoCard({
 
     // Scale card on hover, only if avatar is focus
     const scaleFactor =
-      hovered && focus === avatar ? 1 + (4 * Math.sin(state.clock.elapsedTime * 7.5)) / 100 : 1;
+      hovered.current && focus.current.name === "avatar"
+        ? 1 + (4 * Math.sin(state.clock.elapsedTime * 7.5)) / 100
+        : 1;
     const scale = new THREE.Vector3(0.2 * scaleFactor, 0.2 * scaleFactor, 1);
     cardRef.current.scale.copy(scale);
 
@@ -119,9 +123,14 @@ export default function InfoCard({
           handleClick();
         }}
         onPointerOver={(e) => {
-          setHovered(true);
+          //   setHovered(true);
+          hovered.current = true;
+          document.body.style.cursor = "pointer";
         }}
-        onPointerOut={() => setHovered(false)}
+        onPointerOut={() => {
+          hovered.current = false;
+          document.body.style.cursor = "auto";
+        }}
         position={position}
         rotation={rotation}
         name="card"

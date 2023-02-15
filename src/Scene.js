@@ -20,7 +20,7 @@ import Contact from "./Contact";
 import "./style.css";
 
 export default function Scene({ moveCharacter }) {
-  const currentSection = useNavigateStore((state) => state.currentSection);
+  // const currentSection = useNavigateStore((state) => state.currentSection);
 
   const moveCamera = useMoveCamera(); // eslint-disable-line
 
@@ -37,6 +37,7 @@ export default function Scene({ moveCharacter }) {
     let start = null;
 
     function handleKeyboard(e) {
+      const currentSection = useNavigateStore.getState().currentSection;
       if (e.key === "ArrowLeft") {
         moveCharacter(currentSection - 1);
       } else if (e.key === "ArrowRight") {
@@ -45,6 +46,7 @@ export default function Scene({ moveCharacter }) {
     }
 
     function handleWheel(e) {
+      const currentSection = useNavigateStore.getState().currentSection;
       if (e.deltaY < 0) {
         moveCharacter(currentSection - 1);
       } else {
@@ -53,11 +55,11 @@ export default function Scene({ moveCharacter }) {
     }
 
     function handleTouchStart(e) {
-      console.log(e);
       start = e.changedTouches[0].clientX;
     }
 
     function handleTouchEnd(e) {
+      const currentSection = useNavigateStore.getState().currentSection;
       const moved = start - e.changedTouches[0].clientX;
       if (moved < 0) {
         moveCharacter(currentSection - 1);
@@ -77,7 +79,9 @@ export default function Scene({ moveCharacter }) {
       document.removeEventListener("touchstart", handleTouchStart);
       document.removeEventListener("touchend", handleTouchEnd);
     };
-  }, [currentSection, moveCharacter]);
+  }, [moveCharacter]);
+
+  console.log("rerender scene");
 
   return (
     <>
