@@ -2,17 +2,17 @@
   font-family: "Playfair Display";
   font-weight: 700;
   src: local("Playfair Display Bold"),
-    url("./assets/fonts/playfairdisplay-bold-webfont.woff2") format("woff2"),
     url("./assets/fonts/playfairdisplay-bold-webfont.woff") format("woff");
   font-display: swap;
+  /* NOTE: had woff2 but Text component in Drei can only load .woff so no point loading both formats */
 }
 
 @font-face {
   font-family: "Playfair Display";
   font-weight: 900;
   src: local("Playfair Display Extrabold"), local("Playfiar Display Black"),
-    url("./assets/fonts/playfairdisplay-black-webfont.woff2") format("woff2"),
     url("./assets/fonts/playfairdisplay-black-webfont.woff") format("woff");
+  /* NOTE: had woff2 but Text component in Drei can only load .woff so no point loading both formats */
   font-display: swap;
 }
 

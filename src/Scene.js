@@ -8,13 +8,14 @@ import useMoveCamera from "./hooks/useMoveCamera";
 
 import { projects } from "./data";
 
-import { PORTAL_SEPARATION } from "./constants";
+import { PORTAL_SEPARATION, STAND_X_FROM_PORTAL } from "./constants";
 
 import InfoCard from "./InfoCard";
 import IntroText from "./IntroText";
 import Avatar from "./Avatar";
 import GlassPortal from "./GlassPortal";
 import Particles from "./Particles";
+import AnimatedText from "./AnimatedText";
 import Contact from "./Contact";
 
 import "./style.css";
@@ -109,6 +110,11 @@ export default function Scene({ moveCharacter }) {
               video={project.video || null}
               videoCaption={project.videoCaption || null}
             />
+            {i === 0 && (
+              <AnimatedText position={[STAND_X_FROM_PORTAL, -2, 2]} fontSize={5.5}>
+                Tap the portal/info card or swipe to the side!
+              </AnimatedText>
+            )}
           </group>
         );
       })}

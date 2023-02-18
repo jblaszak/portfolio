@@ -4,7 +4,7 @@ import classes from "./Loader.module.css";
 
 export default function Loader() {
   const { active, loaded } = useProgress();
-  const totalItems = 31; // figured out manually by running above and checking in network tab...
+  const totalItems = 31; // figured out manually by logging items loaded (total items from useProgress() changes so not reliable output)
   const progressRef = useRef(0);
   const rafRef = useRef(0);
   const progressSpanRef = useRef(null);
