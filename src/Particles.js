@@ -205,6 +205,13 @@ export default function Particles({ position, texture, image, index }) {
           hovered.current = false;
           document.body.style.cursor = "auto";
         }}
+        onPointerMissed={() => {
+          const focus = useNavigateStore.getState().focus;
+          if (focus === imageRef) {
+            const avatar = useNavigateStore.getState().avatar;
+            useNavigateStore.setState({ focus: avatar });
+          }
+        }}
         name="portal"
       >
         <planeGeometry />

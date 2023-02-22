@@ -85,7 +85,6 @@ export default function InfoCard({
         const entries = newStatuses.entries();
         const newMap = new Map(entries);
         setActiveStatuses(newMap);
-
         i++;
         if (i >= keys.length) clearInterval(interval);
       }, delay);
@@ -95,6 +94,7 @@ export default function InfoCard({
           obj.raycast = THREE.Mesh.prototype.raycast;
         }
       });
+
       cardContentsRef.current.visible = true;
     } else {
       const newStatuses = new Map(activeStatuses);
@@ -160,6 +160,12 @@ export default function InfoCard({
         onPointerOut={() => {
           hovered.current = false;
           document.body.style.cursor = "auto";
+        }}
+        onPointerMissed={() => {
+          if (focus === cardRef) {
+            const avatar = useNavigateStore.getState().avatar;
+            useNavigateStore.setState({ focus: avatar });
+          }
         }}
         position={position}
         rotation={rotation}
