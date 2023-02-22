@@ -12,15 +12,15 @@ const useMoveCharacter = () => {
   }
 
   const moveCharacter = (newTarget) => {
-    // Don't allow move until target section reached and player is not zoomed in on something
-    const focus = useNavigateStore.getState().focus;
     const targetSection = useNavigateStore.getState().targetSection;
     const currentSection = useNavigateStore.getState().currentSection;
     const actions = useNavigateStore.getState().actions;
+    const avatar = useNavigateStore.getState().avatar;
 
-    if (targetSection !== currentSection || focus.current.name !== "avatar") return;
+    if (targetSection !== currentSection) return;
     if (newTarget === currentSection) return;
     if (newTarget < 0 || newTarget > projects.length + 1) return;
+    useNavigateStore.setState({ focus: avatar });
 
     if (newTarget === "THUMBSUP") {
       const thumbsDuration = actions["THUMBSUP"]._clip.duration * 1000;

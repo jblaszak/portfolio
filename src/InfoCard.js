@@ -56,9 +56,26 @@ export default function InfoCard({
   const scale = new THREE.Vector3(0.2, 0.2, 1);
 
   const handleClick = () => {
-    if (focus !== cardRef) {
+    if (focus === cardRef) {
+      const avatar = useNavigateStore.getState().avatar;
+      useNavigateStore.setState({ focus: avatar });
+    } else {
       useNavigateStore.setState({ focus: cardRef });
+    }
+  };
 
+  useEffect(() => {
+    if (!cardContentsRef.current) return;
+
+    cardContentsRef.current.traverse((obj) => {
+      if (obj.type === "Mesh") {
+        obj.raycast = () => null;
+      }
+    });
+  }, []);
+
+  useEffect(() => {
+    if (focus === cardRef) {
       const keys = [...activeStatuses.keys()];
       let i = 0;
       const newStatuses = new Map(activeStatuses);
@@ -80,9 +97,6 @@ export default function InfoCard({
       });
       cardContentsRef.current.visible = true;
     } else {
-      const avatar = useNavigateStore.getState().avatar;
-      useNavigateStore.setState({ focus: avatar });
-
       const newStatuses = new Map(activeStatuses);
       for (const key of newStatuses.keys()) {
         newStatuses.set(key, false);
@@ -96,17 +110,7 @@ export default function InfoCard({
       });
       cardContentsRef.current.visible = false;
     }
-  };
-
-  useEffect(() => {
-    if (!cardContentsRef.current) return;
-
-    cardContentsRef.current.traverse((obj) => {
-      if (obj.type === "Mesh") {
-        obj.raycast = () => null;
-      }
-    });
-  }, []);
+  }, [focus]); // eslint-disable-line
 
   useFrame((state) => {
     if (!titleRef.current) return;
