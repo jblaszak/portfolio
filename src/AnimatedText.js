@@ -33,6 +33,7 @@ const AnimatedText = forwardRef(
     const currentColor = new THREE.Color();
 
     const springs = useSpring({
+      config: { tension: 280, friction: 100 },
       opacity: active ? 1 : 0,
     });
 
@@ -74,6 +75,7 @@ const AnimatedText = forwardRef(
           <a.meshBasicMaterial
             side={THREE.FrontSide}
             toneMapped={false}
+            depthTest={false}
             transparent
             opacity={springs.opacity}
           />
